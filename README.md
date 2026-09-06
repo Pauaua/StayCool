@@ -1,6 +1,6 @@
 # Stay Cool - Agenda
 
-Agenda personal para personas de todas las edades: permite un registro personal no solo sobre tu bienestar asociado a la salud, sino también de tu imagen, actividades sociales, higiene y gastos, todo para que te mantengas Cool. Incluye suscripciones premium (Agenda Cool+, planes Básico/Full) vía RevenueCat, un sistema de recompensas de juego (**MOOney**) para personalizar un avatar, y **Mi Resumen**, que genera un PDF con el resumen de tu actividad brindando estadísticas útiles en relación a tu información.
+Agenda integral para personas de todas las edades: permite un registro personal no solo sobre tu bienestar asociado a la salud, sino también de tu imagen, actividades sociales, higiene y gastos, todo para que te mantengas Cool. Incluye suscripciones premium (Agenda Cool+, planes Básico/Full) vía RevenueCat, un sistema de recompensas de juego (**MOOney**) para personalizar un avatar, y **Mi Resumen**, que genera un PDF con el resumen de tu actividad brindando estadísticas útiles en relación a tu información.
 
 Realizado con Expo + React Native + TypeScript, NativeWind, React Navigation, TanStack Query y Supabase (Auth + Postgres + Storage + Edge Functions).
 
