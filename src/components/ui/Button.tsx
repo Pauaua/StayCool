@@ -39,15 +39,26 @@ export function Button({
       onPress={onPress}
       disabled={disabled || loading}
       className={`rounded-full items-center justify-center ${
-        size === "sm" ? "px-4 py-2.5" : "px-5 py-3.5"
-      } ${variantStyles[variant]} ${disabled ? "opacity-50" : ""}`}
+        font === "script" ? "w-full" : ""
+      } ${size === "sm" ? "px-4 py-2.5" : "px-6 py-3.5"} ${variantStyles[variant]} ${
+        disabled ? "opacity-50" : ""
+      }`}
     >
       {loading ? (
         <ActivityIndicator color="#fff" />
       ) : (
         <Text
-          className={`${font === "script" ? "font-script" : "font-semibold"} ${
-            size === "sm" ? "text-sm" : "text-base"
+          numberOfLines={1}
+          adjustsFontSizeToFit
+          minimumFontScale={0.5}
+          className={`w-full ${font === "script" ? "font-script" : "font-semibold"} text-center ${
+            font === "script"
+              ? size === "sm"
+                ? "text-3xl"
+                : "text-5xl"
+              : size === "sm"
+                ? "text-sm"
+                : "text-base"
           } ${variantTextStyles[variant]}`}
         >
           {label}

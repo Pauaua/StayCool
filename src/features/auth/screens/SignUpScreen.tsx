@@ -42,13 +42,12 @@ export function SignUpScreen({ navigation }: Props) {
           onChangeText={setEmail}
         />
         <TextField label="Contraseña" secureTextEntry value={password} onChangeText={setPassword} />
-        <Button label="Registrarme" onPress={handleSignUp} loading={loading} font="script" />
+        <Button label="Registrarme" onPress={handleSignUp} loading={loading} />
         <View className="h-3" />
         <Button
           label="Ya tengo cuenta"
           variant="ghost"
           onPress={() => navigation.navigate("SignIn")}
-          font="script"
         />
       </SafeAreaView>
     </GradientBackground>

@@ -109,7 +109,7 @@ function ResumenContent() {
     if (period === "monthly") {
       Alert.alert(
         "Es contenido premium",
-        "Suscribite al plan So Basic! o Diva para poder compartir tu resumen mensual."
+        "Revisa nuestros planes premium para poder compartir tu resumen mensual."
       );
     } else {
       Alert.alert(

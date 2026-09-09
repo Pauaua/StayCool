@@ -1,0 +1,10 @@
+# Configuración de Supabase CLI para este proyecto.
+#
+# `revenuecat-webhook` necesita verify_jwt = false: RevenueCat llama a esta
+# función con su propio secreto en el header Authorization (ver
+# REVENUECAT_WEBHOOK_SECRET en supabase/functions/revenuecat-webhook/index.ts),
+# no con un JWT emitido por Supabase. Con verify_jwt = true (el default),
+# la plataforma rechaza la request con 401 antes de que el código de la
+# función llegue a validar ese secreto.
+[functions.revenuecat-webhook]
+verify_jwt = false
