@@ -10,7 +10,7 @@ import {
   upsertHairProfile,
 } from "@/features/pelo/services/peloService";
 import { analytics } from "@/analytics/posthog";
-import type { HairProfile } from "@/features/pelo/types";
+import type { HairProfile, HairstyleType } from "@/features/pelo/types";
 
 function useUserId() {
   const { session } = useAuth();
@@ -83,8 +83,24 @@ export function useLogHairstyle() {
   const userId = useUserId();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ hairstyle, localImageUri }: { hairstyle: string; localImageUri?: string }) =>
-      logHairstyle(userId as string, hairstyle, localImageUri),
+    mutationFn: ({
+      hairstyle,
+      localImageUri,
+      styleType,
+      isSpecialOccasion,
+      occasionDetails,
+    }: {
+      hairstyle: string;
+      localImageUri?: string;
+      styleType?: HairstyleType;
+      isSpecialOccasion?: boolean;
+      occasionDetails?: string;
+    }) =>
+      logHairstyle(userId as string, hairstyle, localImageUri, {
+        styleType,
+        isSpecialOccasion,
+        occasionDetails,
+      }),
     onSuccess: () => {
       analytics.track("peinado_registrado");
       queryClient.invalidateQueries({ queryKey: ["pelo", "hairstyles", userId] });

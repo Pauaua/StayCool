@@ -73,5 +73,31 @@ export function useSyncReminders() {
     } else {
       cancelReminder(REMINDER_IDS.hygieneChecklist);
     }
+
+    if (profile.skincare_morning_reminder_enabled) {
+      const { hour, minute } = parseTime(profile.skincare_morning_reminder_time);
+      scheduleDailyReminder(
+        REMINDER_IDS.skincareMorning,
+        "Skincare matutino ☀️",
+        "Es hora de tu rutina de skincare de la mañana.",
+        hour,
+        minute
+      );
+    } else {
+      cancelReminder(REMINDER_IDS.skincareMorning);
+    }
+
+    if (profile.skincare_night_reminder_enabled) {
+      const { hour, minute } = parseTime(profile.skincare_night_reminder_time);
+      scheduleDailyReminder(
+        REMINDER_IDS.skincareNight,
+        "Skincare nocturno 🌙",
+        "Es hora de tu rutina de skincare de la noche.",
+        hour,
+        minute
+      );
+    } else {
+      cancelReminder(REMINDER_IDS.skincareNight);
+    }
   }, [profile]);
 }

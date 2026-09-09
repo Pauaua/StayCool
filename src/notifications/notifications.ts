@@ -52,4 +52,6 @@ export async function cancelReminder(id: string) {
 export const REMINDER_IDS = {
   makeupRemoval: "makeup-removal-reminder",
   hygieneChecklist: "hygiene-checklist-reminder",
+  skincareMorning: "skincare-morning-reminder",
+  skincareNight: "skincare-night-reminder",
 } as const;

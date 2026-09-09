@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase";
-import type { HygieneItem, HygieneLog } from "@/features/higiene/types";
+import type { HygieneItem, HygieneLog, HygieneLogDetail } from "@/features/higiene/types";
 
 const PAGE_SIZE = 14; // ~2 semanas de historial por página
 
@@ -39,6 +39,18 @@ export async function fetchLogsForDate(userId: string, date: string): Promise<Hy
   return data ?? [];
 }
 
+// Detalle de qué ítems se marcaron (o no) en una fecha puntual del
+// historial, con su label/ícono — para el modal de "qué hice ese día".
+export async function fetchLogDetailsForDate(userId: string, date: string): Promise<HygieneLogDetail[]> {
+  const { data, error } = await supabase
+    .from("hygiene_logs")
+    .select("id, hygiene_item_id, completed, hygiene_items(label, icon)")
+    .eq("user_id", userId)
+    .eq("log_date", date);
+  if (error) throw error;
+  return (data ?? []) as unknown as HygieneLogDetail[];
+}
+
 export async function toggleHygieneLog(
   userId: string,
   hygieneItemId: string,
@@ -68,18 +80,18 @@ export async function toggleHygieneLog(
   }
 }
 
-// Historial paginado por página (offset-based sobre log_date), nunca trae
-// todo el historial de una sola vez.
+// Historial agrupado por día y paginado en memoria. Paginar directo sobre
+// filas crudas (una por ítem) partía un mismo día en dos páginas distintas
+// cuando sus registros caían justo en el límite de la página, mostrando el
+// mismo día dos veces en el historial — por eso agrupamos primero (con
+// columnas livianas, log_date+completed) y recién ahí paginamos por día.
 export async function fetchHygieneHistoryPage(userId: string, page: number) {
-  const from = page * PAGE_SIZE;
-  const to = from + PAGE_SIZE - 1;
-
   const { data, error } = await supabase
     .from("hygiene_logs")
     .select("log_date, completed")
     .eq("user_id", userId)
     .order("log_date", { ascending: false })
-    .range(from, to);
+    .limit(5000);
 
   if (error) throw error;
 
@@ -91,13 +103,24 @@ export async function fetchHygieneHistoryPage(userId: string, page: number) {
     byDate.set(row.log_date, entry);
   }
 
-  const items = Array.from(byDate.entries()).map(([log_date, v]) => ({
-    log_date,
-    totalItems: v.total,
-    completedItems: v.completed,
-  }));
+  const allDays = Array.from(byDate.entries())
+    .map(([log_date, v]) => ({ log_date, totalItems: v.total, completedItems: v.completed }))
+    .sort((a, b) => (a.log_date < b.log_date ? 1 : -1));
 
-  return { items, nextPage: (data?.length ?? 0) === PAGE_SIZE ? page + 1 : undefined };
+  const from = page * PAGE_SIZE;
+  const items = allDays.slice(from, from + PAGE_SIZE);
+
+  return { items, nextPage: from + PAGE_SIZE < allDays.length ? page + 1 : undefined };
+}
+
+// Borra el registro completo de un día (todos los ítems marcados ese día).
+export async function deleteHygieneDay(userId: string, date: string) {
+  const { error } = await supabase
+    .from("hygiene_logs")
+    .delete()
+    .eq("user_id", userId)
+    .eq("log_date", date);
+  if (error) throw error;
 }
 
 export { PAGE_SIZE };

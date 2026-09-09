@@ -5,16 +5,17 @@ import { Chip } from "@/components/ui/Chip";
 import { Button } from "@/components/ui/Button";
 import { FormScreen } from "@/components/ui/FormScreen";
 import { useCreateDetailedTaste } from "@/features/gustos/hooks/useGustos";
+import { useT, type TranslationKey } from "@/lib/i18n";
 import type { TasteCategory } from "@/features/gustos/types";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { GustosStackParamList } from "@/navigation/types";
 
-const CATEGORIES: { value: TasteCategory; label: string; emoji: string }[] = [
-  { value: "musica", label: "Música", emoji: "🎵" },
-  { value: "serie", label: "Serie", emoji: "📺" },
-  { value: "pelicula", label: "Película", emoji: "🎬" },
-  { value: "libro", label: "Libro", emoji: "📚" },
-  { value: "otro", label: "Otro", emoji: "✨" },
+const CATEGORIES: { value: TasteCategory; key: TranslationKey; emoji: string }[] = [
+  { value: "musica", key: "gustos.category.musica", emoji: "🎵" },
+  { value: "serie", key: "gustos.category.serie", emoji: "📺" },
+  { value: "pelicula", key: "gustos.category.pelicula", emoji: "🎬" },
+  { value: "libro", key: "gustos.category.libro", emoji: "📚" },
+  { value: "otro", key: "gustos.category.otro", emoji: "✨" },
 ];
 
 type Props = NativeStackScreenProps<GustosStackParamList, "GustoDetallado">;
@@ -24,6 +25,7 @@ export function GustoDetalladoScreen({ navigation }: Props) {
   const [name, setName] = useState("");
   const [genre, setGenre] = useState("");
   const [notes, setNotes] = useState("");
+  const { t } = useT();
 
   // Campos específicos por categoría, guardados en `details` (jsonb).
   const [favoriteBands, setFavoriteBands] = useState("");
@@ -62,15 +64,15 @@ export function GustoDetalladoScreen({ navigation }: Props) {
   return (
     <FormScreen>
         <Text className="text-2xl font-bold text-surface-dark dark:text-white mb-4">
-          Música, series, películas y libros
+          {t("gustos.detailedTitle")}
         </Text>
 
-        <Text className="text-sm font-semibold text-surface-dark dark:text-white mb-2">Categoría</Text>
+        <Text className="text-sm font-semibold text-surface-dark dark:text-white mb-2">{t("gustos.category")}</Text>
         <View className="flex-row flex-wrap mb-3">
           {CATEGORIES.map((c) => (
             <Chip
               key={c.value}
-              label={c.label}
+              label={t(c.key)}
               icon={c.emoji}
               selected={category === c.value}
               onPress={() => setCategory(c.value)}
@@ -78,37 +80,37 @@ export function GustoDetalladoScreen({ navigation }: Props) {
           ))}
         </View>
 
-        <TextField label="Nombre" value={name} onChangeText={setName} />
-        <TextField label="Género (opcional)" value={genre} onChangeText={setGenre} />
+        <TextField label={t("gustos.name")} value={name} onChangeText={setName} />
+        <TextField label={t("gustos.genreOptional")} value={genre} onChangeText={setGenre} />
 
         {category === "musica" ? (
           <>
-            <TextField label="Bandas/artistas favoritos" value={favoriteBands} onChangeText={setFavoriteBands} />
-            <TextField label="Instrumentos" value={instruments} onChangeText={setInstruments} />
-            <TextField label="Ritmos" value={rhythms} onChangeText={setRhythms} />
+            <TextField label={t("gustos.favoriteBands")} value={favoriteBands} onChangeText={setFavoriteBands} />
+            <TextField label={t("gustos.instruments")} value={instruments} onChangeText={setInstruments} />
+            <TextField label={t("gustos.rhythms")} value={rhythms} onChangeText={setRhythms} />
           </>
         ) : null}
 
         {category === "serie" || category === "pelicula" ? (
           <>
-            <TextField label="Director" value={director} onChangeText={setDirector} />
-            <TextField label="Elenco" value={cast} onChangeText={setCast} />
+            <TextField label={t("gustos.director")} value={director} onChangeText={setDirector} />
+            <TextField label={t("gustos.cast")} value={cast} onChangeText={setCast} />
             {category === "serie" ? (
-              <TextField label="Temporada" value={season} onChangeText={setSeason} />
+              <TextField label={t("gustos.season")} value={season} onChangeText={setSeason} />
             ) : null}
           </>
         ) : null}
 
         {category === "libro" ? (
           <>
-            <TextField label="Autor" value={author} onChangeText={setAuthor} />
-            <TextField label="Saga (opcional)" value={saga} onChangeText={setSaga} />
+            <TextField label={t("gustos.author")} value={author} onChangeText={setAuthor} />
+            <TextField label={t("gustos.sagaOptional")} value={saga} onChangeText={setSaga} />
           </>
         ) : null}
 
-        <TextField label="Notas (opcional)" value={notes} onChangeText={setNotes} multiline />
+        <TextField label={t("gustos.notesOptional")} value={notes} onChangeText={setNotes} multiline />
 
-        <Button label="Guardar" onPress={handleSave} loading={create.isPending} />
+        <Button label={t("gustos.save")} onPress={handleSave} loading={create.isPending} />
     </FormScreen>
   );
 }

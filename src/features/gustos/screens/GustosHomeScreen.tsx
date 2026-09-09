@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/Card";
 import { Chip } from "@/components/ui/Chip";
 import { Button } from "@/components/ui/Button";
 import { useDetailedTastes, useQuickTastes } from "@/features/gustos/hooks/useGustos";
+import { useT, type TranslationKey } from "@/lib/i18n";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { GustosStackParamList } from "@/navigation/types";
 
@@ -18,35 +19,47 @@ const CATEGORY_EMOJI: Record<string, string> = {
   otro: "✨",
 };
 
+const CATEGORY_KEY: Record<string, TranslationKey> = {
+  musica: "gustos.category.musica",
+  serie: "gustos.category.serie",
+  pelicula: "gustos.category.pelicula",
+  libro: "gustos.category.libro",
+  otro: "gustos.category.otro",
+};
+
 export function GustosHomeScreen({ navigation }: Props) {
   const [tab, setTab] = useState<"rapido" | "detallado">("rapido");
   const quick = useQuickTastes();
   const detailed = useDetailedTastes();
+  const { t } = useT();
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-surface-dark px-5 pt-4">
-      <Text className="text-2xl font-bold text-surface-dark dark:text-white mb-4">Gustos</Text>
+    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-surface-dark px-5 pt-8">
+      <Text className="text-2xl font-bold text-surface-dark dark:text-white mb-4">{t("gustos.title")}</Text>
 
-      <View className="flex-row mb-4">
-        <View className="flex-1 mr-2">
-          <Button label="Registro rápido" onPress={() => navigation.navigate("GustoRapido")} />
+
+
+      <View className="mb-4">
+        <View className="mb-2">
+          <Button label={t("gustos.quickRecord")} onPress={() => navigation.navigate("GustoRapido")} />
         </View>
-        <View className="flex-1">
-          <Button
-            label="Música / series / libros"
-            variant="secondary"
-            onPress={() => navigation.navigate("GustoDetallado")}
-          />
-        </View>
+        <Button
+          label={t("gustos.musicSeriesBooks")}
+          variant="secondary"
+          onPress={() => navigation.navigate("GustoDetallado")}
+        />
       </View>
-
+      <Text className="text-lg font-semibold text-surface-dark dark:text-white mb-2">
+        {t("gustos.record")}
+      </Text>
       <View className="flex-row mb-3">
-        <Chip label="Rápidos" selected={tab === "rapido"} onPress={() => setTab("rapido")} />
-        <Chip label="Detallados" selected={tab === "detallado"} onPress={() => setTab("detallado")} />
+        <Chip label={t("gustos.quickTab")} selected={tab === "rapido"} onPress={() => setTab("rapido")} />
+        <Chip label={t("gustos.detailedTab")} selected={tab === "detallado"} onPress={() => setTab("detallado")} />
       </View>
 
       {tab === "rapido" ? (
         <FlatList
+          contentContainerStyle={{ paddingBottom: 40 }}
           data={quick.data?.pages.flatMap((p) => p.items) ?? []}
           keyExtractor={(item) => item.id}
           onEndReached={() => quick.hasNextPage && quick.fetchNextPage()}
@@ -63,6 +76,7 @@ export function GustosHomeScreen({ navigation }: Props) {
         />
       ) : (
         <FlatList
+          contentContainerStyle={{ paddingBottom: 40 }}
           data={detailed.data?.pages.flatMap((p) => p.items) ?? []}
           keyExtractor={(item) => item.id}
           onEndReached={() => detailed.hasNextPage && detailed.fetchNextPage()}
@@ -73,17 +87,27 @@ export function GustosHomeScreen({ navigation }: Props) {
                 <Text className="text-surface-dark dark:text-white font-semibold">
                   {CATEGORY_EMOJI[item.category] ?? "✨"} {item.name}
                 </Text>
-                <Text className="text-xs text-gray-400 capitalize">{item.category}</Text>
+                <Text className="text-xs text-gray-400 capitalize">
+                  {t(CATEGORY_KEY[item.category] ?? "gustos.category.otro")}
+                </Text>
               </View>
-              {item.genre ? <Text className="text-gray-500 text-sm">Género: {item.genre}</Text> : null}
+              {item.genre ? (
+                <Text className="text-gray-500 text-sm">{t("gustos.genreLabel", { value: item.genre })}</Text>
+              ) : null}
               {item.details.favoriteBands ? (
-                <Text className="text-gray-500 text-sm">Bandas: {item.details.favoriteBands}</Text>
+                <Text className="text-gray-500 text-sm">
+                  {t("gustos.bandsLabel", { value: item.details.favoriteBands })}
+                </Text>
               ) : null}
               {item.details.author ? (
-                <Text className="text-gray-500 text-sm">Autor: {item.details.author}</Text>
+                <Text className="text-gray-500 text-sm">
+                  {t("gustos.authorLabel", { value: item.details.author })}
+                </Text>
               ) : null}
               {item.details.director ? (
-                <Text className="text-gray-500 text-sm">Director: {item.details.director}</Text>
+                <Text className="text-gray-500 text-sm">
+                  {t("gustos.directorLabel", { value: item.details.director })}
+                </Text>
               ) : null}
             </Card>
           )}

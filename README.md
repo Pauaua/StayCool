@@ -15,6 +15,7 @@ Realizado con Expo + React Native + TypeScript, NativeWind, React Navigation, Ta
 - [Arquitectura](#arquitectura)
 - [Módulos](#módulos)
 - [Suscripciones y MOOney](#suscripciones-y-mooney)
+- [Idioma y pronombres](#idioma-y-pronombres)
 - [Build y actualizaciones OTA con EAS](#build-y-actualizaciones-ota-con-eas)
 - [Monitoreo y analítica](#monitoreo-y-analítica)
 - [Recuperar contraseña](#recuperar-contraseña)
@@ -28,6 +29,7 @@ Realizado con Expo + React Native + TypeScript, NativeWind, React Navigation, Ta
 - **App**: React Native 0.81 + React 19, Expo SDK 54 (con `expo-dev-client` para development builds), TypeScript 5.9.
 - **Navegación**: React Navigation (native-stack + bottom-tabs).
 - **UI**: NativeWind (Tailwind para React Native), `react-native-svg`, `expo-linear-gradient`, `react-native-view-shot`.
+- **Tipografías**: Rethink Sans (`@expo-google-fonts/rethink-sans`, pesos 400/600/700) para toda la interfaz, y WindSong (`@expo-google-fonts/windsong`) solo para el nombre de la app y los titulares de la tarjeta compartible de "Mi Resumen" (`font-script` en `tailwind.config.js`).
 - **Datos remotos**: TanStack Query (`@tanstack/react-query`) + Zod para validación.
 - **Backend**: Supabase (Postgres + Auth + Storage + Edge Functions).
 - **Monetización**: RevenueCat (`react-native-purchases`) para suscripciones.
@@ -74,7 +76,7 @@ Todas son claves públicas (publishable key, DSN público, API keys públicas de
 ## Configurar Supabase
 
 1. Crea un proyecto en supabase.com.
-2. Corre las migraciones **en orden** (`0001` a `0008`): `npx supabase db push`, o pega cada archivo de `supabase/migrations/` en el SQL Editor del dashboard en orden numérico. El login es solo email + contraseña, sin proveedores sociales — no hace falta configurar nada en Authentication → Providers más allá de lo que Supabase trae por defecto.
+2. Corre las migraciones **en orden numérico** (todas las de `supabase/migrations/`): `npx supabase db push`, o pega cada archivo en el SQL Editor del dashboard en orden. El login es solo email + contraseña, sin proveedores sociales — no hace falta configurar nada en Authentication → Providers más allá de lo que Supabase trae por defecto.
 3. En Authentication → URL Configuration, agregá `agendacool://*` a **Redirect URLs** (necesario para que funcione "olvidé mi contraseña" — ver más abajo).
 4. Despliega las Edge Functions:
    ```bash
@@ -122,18 +124,29 @@ El módulo **Higiene** (`src/features/higiene`) es el patrón de referencia: reg
 - **Imagen** — incluye Vestuario, Zapatos y la sección de Cara (fusionada acá desde el antiguo módulo independiente, ver `0008_imagen_pelo_restructure.sql`).
 - **Pelo** — perfil de pelo, peinados (con foto opcional) y lavado de pelo integrado al checklist de higiene.
 - **Higiene** — checklist diario con ítems por defecto y personalizables (`AddHygieneItemPicker`).
-- **Social** — actividades sociales.
+- **Social** — actividades sociales, con edición y eliminación desde el detalle de cada actividad (no solo alta).
 - **Gastos** — dos formularios (quick/detailed), presupuesto mensual, resumen calculado en Edge Function.
 - **Gustos** — dos formularios: `taste_quick_logs` (nombre + descripción + fecha/hora, para cosas random) y `taste_detailed_logs` (música, series, películas, libros). Los campos varían mucho según la categoría (bandas/instrumentos/ritmos en música, autor/saga en libros, director/elenco en series y películas), así que en vez de tener una tabla por categoría, `taste_detailed_logs` guarda `category`, `name`, `genre` y `notes` como columnas y el resto en una columna `details jsonb` — evita tener que migrar el esquema cada vez que se agregue un campo específico de una categoría nueva.
 - **Notas** — registro de ideas, dos niveles: `note_quick_logs` (nombre + descripción + cómo te sentiste) y `note_detailed_logs` (nombre, dónde estabas, la idea, sentires, pensamientos).
 - **Premium** — pantalla de suscripción (Agenda Cool+, planes Básico/Full) y la tienda de avatar (`AvatarShopScreen`) que gasta MOOney.
-- **Resumen** ("Mi Resumen") — genera un PDF (`pdfService.ts`) con el resumen de actividad del usuario y permite compartirlo (`shareService.ts`), usando datos armados por la Edge Function `resumen`.
+- **Resumen** ("Mi Resumen") — genera un PDF (`pdfService.ts`, localizado según el idioma del perfil) con el resumen de actividad del usuario y permite compartirlo (`shareService.ts`), usando datos armados por la Edge Function `resumen`. Semanal es gratis a partir del plan Básico, mensual (con compartir) también Básico, y anual es exclusivo del plan Full.
+- **Estadísticas** — hoy/semanal/anual con detalle día por día, exclusivo del plan Full (`PremiumGate` en `EstadisticasHomeScreen`).
 
 ## Suscripciones y MOOney
 
 - Las suscripciones (planes **Básico** y **Full**) se gestionan con **RevenueCat** (`react-native-purchases`). La verdad sobre el tier del usuario vive en RevenueCat; `profiles.premium_tier` es una copia de lectura rápida en Supabase, actualizada únicamente por la Edge Function `revenuecat-webhook` cuando RevenueCat notifica un cambio de entitlement.
 - Un trigger de Postgres (`guard_premium_tier`, en `0006_moo_ney.sql`) revierte silenciosamente cualquier intento del cliente de escribir `premium_tier` directamente — solo la service role (usada por la Edge Function) puede moverlo.
 - **MOOney** es una moneda de juego (recompensa del plan Full) para desbloquear y comprar piezas de un avatar personalizable (cara, pelo, tono de piel, accesorios) en `AvatarShopScreen`. Es **completamente independiente del dinero real** que el usuario registra en el módulo Gastos — nunca se mezcla con `expense_quick_logs` / `expense_detailed_logs` en ningún cálculo.
+- Personalizar la foto/avatar de perfil (`SettingsScreen`) también es exclusivo del plan Full.
+
+## Idioma y pronombres
+
+`src/lib/i18n.ts` centraliza toda la traducción de la app (español/inglés) en un diccionario `dict.es` / `dict.en` con claves por pantalla (`"gastos.title"`, `"social.deleteMessage"`, etc.) e interpolación de variables (`{name}`, `{date}`). El hook `useT()` (usado en cada pantalla) expone:
+
+- `t(key, vars?)` — traducción normal según `profiles.language`.
+- `tg(baseKey, vars?)` — traducción "de género": arma `baseKey.m` / `.f` / `.n` según `profiles.pronoun` (masculino/femenino/no binarie·no lo sé aún → neutro, ej. "Segure"). Se usa en el puñado de frases que sí cambian gramaticalmente con el género (saludo de bienvenida, "Maquillada/o/e", confirmaciones de "¿Segura/o/e que querés...?") — el resto del texto de la app ya es neutro en español (formas reflexivas tipo "te ejercitaste") y no necesita variantes.
+
+Ambas preferencias (`language`, `pronoun`) se guardan en `profiles` y se editan desde la pantalla de Configuración.
 
 ## Build y actualizaciones OTA con EAS
 
@@ -152,6 +165,10 @@ eas update --branch production --message "fix: ajuste en checklist de higiene"
 ```
 
 `eas.json` define perfiles `development`, `preview` y `production`. El `projectId` real (que da `eas build:configure`) ya está cargado en `app.config.js`.
+
+Las variables de `.env` (Supabase, Sentry, PostHog, Facebook) están cargadas también como **Environment Variables del proyecto en EAS** (`eas env:list` / `eas env:set`) para los tres entornos — necesario porque `.env` está en `.gitignore` y EAS Build no lo empaqueta, así que sin esto cualquier build remoto arranca sin esas claves y la app crashea al abrir (`requireEnv` en `src/config/env.ts` tira el error). Si agregás una variable nueva a `.env`, replicala también en EAS con `eas env:set <environment> --name X --value Y --visibility plaintext`.
+
+El perfil `preview` corre con `SENTRY_DISABLE_AUTO_UPLOAD=true` porque el proyecto de Sentry (`app.config.js` → plugin `@sentry/react-native/expo`) todavía no tiene un token de auth configurado; sin esa variable, el paso de subida de sourcemaps del build de Android falla y aborta el build entero.
 
 ## Monitoreo y analítica
 

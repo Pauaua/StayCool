@@ -1,14 +1,19 @@
 import { eachDayOfInterval, format } from "date-fns";
 import { supabase } from "@/lib/supabase";
-import type { MealCategory, Mood } from "@/features/bienestar/types";
+import type { MealCategory, Mood, MoodLog } from "@/features/bienestar/types";
 import type { DailyWellnessStat } from "@/features/bienestar/types";
 
 const PAGE_SIZE = 20;
 
-export async function logMeal(userId: string, description: string, category?: MealCategory) {
+export async function logMeal(
+  userId: string,
+  description: string,
+  category?: MealCategory,
+  rating?: number
+) {
   const { error } = await supabase
     .from("wellness_meals")
-    .insert({ user_id: userId, description, category: category ?? null });
+    .insert({ user_id: userId, description, category: category ?? null, rating: rating ?? null });
   if (error) throw error;
 }
 
@@ -19,20 +24,42 @@ export async function logSleep(userId: string, sleptAt: string, wokeAt: string) 
   if (error) throw error;
 }
 
-export async function logExercise(userId: string, exerciseType: string, durationMinutes?: number) {
-  const { error } = await supabase
-    .from("wellness_exercise")
-    .insert({ user_id: userId, exercise_type: exerciseType, duration_minutes: durationMinutes ?? null });
+export async function logExercise(
+  userId: string,
+  exerciseType: string,
+  durationMinutes?: number,
+  sets?: number,
+  weightKg?: number
+) {
+  const { error } = await supabase.from("wellness_exercise").insert({
+    user_id: userId,
+    exercise_type: exerciseType,
+    duration_minutes: durationMinutes ?? null,
+    sets: sets ?? null,
+    weight_kg: weightKg ?? null,
+  });
   if (error) throw error;
 }
 
-export async function upsertMood(userId: string, mood: Mood, energyLevel?: number) {
+export async function upsertMood(userId: string, mood: Mood, note?: string, energyLevel?: number) {
   const today = new Date().toISOString().slice(0, 10);
   const { error } = await supabase.from("wellness_mood").upsert(
-    { user_id: userId, mood_date: today, mood, energy_level: energyLevel ?? null },
+    { user_id: userId, mood_date: today, mood, note: note ?? null, energy_level: energyLevel ?? null },
     { onConflict: "user_id,mood_date" }
   );
   if (error) throw error;
+}
+
+// Últimos días con estado de ánimo registrado.
+export async function fetchMoodHistory(userId: string): Promise<MoodLog[]> {
+  const { data, error } = await supabase
+    .from("wellness_mood")
+    .select("*")
+    .eq("user_id", userId)
+    .order("mood_date", { ascending: false })
+    .limit(30);
+  if (error) throw error;
+  return (data ?? []) as MoodLog[];
 }
 
 // Trae horas de sueño y cantidad de comidas por día en un rango acotado
@@ -62,7 +89,7 @@ export async function fetchWellnessStatsRange(
 
   const sleepByDate = new Map<string, number>();
   for (const row of sleepRes.data ?? []) {
-    sleepByDate.set(row.sleep_date, (sleepByDate.get(row.sleep_date) ?? 0) + row.duration_minutes);
+    sleepByDate.set(row.sleep_date, (sleepByDate.get(row.sleep_date) ?? 0) + (row.duration_minutes ?? 0));
   }
 
   const mealsByDate = new Map<string, number>();
@@ -80,6 +107,19 @@ export async function fetchWellnessStatsRange(
       mealsCount: mealsByDate.get(dateKey) ?? 0,
     };
   });
+}
+
+// Últimos días con ejercicio registrado (puede haber más de uno por día).
+export async function fetchExerciseHistory(userId: string) {
+  const { data, error } = await supabase
+    .from("wellness_exercise")
+    .select("*")
+    .eq("user_id", userId)
+    .order("exercise_date", { ascending: false })
+    .order("created_at", { ascending: false })
+    .limit(30);
+  if (error) throw error;
+  return data ?? [];
 }
 
 export async function fetchMealsPage(userId: string, page: number) {

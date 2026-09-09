@@ -6,6 +6,7 @@ export interface Meal {
   meal_date: string;
   category: MealCategory | null;
   description: string;
+  rating: number | null;
 }
 
 export interface SleepLog {
@@ -21,6 +22,16 @@ export interface MoodLog {
   mood_date: string;
   mood: Mood;
   energy_level: number | null;
+  note: string | null;
+}
+
+export interface ExerciseLog {
+  id: string;
+  exercise_date: string;
+  exercise_type: string;
+  duration_minutes: number | null;
+  sets: number | null;
+  weight_kg: number | null;
 }
 
 export interface DailyWellnessStat {

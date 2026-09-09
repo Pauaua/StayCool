@@ -3,8 +3,10 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 import {
   createHygieneItem,
   deactivateHygieneItem,
+  deleteHygieneDay,
   fetchActiveHygieneItems,
   fetchHygieneHistoryPage,
+  fetchLogDetailsForDate,
   fetchLogsForDate,
   toggleHygieneLog,
 } from "@/features/higiene/services/hygieneService";
@@ -76,6 +78,33 @@ export function useDeactivateHygieneItem() {
   return useMutation({
     mutationFn: (itemId: string) => deactivateHygieneItem(itemId),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["hygiene", "items", userId] }),
+  });
+}
+
+// Detalle de un día puntual del historial (qué ítems se hicieron), para el
+// modal que se abre al tocar una fila del historial general.
+export function useHygieneLogDetails(date: string | null) {
+  const { session } = useAuth();
+  const userId = session?.user.id;
+  return useQuery({
+    queryKey: ["hygiene", "log-details", userId, date],
+    queryFn: () => fetchLogDetailsForDate(userId as string, date as string),
+    enabled: !!userId && !!date,
+  });
+}
+
+export function useDeleteHygieneDay() {
+  const { session } = useAuth();
+  const userId = session?.user.id;
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (date: string) => deleteHygieneDay(userId as string, date),
+    onSuccess: (_data, date) => {
+      analytics.track("hygiene_day_deleted");
+      queryClient.invalidateQueries({ queryKey: ["hygiene", "history", userId] });
+      queryClient.invalidateQueries({ queryKey: ["hygiene", "logs", userId, date] });
+      queryClient.invalidateQueries({ queryKey: ["hygiene", "log-details", userId, date] });
+    },
   });
 }
 

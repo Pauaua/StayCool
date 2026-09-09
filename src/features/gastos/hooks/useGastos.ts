@@ -3,6 +3,8 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 import {
   createDetailedExpense,
   createQuickExpense,
+  deleteDetailedExpense,
+  deleteQuickExpense,
   fetchDetailedExpenseById,
   fetchDetailedExpensesPage,
   fetchExpenseSummary,
@@ -34,6 +36,7 @@ export function useCreateQuickExpense() {
     onSuccess: () => {
       analytics.track("gasto_rapido_creado");
       queryClient.invalidateQueries({ queryKey: ["gastos", "quick", userId] });
+      queryClient.invalidateQueries({ queryKey: ["gastos", "resumen"] });
     },
   });
 }
@@ -79,6 +82,35 @@ export function useCreateDetailedExpense() {
     onSuccess: () => {
       analytics.track("gasto_detallado_creado");
       queryClient.invalidateQueries({ queryKey: ["gastos", "detailed", userId] });
+      queryClient.invalidateQueries({ queryKey: ["gastos", "resumen"] });
+    },
+  });
+}
+
+export function useDeleteQuickExpense() {
+  const { session } = useAuth();
+  const userId = session?.user.id;
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (expenseId: string) => deleteQuickExpense(expenseId),
+    onSuccess: () => {
+      analytics.track("gasto_rapido_eliminado");
+      queryClient.invalidateQueries({ queryKey: ["gastos", "quick", userId] });
+      queryClient.invalidateQueries({ queryKey: ["gastos", "resumen"] });
+    },
+  });
+}
+
+export function useDeleteDetailedExpense() {
+  const { session } = useAuth();
+  const userId = session?.user.id;
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (expenseId: string) => deleteDetailedExpense(expenseId),
+    onSuccess: () => {
+      analytics.track("gasto_detallado_eliminado");
+      queryClient.invalidateQueries({ queryKey: ["gastos", "detailed", userId] });
+      queryClient.invalidateQueries({ queryKey: ["gastos", "resumen"] });
     },
   });
 }

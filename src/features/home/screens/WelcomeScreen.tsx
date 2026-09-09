@@ -1,9 +1,14 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Animated, Pressable, Text, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Pressable, Text, View } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { useProfile } from "@/features/home/hooks/useProfile";
+import { useT } from "@/lib/i18n";
 
 interface WelcomeScreenProps {
   onOpenAgenda: () => void;
+  onOpenResumen: () => void;
+  onOpenPaywall: () => void;
+  onOpenConfiguracion: () => void;
 }
 
 const WEEKDAYS = ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"];
@@ -32,75 +37,81 @@ function formatTime(date: Date): string {
   return `${hours}:${minutes}`;
 }
 
+function PillButton({
+  label,
+  onPress,
+  filled,
+}: {
+  label: string;
+  onPress: () => void;
+  filled?: boolean;
+}) {
+  return (
+    <Pressable
+      onPress={onPress}
+      className={`w-full rounded-full px-6 py-3 items-center justify-center border ${
+        filled ? "bg-navy border-navy active:opacity-80" : "bg-white/40 border-navy active:bg-white/60"
+      }`}
+    >
+      <Text className={`font-script ${filled ? "text-white" : "text-navy"}`} style={{ fontSize: 18 }}>
+        {label}
+      </Text>
+    </Pressable>
+  );
+}
+
 // Pantalla intermedia entre el login y la app: sin rail lateral, solo el
 // saludo, la fecha/hora actual y los accesos principales. Vive fuera de
 // MainShell a propósito, así no carga los navigators de los módulos hasta
 // que el usuario elige "Abrir Agenda".
-export function WelcomeScreen({ onOpenAgenda }: WelcomeScreenProps) {
+export function WelcomeScreen({
+  onOpenAgenda,
+  onOpenResumen,
+  onOpenPaywall,
+  onOpenConfiguracion,
+}: WelcomeScreenProps) {
   const { data: profile } = useProfile();
+  const { t, tg } = useT();
   const [now, setNow] = useState(() => new Date());
-  const glow = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     const interval = setInterval(() => setNow(new Date()), 1000 * 30);
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    const loop = Animated.loop(
-      Animated.sequence([
-        Animated.timing(glow, { toValue: 1, duration: 1200, useNativeDriver: true }),
-        Animated.timing(glow, { toValue: 0, duration: 1200, useNativeDriver: true }),
-      ])
-    );
-    loop.start();
-    return () => loop.stop();
-  }, [glow]);
-
   const displayName = profile?.display_name?.trim();
 
   return (
-    <View className="flex-1 items-center justify-center bg-white dark:bg-surface-dark px-6">
-      <View className="w-full max-w-sm items-center">
-        <Text className="text-3xl font-bold text-center text-surface-dark dark:text-white">
-          {displayName ? `¡Hola, ${displayName}!` : "¡Bienvenido de nuevo!"}
-        </Text>
-        <Text className="mt-2 text-base text-center text-slate-500 dark:text-slate-300">
-          Qué bueno tenerte de vuelta en Stay Cool.
-        </Text>
+    <LinearGradient
+      colors={["#fef1ba", "#ecc6ff", "#ebfff7", "#d9ebff"]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      className="flex-1"
+    >
+      <View className="flex-1 items-center px-6 pt-24 pb-10">
+        <View className="w-full max-w-sm items-center">
+          <Text className="font-script text-navy text-center" style={{ fontSize: 56, lineHeight: 64 }}>
+            {displayName ? t("welcome.greetingWithName", { name: displayName }) : tg("welcome.greeting")}
+          </Text>
+          <Text className="mt-1 text-base text-center text-navy">{t("welcome.subtitle")}</Text>
 
-        <View className="mt-8 items-center">
-          <Text className="text-5xl font-bold text-brand-500">{formatTime(now)}</Text>
-          <Text className="mt-1 text-base capitalize text-slate-500 dark:text-slate-300">{formatDate(now)}</Text>
+          <View className="mt-8 items-center">
+            <Text className="text-5xl font-bold text-navy">{formatTime(now)}</Text>
+            <Text className="mt-1 text-base capitalize text-navy">{formatDate(now)}</Text>
+          </View>
         </View>
 
-        <View className="mt-12 w-full gap-3">
-          <Pressable
-            onPress={onOpenAgenda}
-            className="rounded-card px-5 py-3.5 items-center justify-center bg-brand-500 active:bg-brand-600"
-          >
-            <Text className="font-semibold text-base text-white">Abrir Agenda</Text>
-          </Pressable>
+        <View style={{ flex: 2 }} />
 
-          <Pressable className="rounded-card px-5 py-3.5 items-center justify-center bg-transparent border border-brand-500">
-            <Text className="font-semibold text-base text-brand-500">Abrir Resumen</Text>
-          </Pressable>
-
-          <Animated.View
-            style={{
-              shadowColor: "#f2c744",
-              shadowOpacity: glow.interpolate({ inputRange: [0, 1], outputRange: [0.25, 0.85] }),
-              shadowRadius: glow.interpolate({ inputRange: [0, 1], outputRange: [4, 14] }),
-              shadowOffset: { width: 0, height: 0 },
-              elevation: 6,
-            }}
-          >
-            <Pressable className="rounded-card px-5 py-3.5 items-center justify-center bg-amber-400 active:bg-amber-500">
-              <Text className="font-semibold text-base text-surface-dark">✨ Hazte Premium</Text>
-            </Pressable>
-          </Animated.View>
+        <View className="mt-8 w-full max-w-sm items-center gap-8">
+          <PillButton label={t("welcome.openAgenda")} onPress={onOpenAgenda} />
+          <PillButton label={t("welcome.viewResumen")} onPress={onOpenResumen} />
+          <PillButton label={t("welcome.goPremium")} onPress={onOpenPaywall} filled />
+          <PillButton label={t("welcome.settings")} onPress={onOpenConfiguracion} />
         </View>
+
+        <View style={{ flex: 1 }} />
       </View>
-    </View>
+    </LinearGradient>
   );
 }

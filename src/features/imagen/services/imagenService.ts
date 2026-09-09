@@ -5,7 +5,17 @@ import * as FileSystem from "expo-file-system/legacy";
 import { decode } from "base64-arraybuffer";
 import { format } from "date-fns";
 import { supabase } from "@/lib/supabase";
-import type { FaceLog, OutfitLog, ShoeLog } from "@/features/imagen/types";
+import type {
+  FaceLog,
+  FaceProduct,
+  FaceProductCategory,
+  OutfitClothingType,
+  OutfitLog,
+  OutfitWeather,
+  ShoeCondition,
+  ShoeLog,
+  ShoeType,
+} from "@/features/imagen/types";
 
 async function uploadPhoto(bucket: string, path: string, localImageUri: string) {
   // fetch(uri).blob() no es confiable en React Native (falla silenciosamente
@@ -38,7 +48,15 @@ export async function saveOutfitLog(
   userId: string,
   date: string,
   description: string,
-  localImageUri?: string
+  localImageUri?: string,
+  details?: {
+    weather?: OutfitWeather;
+    clothingType?: OutfitClothingType;
+    mainColors?: string;
+    usedAccessories?: boolean;
+    accessoriesDescription?: string;
+    notes?: string;
+  }
 ) {
   let photoPath: string | null = null;
   if (localImageUri) {
@@ -46,7 +64,20 @@ export async function saveOutfitLog(
     await uploadPhoto("outfits", photoPath, localImageUri);
   }
   const { error } = await supabase.from("outfit_logs").upsert(
-    { user_id: userId, outfit_date: date, description, photo_path: photoPath },
+    {
+      user_id: userId,
+      outfit_date: date,
+      description,
+      photo_path: photoPath,
+      weather: details?.weather ?? null,
+      clothing_type: details?.clothingType ?? null,
+      main_colors: details?.mainColors ?? null,
+      used_accessories: details?.usedAccessories ?? false,
+      accessories_description: details?.usedAccessories
+        ? details?.accessoriesDescription ?? null
+        : null,
+      notes: details?.notes ?? null,
+    },
     { onConflict: "user_id,outfit_date" }
   );
   if (error) throw error;
@@ -84,7 +115,15 @@ export async function saveShoeLog(
   userId: string,
   date: string,
   description: string,
-  localImageUri?: string
+  localImageUri?: string,
+  details?: {
+    weather?: OutfitWeather;
+    shoeType?: ShoeType;
+    color?: string;
+    brand?: string;
+    condition?: ShoeCondition;
+    notes?: string;
+  }
 ) {
   let photoPath: string | null = null;
   if (localImageUri) {
@@ -92,7 +131,18 @@ export async function saveShoeLog(
     await uploadPhoto("shoes", photoPath, localImageUri);
   }
   const { error } = await supabase.from("shoe_logs").upsert(
-    { user_id: userId, shoe_date: date, description, photo_path: photoPath },
+    {
+      user_id: userId,
+      shoe_date: date,
+      description,
+      photo_path: photoPath,
+      weather: details?.weather ?? null,
+      shoe_type: details?.shoeType ?? null,
+      color: details?.color ?? null,
+      brand: details?.brand ?? null,
+      condition: details?.condition ?? null,
+      notes: details?.notes ?? null,
+    },
     { onConflict: "user_id,shoe_date" }
   );
   if (error) throw error;
@@ -132,4 +182,46 @@ export async function fetchWeekFaceLogs(userId: string, fromDate: string): Promi
     .order("face_date", { ascending: false });
   if (error) throw error;
   return (data ?? []) as FaceLog[];
+}
+
+// -------- Productos de rostro (limpieza facial / maquillaje) --------
+
+export async function fetchFaceProducts(
+  userId: string,
+  category: FaceProductCategory
+): Promise<FaceProduct[]> {
+  const { data, error } = await supabase
+    .from("face_products")
+    .select("*")
+    .eq("user_id", userId)
+    .eq("category", category)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as FaceProduct[];
+}
+
+export async function createFaceProduct(
+  userId: string,
+  input: {
+    category: FaceProductCategory;
+    name: string;
+    brand?: string;
+    price?: number;
+    rating?: number;
+  }
+) {
+  const { error } = await supabase.from("face_products").insert({
+    user_id: userId,
+    category: input.category,
+    name: input.name,
+    brand: input.brand ?? null,
+    price: input.price ?? null,
+    rating: input.rating ?? null,
+  });
+  if (error) throw error;
+}
+
+export async function deleteFaceProduct(productId: string) {
+  const { error } = await supabase.from("face_products").delete().eq("id", productId);
+  if (error) throw error;
 }

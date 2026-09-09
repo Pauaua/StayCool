@@ -73,6 +73,16 @@ export async function fetchDetailedExpensesPage(
   };
 }
 
+export async function deleteQuickExpense(id: string) {
+  const { error } = await supabase.from("expense_quick_logs").delete().eq("id", id);
+  if (error) throw error;
+}
+
+export async function deleteDetailedExpense(id: string) {
+  const { error } = await supabase.from("expense_detailed_logs").delete().eq("id", id);
+  if (error) throw error;
+}
+
 export async function fetchQuickExpenseById(id: string): Promise<QuickExpense> {
   const { data, error } = await supabase.from("expense_quick_logs").select("*").eq("id", id).single();
   if (error) throw error;

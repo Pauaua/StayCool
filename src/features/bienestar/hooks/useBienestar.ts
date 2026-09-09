@@ -1,7 +1,9 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import {
+  fetchExerciseHistory,
   fetchMealsPage,
+  fetchMoodHistory,
   fetchWellnessStatsRange,
   logExercise,
   logMeal,
@@ -31,8 +33,15 @@ export function useLogMeal() {
   const userId = useUserId();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ description, category }: { description: string; category?: MealCategory }) =>
-      logMeal(userId as string, description, category),
+    mutationFn: ({
+      description,
+      category,
+      rating,
+    }: {
+      description: string;
+      category?: MealCategory;
+      rating?: number;
+    }) => logMeal(userId as string, description, category, rating),
     onSuccess: () => {
       analytics.track("comida_registrada");
       queryClient.invalidateQueries({ queryKey: ["bienestar", "meals", userId] });
@@ -64,20 +73,55 @@ export function useWellnessStats(fromDate: string, toDate: string) {
   });
 }
 
+export function useExerciseHistory() {
+  const userId = useUserId();
+  return useQuery({
+    queryKey: ["bienestar", "exercise-history", userId],
+    queryFn: () => fetchExerciseHistory(userId as string),
+    enabled: !!userId,
+  });
+}
+
 export function useLogExercise() {
   const userId = useUserId();
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ exerciseType, durationMinutes }: { exerciseType: string; durationMinutes?: number }) =>
-      logExercise(userId as string, exerciseType, durationMinutes),
-    onSuccess: () => analytics.track("ejercicio_registrado"),
+    mutationFn: ({
+      exerciseType,
+      durationMinutes,
+      sets,
+      weightKg,
+    }: {
+      exerciseType: string;
+      durationMinutes?: number;
+      sets?: number;
+      weightKg?: number;
+    }) => logExercise(userId as string, exerciseType, durationMinutes, sets, weightKg),
+    onSuccess: () => {
+      analytics.track("ejercicio_registrado");
+      queryClient.invalidateQueries({ queryKey: ["bienestar", "exercise-history", userId] });
+    },
+  });
+}
+
+export function useMoodHistory() {
+  const userId = useUserId();
+  return useQuery({
+    queryKey: ["bienestar", "mood-history", userId],
+    queryFn: () => fetchMoodHistory(userId as string),
+    enabled: !!userId,
   });
 }
 
 export function useUpsertMood() {
   const userId = useUserId();
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ mood, energyLevel }: { mood: Mood; energyLevel?: number }) =>
-      upsertMood(userId as string, mood, energyLevel),
-    onSuccess: () => analytics.track("animo_registrado"),
+    mutationFn: ({ mood, note, energyLevel }: { mood: Mood; note?: string; energyLevel?: number }) =>
+      upsertMood(userId as string, mood, note, energyLevel),
+    onSuccess: () => {
+      analytics.track("animo_registrado");
+      queryClient.invalidateQueries({ queryKey: ["bienestar", "mood-history", userId] });
+    },
   });
 }

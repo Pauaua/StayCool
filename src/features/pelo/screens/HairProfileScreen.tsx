@@ -4,10 +4,12 @@ import { Card } from "@/components/ui/Card";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
 import { useHairProfile, useSaveHairProfile } from "@/features/pelo/hooks/usePelo";
+import { useT } from "@/lib/i18n";
 
 export function HairProfileScreen() {
   const profile = useHairProfile();
   const save = useSaveHairProfile();
+  const { t } = useT();
 
   const [characteristics, setCharacteristics] = useState("");
   const [usesProducts, setUsesProducts] = useState(false);
@@ -36,34 +38,34 @@ export function HairProfileScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50 dark:bg-surface-dark px-5 pt-4">
-      <ScrollView>
+      <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
         <Text className="text-2xl font-bold text-surface-dark dark:text-white mb-4">
-          Perfil de cabello
+          {t("pelo.profileTitle")}
         </Text>
 
         <Card className="mb-4">
           <TextField
-            label="Características (tipo, textura, largo...)"
+            label={t("pelo.characteristics")}
             value={characteristics}
             onChangeText={setCharacteristics}
             multiline
           />
 
           <View className="flex-row items-center justify-between mb-4">
-            <Text className="text-surface-dark dark:text-white">¿Usás productos para el cabello?</Text>
+            <Text className="text-surface-dark dark:text-white">{t("pelo.usesProducts")}</Text>
             <Switch value={usesProducts} onValueChange={setUsesProducts} />
           </View>
           {usesProducts ? (
-            <TextField label="¿Cuáles?" value={productsUsed} onChangeText={setProductsUsed} />
+            <TextField label={t("pelo.whichProducts")} value={productsUsed} onChangeText={setProductsUsed} />
           ) : null}
 
           <View className="flex-row items-center justify-between mb-4">
-            <Text className="text-surface-dark dark:text-white">¿Tenés el pelo teñido?</Text>
+            <Text className="text-surface-dark dark:text-white">{t("pelo.isDyed")}</Text>
             <Switch value={isDyed} onValueChange={setIsDyed} />
           </View>
-          {isDyed ? <TextField label="Color" value={dyeColor} onChangeText={setDyeColor} /> : null}
+          {isDyed ? <TextField label={t("pelo.color")} value={dyeColor} onChangeText={setDyeColor} /> : null}
 
-          <Button label="Guardar" onPress={handleSave} loading={save.isPending} />
+          <Button label={t("pelo.save")} onPress={handleSave} loading={save.isPending} />
         </Card>
       </ScrollView>
     </SafeAreaView>

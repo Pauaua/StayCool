@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Alert, SafeAreaView, Text } from "react-native";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
+import { GradientBackground } from "@/components/ui/GradientBackground";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { AuthStackParamList } from "@/navigation/types";
@@ -31,21 +32,23 @@ export function ForgotPasswordScreen({ navigation }: Props) {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-white dark:bg-surface-dark px-6 justify-center">
-      <Text className="text-3xl font-bold text-surface-dark dark:text-white mb-3">
-        Recuperar contraseña
-      </Text>
-      <Text className="text-gray-500 mb-6">
-        Ingresá tu email y te mandamos un link para elegir una contraseña nueva.
-      </Text>
-      <TextField
-        label="Email"
-        autoCapitalize="none"
-        keyboardType="email-address"
-        value={email}
-        onChangeText={setEmail}
-      />
-      <Button label="Enviar link" onPress={handleSend} loading={loading} />
-    </SafeAreaView>
+    <GradientBackground>
+      <SafeAreaView className="flex-1 px-6 justify-center">
+        <Text className="font-script text-navy mb-3" style={{ fontSize: 36 }}>
+          Recuperar contraseña 🔑
+        </Text>
+        <Text className="text-navy/70 mb-6">
+          Ingresá tu email y te mandamos un link para elegir una contraseña nueva.
+        </Text>
+        <TextField
+          label="Email"
+          autoCapitalize="none"
+          keyboardType="email-address"
+          value={email}
+          onChangeText={setEmail}
+        />
+        <Button label="Enviar link" onPress={handleSend} loading={loading} />
+      </SafeAreaView>
+    </GradientBackground>
   );
 }

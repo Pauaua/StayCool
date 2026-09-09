@@ -1,3 +1,5 @@
+import type { SocialActivity } from "@/features/social/types";
+
 export type AuthStackParamList = {
   Onboarding: undefined;
   SignIn: undefined;
@@ -10,6 +12,8 @@ export type HomeStackParamList = {
   Settings: undefined;
   AvatarShop: undefined;
   Resumen: undefined;
+  Paywall: undefined;
+  Configuracion: undefined;
 };
 
 export type BienestarStackParamList = {
@@ -47,8 +51,10 @@ export type GastosStackParamList = {
 export type SocialStackParamList = {
   SocialCalendario: undefined;
   // initialDate en formato YYYY-MM-DD: precarga el formulario con el día
-  // que el usuario tocó en el calendario.
-  SocialRegistro: { initialDate?: string } | undefined;
+  // que el usuario tocó en el calendario. editActivity, si viene, pone el
+  // formulario en modo edición sobre esa actividad existente (ya la tenemos
+  // cargada en memoria desde el calendario, así que evitamos un fetch extra).
+  SocialRegistro: { initialDate?: string; editActivity?: SocialActivity } | undefined;
 };
 
 export type GustosStackParamList = {
@@ -61,4 +67,11 @@ export type NotasStackParamList = {
   NotasHome: undefined;
   NotaRapida: undefined;
   NotaDetallada: undefined;
+};
+
+export type EstadisticasStackParamList = {
+  EstadisticasHome: undefined;
+  EstadisticasHoy: undefined;
+  EstadisticasSemanal: undefined;
+  EstadisticasAnual: undefined;
 };
