@@ -1,27 +1,28 @@
 import React, { forwardRef } from "react";
 import { Dimensions, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { useT, type TranslationKey } from "@/lib/i18n";
 import type { ResumenData, ResumenPeriod } from "@/features/resumen/types";
 
 const CARD_WIDTH = Math.min(Dimensions.get("window").width * 0.86, 340);
 const CARD_HEIGHT = CARD_WIDTH * (1920 / 1080);
 
-const PERIOD_LABEL: Record<ResumenPeriod, string> = {
-  weekly: "Semanal",
-  monthly: "Mensual",
-  yearly: "Anual",
+const PERIOD_UNIT_KEY: Record<ResumenPeriod, TranslationKey> = {
+  weekly: "resumen.period.weeklyUnit",
+  monthly: "resumen.period.monthlyUnit",
+  yearly: "resumen.period.yearlyUnit",
 };
 
+// Misma paleta que el resto de la app: amarillo → morado → verde → celeste,
+// con navy para el texto.
 const COLORS = {
-  purple300: "#e485ff",
-  purple900: "#3a0a52",
-  ink950: "#121016",
-  teal: "#14e0c4",
-  coral: "#ff6b6b",
-  amber: "#ffb454",
-  paper: "#fdf2ff",
-  inkMuted: "#b7a6c4",
-  hairline: "rgba(255,255,255,0.09)",
+  navy: "#002054",
+  navyMuted: "rgba(0,32,84,0.65)",
+  yellow: "#fef1ba",
+  purple: "#ecc6ff",
+  green: "#ebfff7",
+  blue: "#d9ebff",
+  hairline: "rgba(0,32,84,0.12)",
 };
 
 function formatSleep(minutes: number) {
@@ -31,41 +32,16 @@ function formatSleep(minutes: number) {
   return `${hours}.${Math.round((mins / 60) * 10)}h`;
 }
 
-function formatMoney(amount: number) {
-  if (amount >= 1000) return `$${Math.round(amount / 1000)}k`;
-  return `$${Math.round(amount)}`;
-}
-
-function Row({
-  accent,
-  name,
-  detail,
-  value,
-  last,
-}: {
-  accent: string;
-  name: string;
-  detail: string;
-  value: string;
-  last?: boolean;
-}) {
+function Line({ text }: { text: string }) {
   return (
     <View
       style={{
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 9,
-        paddingVertical: CARD_HEIGHT * 0.017,
-        borderBottomWidth: last ? 0 : 1,
+        paddingVertical: CARD_HEIGHT * 0.015,
+        borderBottomWidth: 1,
         borderBottomColor: COLORS.hairline,
       }}
     >
-      <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: accent }} />
-      <View style={{ flex: 1 }}>
-        <Text style={{ fontSize: 10, fontWeight: "600", color: COLORS.inkMuted }}>{name}</Text>
-        <Text style={{ fontSize: 8.5, color: COLORS.inkMuted, opacity: 0.75, marginTop: 2 }}>{detail}</Text>
-      </View>
-      <Text style={{ fontSize: 14, fontWeight: "800", color: COLORS.paper }}>{value}</Text>
+      <Text style={{ fontSize: 12.5, lineHeight: 17, color: COLORS.navy, fontWeight: "600" }}>{text}</Text>
     </View>
   );
 }
@@ -75,13 +51,12 @@ interface ResumenCardProps {
   period: ResumenPeriod;
 }
 
-// Tarjeta compartible, capturada con react-native-view-shot vía la ref que
-// se le pasa a este componente. Proporción 1080x1920 (historia de
-// Instagram); el diseño replica el boceto aprobado (lista editorial de
-// módulos, hero con el stat más presumible, footer de marca).
+// Tarjeta compartible tipo "wrapped" (Spotify Wrapped, pero con los datos de
+// la usuaria), capturada con react-native-view-shot vía la ref que se le
+// pasa a este componente. Proporción 1080x1920 (historia de Instagram).
 export const ResumenCard = forwardRef<View, ResumenCardProps>(({ data, period }, ref) => {
-  const socialTypesCount = Object.keys(data.social.typeBreakdown).length;
-  const topGastoEntry = Object.entries(data.gastos.breakdown).sort((a, b) => b[1] - a[1])[0];
+  const { t } = useT();
+  const periodWord = t(PERIOD_UNIT_KEY[period]);
 
   return (
     <View
@@ -95,135 +70,88 @@ export const ResumenCard = forwardRef<View, ResumenCardProps>(({ data, period },
       }}
     >
       <LinearGradient
-        colors={[COLORS.purple900, COLORS.ink950, "#0a0810"]}
-        locations={[0, 0.46, 1]}
+        colors={[COLORS.yellow, COLORS.purple, COLORS.green, COLORS.blue]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
         style={{ flex: 1, padding: CARD_WIDTH * 0.085 }}
       >
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
-            <View
-              style={{
-                width: 14,
-                height: 14,
-                borderRadius: 5,
-                backgroundColor: COLORS.purple300,
-              }}
-            />
-            <Text style={{ fontSize: 9.5, fontWeight: "700", color: COLORS.paper }}>
-              Agenda Cool<Text style={{ color: COLORS.purple300, fontWeight: "800" }}>+</Text>
-            </Text>
-          </View>
+          <Text style={{ fontFamily: "WindSong_400Regular", fontSize: 16, color: COLORS.navy }}>
+            StayCool<Text style={{ color: COLORS.navy }}>+</Text>
+          </Text>
           <View
             style={{
               borderWidth: 1,
-              borderColor: "rgba(255,255,255,0.22)",
+              borderColor: COLORS.navy,
               borderRadius: 999,
               paddingHorizontal: 9,
               paddingVertical: 4,
             }}
           >
-            <Text style={{ fontSize: 8, fontWeight: "600", color: COLORS.inkMuted, letterSpacing: 1 }}>
-              {PERIOD_LABEL[period].toUpperCase()}
+            <Text style={{ fontSize: 8, fontWeight: "700", color: COLORS.navy, letterSpacing: 1 }}>
+              {t("resumenCard.wrappedLabel", { period: periodWord.toUpperCase() })}
             </Text>
           </View>
         </View>
 
-        <View style={{ marginTop: CARD_HEIGHT * 0.045 }}>
-          <Text style={{ fontSize: 8.5, fontWeight: "700", color: COLORS.purple300, letterSpacing: 1.5 }}>
-            MI RESUMEN
+        <View style={{ marginTop: CARD_HEIGHT * 0.05 }}>
+          <Text style={{ fontSize: 9, fontWeight: "700", color: COLORS.navyMuted, letterSpacing: 1.5 }}>
+            {data.displayName
+              ? t("resumenCard.eyebrowWithName", { period: periodWord.toUpperCase(), name: data.displayName.toUpperCase() })
+              : t("resumenCard.eyebrowNoName", { period: periodWord.toUpperCase() })}
           </Text>
           <Text
             style={{
-              fontSize: 19,
-              fontWeight: "700",
-              color: COLORS.paper,
-              lineHeight: 24,
+              fontFamily: "WindSong_400Regular",
+              fontSize: 30,
+              color: COLORS.navy,
+              lineHeight: 34,
               marginTop: 6,
             }}
           >
-            {data.higiene.completionPercent >= 70 ? "Un período con " : "Vas construyendo tu "}
-            <Text style={{ fontWeight: "800", color: COLORS.teal }}>
-              {data.higiene.completionPercent >= 70 ? "ritmo propio" : "propio ritmo"}
-            </Text>
+            {t("resumenCard.heading", { period: periodWord })}
           </Text>
         </View>
 
-        <View style={{ marginTop: CARD_HEIGHT * 0.055, flexDirection: "row", alignItems: "flex-end", gap: 10 }}>
-          <View>
-            <Text style={{ fontSize: 44, fontWeight: "800", color: COLORS.paper, letterSpacing: -1 }}>
-              {data.higiene.completionPercent}%
-            </Text>
-            <Text style={{ fontSize: 9.5, color: COLORS.inkMuted, marginTop: 6 }}>
-              cumplimiento de higiene
-            </Text>
-          </View>
-          {data.comparison.hygieneCompletionPercentDelta !== 0 ? (
-            <View
-              style={{
-                backgroundColor: data.comparison.hygieneCompletionPercentDelta > 0
-                  ? "rgba(20,224,196,0.16)"
-                  : "rgba(255,107,107,0.16)",
-                borderRadius: 999,
-                paddingHorizontal: 8,
-                paddingVertical: 3,
-                marginBottom: 8,
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 10,
-                  fontWeight: "800",
-                  color: data.comparison.hygieneCompletionPercentDelta > 0 ? COLORS.teal : COLORS.coral,
-                }}
-              >
-                {data.comparison.hygieneCompletionPercentDelta > 0 ? "▲" : "▼"}{" "}
-                {Math.abs(data.comparison.hygieneCompletionPercentDelta)} pts
-              </Text>
-            </View>
-          ) : null}
-        </View>
-
         <View style={{ marginTop: CARD_HEIGHT * 0.06, flex: 1 }}>
-          <Row
-            accent={COLORS.teal}
-            name="Bienestar"
-            detail={`${data.bienestar.exerciseCount} sesiones de ejercicio`}
-            value={`${formatSleep(data.bienestar.avgSleepMinutes)} sueño`}
+          <Line
+            text={t("resumenCard.line.bienestar", {
+              n: String(data.bienestar.exerciseCount),
+              word: t(data.bienestar.exerciseCount === 1 ? "estadisticas.word.dia" : "estadisticas.word.dias"),
+              sleep: formatSleep(data.bienestar.avgSleepMinutes),
+            })}
           />
-          <Row
-            accent={COLORS.purple300}
-            name="Pelo"
-            detail={`${data.pelo.distinctHairstylesCount} peinados distintos`}
-            value={`${data.pelo.washCount} lavados`}
+          <Line
+            text={t("resumenCard.line.cara", {
+              n: String(data.cara.makeupDays),
+              word: t(data.cara.makeupDays === 1 ? "estadisticas.word.vez" : "estadisticas.word.veces"),
+            })}
           />
-          <Row
-            accent={COLORS.coral}
-            name="Cara"
-            detail="días con maquillaje"
-            value={`${data.cara.makeupDays} días`}
+          <Line text={t("resumenCard.line.higiene", { percent: String(data.higiene.completionPercent) })} />
+          <Line
+            text={t("resumenCard.line.pelo", {
+              n: String(data.pelo.washCount),
+              word: t(data.pelo.washCount === 1 ? "estadisticas.word.vez" : "estadisticas.word.veces"),
+              styles: String(data.pelo.distinctHairstylesCount),
+              styleWord: t(
+                data.pelo.distinctHairstylesCount === 1 ? "estadisticas.word.peinado" : "estadisticas.word.peinados"
+              ),
+            })}
           />
-          <Row
-            accent={COLORS.purple300}
-            name="Imagen"
-            detail="outfits registrados"
-            value={`${data.imagen.outfitsCount} outfits`}
+          <Line
+            text={t("resumenCard.line.imagen", {
+              n: String(data.imagen.outfitsCount),
+              word: t(data.imagen.outfitsCount === 1 ? "estadisticas.word.outfit" : "estadisticas.word.outfits"),
+            })}
           />
-          <Row
-            accent={COLORS.teal}
-            name="Social"
-            detail={
-              data.social.avgFeelingLabel
-                ? `te sentiste "${data.social.avgFeelingLabel}" en promedio`
-                : `${socialTypesCount} tipos de salida`
-            }
-            value={`${data.social.activitiesCount} salidas`}
-          />
-          <Row
-            accent={COLORS.amber}
-            name="Gastos"
-            detail={topGastoEntry ? `mayor gasto: ${topGastoEntry[0]}` : "sin registros"}
-            value={`${formatMoney(data.gastos.total)} total`}
-            last
+          <Line
+            text={t("resumenCard.line.social", {
+              n: String(data.social.activitiesCount),
+              word: t(data.social.activitiesCount === 1 ? "estadisticas.word.vez" : "estadisticas.word.veces"),
+              feeling: data.social.avgFeelingLabel
+                ? t("resumenCard.socialFeeling", { feeling: data.social.avgFeelingLabel })
+                : "",
+            })}
           />
         </View>
 
@@ -236,14 +164,15 @@ export const ResumenCard = forwardRef<View, ResumenCardProps>(({ data, period },
             justifyContent: "space-between",
           }}
         >
-          <Text style={{ fontSize: 8, color: COLORS.inkMuted, fontWeight: "600" }}>
-            Generado en <Text style={{ color: COLORS.paper }}>Agenda Cool+</Text>
+          <Text style={{ fontSize: 8, color: COLORS.navyMuted, fontWeight: "600" }}>
+            {t("resumenCard.generatedInPrefix")}{" "}
+            <Text style={{ color: COLORS.navy, fontWeight: "800" }}>StayCoolPlus</Text>
           </Text>
           <View style={{ flexDirection: "row", gap: 4 }}>
             {[0, 1, 2].map((i) => (
               <View
                 key={i}
-                style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: COLORS.purple300, opacity: 0.5 }}
+                style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: COLORS.navy, opacity: 0.4 }}
               />
             ))}
           </View>

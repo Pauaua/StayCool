@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Alert, SafeAreaView, Text } from "react-native";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
+import { GradientBackground } from "@/components/ui/GradientBackground";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 
 // Se muestra en vez de la app normal mientras `isPasswordRecovery` es true
@@ -33,18 +34,20 @@ export function ResetPasswordScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-white dark:bg-surface-dark px-6 justify-center">
-      <Text className="text-3xl font-bold text-surface-dark dark:text-white mb-3">
-        Elegí una contraseña nueva
-      </Text>
-      <TextField label="Contraseña nueva" secureTextEntry value={password} onChangeText={setPassword} />
-      <TextField
-        label="Repetila"
-        secureTextEntry
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-      />
-      <Button label="Guardar" onPress={handleSave} loading={loading} />
-    </SafeAreaView>
+    <GradientBackground>
+      <SafeAreaView className="flex-1 px-6 justify-center">
+        <Text className="font-script text-navy mb-3" style={{ fontSize: 36 }}>
+          Elegí una contraseña nueva
+        </Text>
+        <TextField label="Contraseña nueva" secureTextEntry value={password} onChangeText={setPassword} />
+        <TextField
+          label="Repetila"
+          secureTextEntry
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+        />
+        <Button label="Guardar" onPress={handleSave} loading={loading} />
+      </SafeAreaView>
+    </GradientBackground>
   );
 }

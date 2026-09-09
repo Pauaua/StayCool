@@ -4,11 +4,16 @@ export interface HairWashLog {
   washed_at: string;
 }
 
+export type HairstyleType = "coleta" | "suelto" | "trenzas" | "otro";
+
 export interface HairstyleLog {
   id: string;
   style_date: string;
   hairstyle: string;
   photo_path: string | null;
+  style_type: HairstyleType | null;
+  is_special_occasion: boolean;
+  occasion_details: string | null;
 }
 
 export interface HairProfile {

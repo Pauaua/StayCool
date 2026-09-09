@@ -1,14 +1,23 @@
 import * as FileSystem from "expo-file-system/legacy";
 import { decode } from "base64-arraybuffer";
 import { supabase } from "@/lib/supabase";
-import type { HairProfile, HairstyleLog, HairWashLog } from "@/features/pelo/types";
+import type { HairProfile, HairstyleLog, HairstyleType, HairWashLog } from "@/features/pelo/types";
 
 const PAGE_SIZE = 20;
 
 // Sube la foto al bucket privado 'hairstyles' bajo <user_id>/<timestamp>.jpg
 // (mismo patrón que outfit_logs/bucket 'outfits' en Imagen) y guarda el
 // registro con el path — la URL firmada se resuelve al mostrarla.
-export async function logHairstyle(userId: string, hairstyle: string, localImageUri?: string) {
+export async function logHairstyle(
+  userId: string,
+  hairstyle: string,
+  localImageUri?: string,
+  details?: {
+    styleType?: HairstyleType;
+    isSpecialOccasion?: boolean;
+    occasionDetails?: string;
+  }
+) {
   let photoPath: string | null = null;
 
   if (localImageUri) {
@@ -22,9 +31,14 @@ export async function logHairstyle(userId: string, hairstyle: string, localImage
     if (uploadError) throw uploadError;
   }
 
-  const { error } = await supabase
-    .from("hairstyle_logs")
-    .insert({ user_id: userId, hairstyle, photo_path: photoPath });
+  const { error } = await supabase.from("hairstyle_logs").insert({
+    user_id: userId,
+    hairstyle,
+    photo_path: photoPath,
+    style_type: details?.styleType ?? null,
+    is_special_occasion: details?.isSpecialOccasion ?? false,
+    occasion_details: details?.isSpecialOccasion ? details?.occasionDetails ?? null : null,
+  });
   if (error) throw error;
 }
 

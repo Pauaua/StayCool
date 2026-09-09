@@ -4,6 +4,7 @@ import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
 import { FormScreen } from "@/components/ui/FormScreen";
 import { useCreateDetailedNote } from "@/features/notas/hooks/useNotas";
+import { useT } from "@/lib/i18n";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { NotasStackParamList } from "@/navigation/types";
 
@@ -16,6 +17,7 @@ export function NotaDetalladaScreen({ navigation }: Props) {
   const [feelings, setFeelings] = useState("");
   const [thoughts, setThoughts] = useState("");
   const create = useCreateDetailedNote();
+  const { t } = useT();
 
   async function handleSave() {
     if (!name.trim() || !idea.trim()) return;
@@ -31,13 +33,13 @@ export function NotaDetalladaScreen({ navigation }: Props) {
 
   return (
     <FormScreen>
-      <Text className="text-2xl font-bold text-surface-dark dark:text-white mb-4">Idea completa</Text>
-      <TextField label="Nombre" value={name} onChangeText={setName} />
-      <TextField label="¿Dónde estabas?" value={location} onChangeText={setLocation} />
-      <TextField label="La idea" value={idea} onChangeText={setIdea} multiline />
-      <TextField label="Sentires" value={feelings} onChangeText={setFeelings} multiline />
-      <TextField label="Pensamientos" value={thoughts} onChangeText={setThoughts} multiline />
-      <Button label="Guardar" onPress={handleSave} loading={create.isPending} />
+      <Text className="text-2xl font-bold text-surface-dark dark:text-white mb-4">{t("notas.fullTitle")}</Text>
+      <TextField label={t("notas.name")} value={name} onChangeText={setName} />
+      <TextField label={t("notas.whereWere")} value={location} onChangeText={setLocation} />
+      <TextField label={t("notas.theIdea")} value={idea} onChangeText={setIdea} multiline />
+      <TextField label={t("notas.feelings")} value={feelings} onChangeText={setFeelings} multiline />
+      <TextField label={t("notas.thoughts")} value={thoughts} onChangeText={setThoughts} multiline />
+      <Button label={t("notas.save")} onPress={handleSave} loading={create.isPending} />
     </FormScreen>
   );
 }

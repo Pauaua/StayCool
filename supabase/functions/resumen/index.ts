@@ -1,5 +1,5 @@
 // Edge Function: resumen
-// Agrega datos de los 7 módulos para "Mi Resumen" (Agenda Cool+), calculado
+// Agrega datos de los 7 módulos para "Mi Resumen" (StayCoolPlus), calculado
 // del lado del servidor para que el cliente no tenga que hacer 10 queries
 // ni duplicar lógica de agregación entre la vista in-app, la tarjeta
 // compartible y el PDF — los tres consumen exactamente esta misma respuesta.
@@ -46,9 +46,12 @@ Deno.serve(async (req) => {
       .eq("id", user.id)
       .single();
     if (profileError) throw profileError;
-    if (profile.premium_tier === "free") {
-      return json({ error: "Mi Resumen requiere el plan Básico o Full." }, 403);
-    }
+    // TODO: reactivar este gate junto con <PremiumGate minTier="basico"> en
+    // ResumenScreen.tsx cuando el paywall esté terminado — por ahora queda
+    // abierto para poder previsualizar el diseño sin comprar.
+    // if (profile.premium_tier === "free") {
+    //   return json({ error: "Mi Resumen requiere el plan Básico o Full." }, 403);
+    // }
 
     const { from, to } = await req.json();
     if (!from || !to) {

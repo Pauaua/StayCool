@@ -3,7 +3,7 @@ import Purchases, { LOG_LEVEL } from "react-native-purchases";
 import { env } from "@/config/env";
 
 // Identificadores de los entitlements configurados en el dashboard de
-// RevenueCat para "Agenda Cool+". Deben coincidir exactamente con los
+// RevenueCat para "StayCoolPlus". Deben coincidir exactamente con los
 // nombres creados ahí (ver README para el paso a paso). "full" es jerárquico
 // sobre "basico": el producto Full debe otorgar AMBOS entitlements en su
 // configuración de RevenueCat, no solo "full".

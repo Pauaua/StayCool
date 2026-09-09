@@ -1,12 +1,7 @@
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
+import { translate, type Language } from "@/lib/i18n";
 import type { ResumenData, ResumenPeriod } from "@/features/resumen/types";
-
-const PERIOD_LABEL: Record<ResumenPeriod, string> = {
-  weekly: "Semanal",
-  monthly: "Mensual",
-  yearly: "Anual",
-};
 
 function formatSleep(minutes: number) {
   if (minutes <= 0) return "—";
@@ -15,19 +10,28 @@ function formatSleep(minutes: number) {
   return `${hours}h ${mins}m`;
 }
 
-function formatMoney(amount: number) {
-  return `$${amount.toLocaleString("es-AR", { maximumFractionDigits: 0 })}`;
+function formatMoney(amount: number, lang: Language) {
+  const locale = lang === "en" ? "en-US" : "es-AR";
+  return `$${amount.toLocaleString(locale, { maximumFractionDigits: 0 })}`;
 }
+
+const PERIOD_KEY: Record<ResumenPeriod, "resumen.period.weekly" | "resumen.period.monthly" | "resumen.period.yearly"> = {
+  weekly: "resumen.period.weekly",
+  monthly: "resumen.period.monthly",
+  yearly: "resumen.period.yearly",
+};
 
 // Mismo dataset que consumen el dashboard y la tarjeta compartible — un solo
 // template HTML, renderizado a PDF con expo-print, para que las tres vistas
 // nunca queden desincronizadas entre sí.
-function buildResumenHtml(data: ResumenData, period: ResumenPeriod): string {
+function buildResumenHtml(data: ResumenData, period: ResumenPeriod, lang: Language): string {
+  const t = (key: Parameters<typeof translate>[1], vars?: Record<string, string>) => translate(lang, key, vars);
+
   const socialTypes = Object.entries(data.social.typeBreakdown)
     .map(([type, count]) => `${type} (${count})`)
     .join(", ") || "—";
   const gastosBreakdown = Object.entries(data.gastos.breakdown)
-    .map(([kind, amount]) => `<tr><td>${kind}</td><td style="text-align:right">${formatMoney(amount)}</td></tr>`)
+    .map(([kind, amount]) => `<tr><td>${kind}</td><td style="text-align:right">${formatMoney(amount, lang)}</td></tr>`)
     .join("");
 
   return `
@@ -47,8 +51,8 @@ function buildResumenHtml(data: ResumenData, period: ResumenPeriod): string {
       </style>
     </head>
     <body>
-      <h1>Mi Resumen — Agenda Cool+</h1>
-      <div class="period">${PERIOD_LABEL[period]} · ${data.from} a ${data.to}</div>
+      <h1>${t("pdf.headerTitle")}</h1>
+      <div class="period">${t(PERIOD_KEY[period])} · ${data.from} a ${data.to}</div>
 
       <p class="hero">${data.higiene.completionPercent}%${
     data.comparison.hygieneCompletionPercentDelta !== 0
@@ -59,33 +63,48 @@ function buildResumenHtml(data: ResumenData, period: ResumenPeriod): string {
         )} pts</span>`
       : ""
   }</p>
-      <p class="hero-label">cumplimiento del checklist de Higiene vs. período anterior</p>
+      <p class="hero-label">${t("pdf.hygieneCompliance")}</p>
 
       <table>
-        <tr><td class="module">Bienestar</td><td style="text-align:right">${formatSleep(
-          data.bienestar.avgSleepMinutes
-        )} sueño promedio · ${data.bienestar.mealsCount} comidas · ${data.bienestar.exerciseCount} sesiones de ejercicio</td></tr>
-        <tr><td class="module">Higiene</td><td style="text-align:right">${data.higiene.completionPercent}% cumplido</td></tr>
-        <tr><td class="module">Pelo</td><td style="text-align:right">${data.pelo.washCount} lavados · ${data.pelo.distinctHairstylesCount} peinados distintos</td></tr>
-        <tr><td class="module">Cara</td><td style="text-align:right">${data.cara.makeupDays} días maquillada</td></tr>
-        <tr><td class="module">Imagen</td><td style="text-align:right">${data.imagen.outfitsCount} outfits registrados</td></tr>
-        <tr><td class="module">Social</td><td style="text-align:right">${data.social.activitiesCount} salidas (${socialTypes})${
-    data.social.avgFeelingLabel ? ` · sensación promedio: ${data.social.avgFeelingLabel}` : ""
-  }</td></tr>
+        <tr><td class="module">${t("pdf.wellness")}</td><td style="text-align:right">${t("pdf.wellnessValue", {
+    sleep: formatSleep(data.bienestar.avgSleepMinutes),
+    meals: String(data.bienestar.mealsCount),
+    exercise: String(data.bienestar.exerciseCount),
+  })}</td></tr>
+        <tr><td class="module">${t("pdf.hygiene")}</td><td style="text-align:right">${t("pdf.hygieneValue", {
+    percent: String(data.higiene.completionPercent),
+  })}</td></tr>
+        <tr><td class="module">${t("pdf.hair")}</td><td style="text-align:right">${t("pdf.hairValue", {
+    washes: String(data.pelo.washCount),
+    styles: String(data.pelo.distinctHairstylesCount),
+  })}</td></tr>
+        <tr><td class="module">${t("pdf.face")}</td><td style="text-align:right">${t("pdf.faceValue", {
+    days: String(data.cara.makeupDays),
+  })}</td></tr>
+        <tr><td class="module">${t("pdf.image")}</td><td style="text-align:right">${t("pdf.imageValue", {
+    outfits: String(data.imagen.outfitsCount),
+  })}</td></tr>
+        <tr><td class="module">${t("pdf.social")}</td><td style="text-align:right">${t("pdf.socialValue", {
+    count: String(data.social.activitiesCount),
+    types: socialTypes,
+  })}${data.social.avgFeelingLabel ? t("pdf.socialAvgFeeling", { feeling: data.social.avgFeelingLabel }) : ""}</td></tr>
       </table>
 
       <table>
-        <tr><td class="module">Gastos — total</td><td style="text-align:right">${formatMoney(data.gastos.total)}</td></tr>
+        <tr><td class="module">${t("pdf.expensesTotal")}</td><td style="text-align:right">${formatMoney(
+    data.gastos.total,
+    lang
+  )}</td></tr>
         ${gastosBreakdown}
       </table>
 
-      <footer>Generado en Agenda Cool+</footer>
+      <footer>${t("pdf.generatedIn")}</footer>
     </body>
   </html>`;
 }
 
-export async function generateAndSharePdf(data: ResumenData, period: ResumenPeriod) {
-  const { uri } = await Print.printToFileAsync({ html: buildResumenHtml(data, period) });
+export async function generateAndSharePdf(data: ResumenData, period: ResumenPeriod, lang: Language) {
+  const { uri } = await Print.printToFileAsync({ html: buildResumenHtml(data, period, lang) });
   if (await Sharing.isAvailableAsync()) {
     await Sharing.shareAsync(uri, { mimeType: "application/pdf", UTI: "com.adobe.pdf" });
   }

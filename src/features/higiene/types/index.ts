@@ -28,3 +28,10 @@ export interface HygieneDaySummary {
   totalItems: number;
   completedItems: number;
 }
+
+export interface HygieneLogDetail {
+  id: string;
+  hygiene_item_id: string;
+  completed: boolean;
+  hygiene_items: { label: string; icon: string | null } | null;
+}

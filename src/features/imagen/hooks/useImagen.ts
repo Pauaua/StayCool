@@ -2,6 +2,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { startOfWeek, endOfWeek, format } from "date-fns";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import {
+  createFaceProduct,
+  deleteFaceProduct,
+  fetchFaceProducts,
   fetchOutfitById,
   fetchShoeById,
   fetchWeekFaceLogs,
@@ -14,6 +17,13 @@ import {
   upsertFaceLog,
 } from "@/features/imagen/services/imagenService";
 import { analytics } from "@/analytics/posthog";
+import type {
+  FaceProductCategory,
+  OutfitClothingType,
+  OutfitWeather,
+  ShoeCondition,
+  ShoeType,
+} from "@/features/imagen/types";
 
 function useUserId() {
   const { session } = useAuth();
@@ -57,8 +67,35 @@ export function useSaveOutfit() {
   const userId = useUserId();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ date, description, localImageUri }: { date: string; description: string; localImageUri?: string }) =>
-      saveOutfitLog(userId as string, date, description, localImageUri),
+    mutationFn: ({
+      date,
+      description,
+      localImageUri,
+      weather,
+      clothingType,
+      mainColors,
+      usedAccessories,
+      accessoriesDescription,
+      notes,
+    }: {
+      date: string;
+      description: string;
+      localImageUri?: string;
+      weather?: OutfitWeather;
+      clothingType?: OutfitClothingType;
+      mainColors?: string;
+      usedAccessories?: boolean;
+      accessoriesDescription?: string;
+      notes?: string;
+    }) =>
+      saveOutfitLog(userId as string, date, description, localImageUri, {
+        weather,
+        clothingType,
+        mainColors,
+        usedAccessories,
+        accessoriesDescription,
+        notes,
+      }),
     onSuccess: () => {
       analytics.track("outfit_registrado");
       queryClient.invalidateQueries({ queryKey: ["imagen", "outfits", userId] });
@@ -95,8 +132,35 @@ export function useSaveShoe() {
   const userId = useUserId();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ date, description, localImageUri }: { date: string; description: string; localImageUri?: string }) =>
-      saveShoeLog(userId as string, date, description, localImageUri),
+    mutationFn: ({
+      date,
+      description,
+      localImageUri,
+      weather,
+      shoeType,
+      color,
+      brand,
+      condition,
+      notes,
+    }: {
+      date: string;
+      description: string;
+      localImageUri?: string;
+      weather?: OutfitWeather;
+      shoeType?: ShoeType;
+      color?: string;
+      brand?: string;
+      condition?: ShoeCondition;
+      notes?: string;
+    }) =>
+      saveShoeLog(userId as string, date, description, localImageUri, {
+        weather,
+        shoeType,
+        color,
+        brand,
+        condition,
+        notes,
+      }),
     onSuccess: () => {
       analytics.track("zapatos_registrados");
       queryClient.invalidateQueries({ queryKey: ["imagen", "shoes", userId] });
@@ -124,6 +188,48 @@ export function useUpsertFaceLog() {
     onSuccess: () => {
       analytics.track("cara_registrada");
       queryClient.invalidateQueries({ queryKey: ["imagen", "cara", "week", userId] });
+    },
+  });
+}
+
+// -------- Productos de rostro (limpieza facial / maquillaje) --------
+
+export function useFaceProducts(category: FaceProductCategory) {
+  const userId = useUserId();
+  return useQuery({
+    queryKey: ["imagen", "face-products", category, userId],
+    queryFn: () => fetchFaceProducts(userId as string, category),
+    enabled: !!userId,
+  });
+}
+
+export function useCreateFaceProduct() {
+  const userId = useUserId();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (input: {
+      category: FaceProductCategory;
+      name: string;
+      brand?: string;
+      price?: number;
+      rating?: number;
+    }) => createFaceProduct(userId as string, input),
+    onSuccess: (_data, variables) => {
+      analytics.track("producto_facial_agregado", { category: variables.category });
+      queryClient.invalidateQueries({
+        queryKey: ["imagen", "face-products", variables.category, userId],
+      });
+    },
+  });
+}
+
+export function useDeleteFaceProduct(category: FaceProductCategory) {
+  const userId = useUserId();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (productId: string) => deleteFaceProduct(productId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["imagen", "face-products", category, userId] });
     },
   });
 }

@@ -6,12 +6,16 @@ import { AuthNavigator } from "@/navigation/AuthNavigator";
 import { MainShell } from "@/navigation/MainShell";
 import { ResetPasswordScreen } from "@/features/auth/screens/ResetPasswordScreen";
 import { WelcomeScreen } from "@/features/home/screens/WelcomeScreen";
+import type { HomeStackParamList } from "@/navigation/types";
+import { WelcomeNavigationProvider } from "@/navigation/WelcomeNavigationContext";
+import { RailVisibilityProvider } from "@/navigation/RailVisibilityContext";
 
 type PostLoginStage = "welcome" | "app";
 
 export function RootNavigator() {
   const { session, isLoading, isPasswordRecovery } = useAuth();
   const [stage, setStage] = useState<PostLoginStage>("welcome");
+  const [initialHomeRoute, setInitialHomeRoute] = useState<keyof HomeStackParamList>("HomeDashboard");
   const fade = useRef(new Animated.Value(0)).current;
   const wasLoggedIn = useRef(false);
 
@@ -52,12 +56,35 @@ export function RootNavigator() {
       // <NavigationContainer independent>, así que acá no envolvemos con uno
       // compartido (React Navigation no permite más de un navigator raíz por
       // contenedor).
-      return <MainShell />;
+      return (
+        <WelcomeNavigationProvider onBackToWelcome={() => setStage("welcome")}>
+          <RailVisibilityProvider>
+            <MainShell initialHomeRoute={initialHomeRoute} />
+          </RailVisibilityProvider>
+        </WelcomeNavigationProvider>
+      );
     }
 
     return (
       <Animated.View style={{ flex: 1, opacity: fade }}>
-        <WelcomeScreen onOpenAgenda={() => setStage("app")} />
+        <WelcomeScreen
+          onOpenAgenda={() => {
+            setInitialHomeRoute("HomeDashboard");
+            setStage("app");
+          }}
+          onOpenResumen={() => {
+            setInitialHomeRoute("Resumen");
+            setStage("app");
+          }}
+          onOpenPaywall={() => {
+            setInitialHomeRoute("Paywall");
+            setStage("app");
+          }}
+          onOpenConfiguracion={() => {
+            setInitialHomeRoute("Configuracion");
+            setStage("app");
+          }}
+        />
       </Animated.View>
     );
   }

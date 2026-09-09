@@ -72,3 +72,38 @@ export async function linkNextActivity(activityId: string, nextActivityId: strin
     .eq("id", activityId);
   if (error) throw error;
 }
+
+export async function updateActivity(
+  activityId: string,
+  input: {
+    activityType: ActivityType;
+    title?: string;
+    companions?: string;
+    activityDescription?: string;
+    scheduledAt: string;
+    isPast: boolean;
+    feeling?: Feeling;
+  }
+): Promise<SocialActivity> {
+  const { data, error } = await supabase
+    .from("social_activities")
+    .update({
+      activity_type: input.activityType,
+      title: input.title ?? null,
+      companions: input.companions ?? null,
+      activity_description: input.activityDescription ?? null,
+      scheduled_at: input.scheduledAt,
+      is_past: input.isPast,
+      feeling: input.feeling ?? null,
+    })
+    .eq("id", activityId)
+    .select()
+    .single();
+  if (error) throw error;
+  return data as SocialActivity;
+}
+
+export async function deleteActivity(activityId: string) {
+  const { error } = await supabase.from("social_activities").delete().eq("id", activityId);
+  if (error) throw error;
+}
