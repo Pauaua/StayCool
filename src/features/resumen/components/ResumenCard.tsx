@@ -76,7 +76,7 @@ export const ResumenCard = forwardRef<View, ResumenCardProps>(({ data, period },
         style={{ flex: 1, padding: CARD_WIDTH * 0.085 }}
       >
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-          <Text style={{ fontFamily: "WindSong_400Regular", fontSize: 16, color: COLORS.navy }}>
+          <Text style={{ fontFamily: "Parisienne_400Regular", fontSize: 16, color: COLORS.navy }}>
             StayCool<Text style={{ color: COLORS.navy }}>+</Text>
           </Text>
           <View
@@ -102,7 +102,7 @@ export const ResumenCard = forwardRef<View, ResumenCardProps>(({ data, period },
           </Text>
           <Text
             style={{
-              fontFamily: "WindSong_400Regular",
+              fontFamily: "Parisienne_400Regular",
               fontSize: 30,
               color: COLORS.navy,
               lineHeight: 34,

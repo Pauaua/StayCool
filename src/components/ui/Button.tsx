@@ -8,6 +8,9 @@ interface ButtonProps {
   size?: "md" | "sm";
   loading?: boolean;
   disabled?: boolean;
+  // Tipografía del label: "semibold" (Rethink Sans, default) o "script"
+  // (Parisienne, para pantallas de auth/bienvenida).
+  font?: "semibold" | "script";
 }
 
 const variantStyles: Record<NonNullable<ButtonProps["variant"]>, string> = {
@@ -29,6 +32,7 @@ export function Button({
   size = "md",
   loading,
   disabled,
+  font = "semibold",
 }: ButtonProps) {
   return (
     <Pressable
@@ -42,7 +46,9 @@ export function Button({
         <ActivityIndicator color="#fff" />
       ) : (
         <Text
-          className={`font-semibold ${size === "sm" ? "text-sm" : "text-base"} ${variantTextStyles[variant]}`}
+          className={`${font === "script" ? "font-script" : "font-semibold"} ${
+            size === "sm" ? "text-sm" : "text-base"
+          } ${variantTextStyles[variant]}`}
         >
           {label}
         </Text>
