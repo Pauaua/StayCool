@@ -17,6 +17,12 @@ interface PremiumContextValue {
 const PremiumContext = createContext<PremiumContextValue | undefined>(undefined);
 
 function resolveTier(info: CustomerInfo | null): PremiumTier {
+  // Bypass de desarrollo: __DEV__ es false en cualquier build de producción
+  // (o preview/release), así que esto nunca se cuela a usuarios reales.
+  // Sirve para poder revisar pantallas/funciones premium sin tener que
+  // pagar una suscripción real mientras se prueba en local.
+  if (__DEV__) return "full";
+
   const active = info?.entitlements.active ?? {};
   if (active[ENTITLEMENT_FULL]) return "full";
   if (active[ENTITLEMENT_BASICO]) return "basico";

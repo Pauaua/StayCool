@@ -43,13 +43,12 @@ export function SignInScreen({ navigation }: Props) {
         <Pressable onPress={() => navigation.navigate("ForgotPassword")} className="mb-4 self-end">
           <Text className="text-navy text-sm">¿Olvidaste tu contraseña?</Text>
         </Pressable>
-        <Button label="Iniciar sesión" onPress={handleSignIn} loading={loading} font="script" />
+        <Button label="Iniciar sesión" onPress={handleSignIn} loading={loading} />
         <View className="h-3" />
         <Button
           label="Crear cuenta"
           variant="ghost"
           onPress={() => navigation.navigate("SignUp")}
-          font="script"
         />
       </SafeAreaView>
     </GradientBackground>

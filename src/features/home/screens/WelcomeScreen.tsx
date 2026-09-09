@@ -53,7 +53,7 @@ function PillButton({
         filled ? "bg-navy border-navy active:opacity-80" : "bg-white/40 border-navy active:bg-white/60"
       }`}
     >
-      <Text className={`font-script ${filled ? "text-white" : "text-navy"}`} style={{ fontSize: 18 }}>
+      <Text className={`font-semibold ${filled ? "text-white" : "text-navy"}`} style={{ fontSize: 18 }}>
         {label}
       </Text>
     </Pressable>
