@@ -40,7 +40,7 @@ module.exports = {
         sans: ["RethinkSans_400Regular", "System"],
         semibold: ["RethinkSans_600SemiBold", "System"],
         bold: ["RethinkSans_700Bold", "System"],
-        script: ["WindSong_400Regular", "System"],
+        script: ["Parisienne_400Regular", "System"],
       },
       borderRadius: {
         card: "20px",
