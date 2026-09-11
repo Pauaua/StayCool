@@ -229,7 +229,11 @@ function ResumenContent() {
         </Card>
       ) : !hasAnyResumenData(data) ? (
         <Card className="items-center py-10 px-6">
-          <Text style={{ fontSize: 36 }}>✨</Text>
+          <Image
+            source={require("../../../../assets/images/troste.png")}
+            style={{ width: 40, height: 40 }}
+            resizeMode="contain"
+          />
           <Text className="text-base font-bold text-surface-dark dark:text-white text-center mt-3">
             Aún no tenemos datos suficientes para armar tu resumen
           </Text>

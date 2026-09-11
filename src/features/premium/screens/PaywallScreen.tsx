@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Alert, Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
+import { ActivityIndicator, Alert, Image, Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
 import type { PurchasesOffering, PurchasesPackage } from "react-native-purchases";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -18,15 +18,27 @@ const PAYWALL_CIRCLE_COLORS = ["#fef1ba", "#fef1ba", "#fef1ba", "#ecc6ff", "#d9e
 // RevenueCat) porque todavía no hay producto configurado en el dashboard;
 // en cuanto exista, el precio real de la tienda (pkg.product.priceString)
 // pisa a este texto — ver `findPackageForTier`.
+// Tipo de cambio aproximado solo para mostrar una referencia en USD junto al
+// precio en CLP — no es un valor en vivo, así que puede desactualizarse; está
+// bien porque es solo orientativo, la tienda siempre cobra en la moneda real
+// del usuario.
+const CLP_PER_USD = 950;
+
+function formatUsdApprox(clp: number): string {
+  return `(~USD ${(clp / CLP_PER_USD).toFixed(2)})`;
+}
+
 const PLAN_INFO: {
   tier: PremiumTier;
   name: string;
+  icon?: number;
   fallbackPrice: string;
   features: string[];
 }[] = [
   {
     tier: "free",
     name: "Plan Gratis",
+    icon: require("../../../../assets/images/solazo.png"),
     fallbackPrice: "Gratis",
     features: [
       "Bienestar, Cuidado Personal, Imagen, Pelo, Gastos, Gustos, Notas y Social",
@@ -36,7 +48,8 @@ const PLAN_INFO: {
   {
     tier: "basico",
     name: "Plan So Basic!",
-    fallbackPrice: "$2.990/mes",
+    icon: require("../../../../assets/images/uñotas.png"),
+    fallbackPrice: `$2.990 CLP/mes ${formatUsdApprox(2990)}`,
     features: [
       "Todo lo del plan Gratis",
       "Ver tu resumen semanal",
@@ -45,8 +58,9 @@ const PLAN_INFO: {
   },
   {
     tier: "full",
-    name: "Plan Diva 💎",
-    fallbackPrice: "$7.990/mes",
+    name: "Plan Diva",
+    icon: require("../../../../assets/images/brillitos.png"),
+    fallbackPrice: `$7.990 CLP/mes ${formatUsdApprox(7990)}`,
     features: [
       "Todo lo del plan So Basic!",
       "Personalizar tu foto de perfil",
@@ -103,6 +117,18 @@ export function PaywallScreen() {
     }
   }
 
+  async function handleManageSubscription() {
+    try {
+      await Purchases.showManageSubscriptions();
+      await refresh();
+    } catch (error) {
+      Alert.alert(
+        "No se pudo abrir la gestión de suscripción",
+        error instanceof Error ? error.message : "Intenta de nuevo."
+      );
+    }
+  }
+
   async function handleRestore() {
     setIsRestoring(true);
     try {
@@ -145,7 +171,7 @@ export function PaywallScreen() {
         </View>
         <Text className="text-sm text-gray-500 dark:text-gray-400 mb-6 text-center">
           {t("paywall.currentPlan", {
-            plan: tier === "full" ? "Diva 💎" : tier === "basico" ? "So Basic!" : "Gratis",
+            plan: tier === "full" ? "Diva" : tier === "basico" ? "So Basic!" : "Gratis",
           })}
         </Text>
 
@@ -163,15 +189,28 @@ export function PaywallScreen() {
           return (
             <Card key={plan.tier} className="mb-4" style={{ borderLeftWidth: 4, borderLeftColor: "#fef1ba" }}>
               <View className="flex-row items-center justify-between mb-1">
-                <Text className="text-base font-bold text-surface-dark dark:text-white">
-                  {plan.name}
-                </Text>
+                <View className="flex-row items-center">
+                  {plan.icon ? (
+                    <Image
+                      source={plan.icon}
+                      style={{ width: 48, height: 48, marginRight: 8 }}
+                      resizeMode="contain"
+                    />
+                  ) : null}
+                  <Text className="text-base font-bold text-surface-dark dark:text-white">
+                    {plan.name}
+                  </Text>
+                </View>
                 {isCurrentPlan ? (
                   <Text className="text-xs font-semibold text-brand-500">{t("paywall.currentPlanBadge")}</Text>
                 ) : null}
               </View>
               <Text className="text-sm text-gray-500 dark:text-gray-400 mb-3">
-                {pkg ? pkg.product.priceString : plan.fallbackPrice}
+                {pkg
+                  ? pkg.product.currencyCode === "CLP"
+                    ? `${pkg.product.priceString} ${formatUsdApprox(pkg.product.price)}`
+                    : pkg.product.priceString
+                  : plan.fallbackPrice}
               </Text>
 
               {plan.features.map((feature) => (
@@ -221,6 +260,24 @@ export function PaywallScreen() {
             disabled={isRestoring || pendingTier !== null}
           />
         </View>
+
+        {tier !== "free" ? (
+          <Pressable
+            onPress={handleManageSubscription}
+            disabled={pendingTier !== null}
+            className="mt-2 rounded-full px-6 py-3.5 flex-row items-center justify-center border border-brand-500"
+            style={{ opacity: pendingTier !== null ? 0.5 : 1 }}
+          >
+            <Image
+              source={require("../../../../assets/images/troste.png")}
+              style={{ width: 20, height: 20, marginRight: 8 }}
+              resizeMode="contain"
+            />
+            <Text className="font-semibold text-base text-brand-500">
+              {t("paywall.cancelSubscription")}
+            </Text>
+          </Pressable>
+        ) : null}
       </ScrollView>
     </SafeAreaView>
   );
