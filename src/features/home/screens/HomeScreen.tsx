@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
+import { Image, Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
 import { format } from "date-fns";
 import { Card } from "@/components/ui/Card";
 import { useDashboardSummary } from "@/features/home/hooks/useDashboard";
@@ -7,7 +7,6 @@ import { useSyncReminders } from "@/features/home/hooks/useProfile";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { usePremium } from "@/features/premium/hooks/usePremium";
 import { useSyncMooney } from "@/features/premium/hooks/useMooney";
-import { PremiumStar } from "@/features/premium/components/PremiumBadge";
 import { useGoToWelcome } from "@/navigation/WelcomeNavigationContext";
 import { ReminderSettings } from "@/features/home/components/ReminderSettings";
 import { useT } from "@/lib/i18n";
@@ -42,14 +41,20 @@ export function HomeScreen({ navigation }: Props) {
           <Text className="text-sm text-brand-500 ml-1">{t("home.back")}</Text>
         </Pressable>
 
-        <View className="flex-row justify-between items-start mb-1">
+        <View className="flex-row justify-between items-center mb-1">
           <Text className="text-3xl font-bold text-surface-dark dark:text-white">
             {t("home.greeting", { name: name ? `, ${name}` : "" })}
-            {isFull ? <PremiumStar size={22} /> : null}
           </Text>
-          <Pressable onPress={() => navigation.navigate("Settings")}>
-            <Text className="text-2xl">⚙️</Text>
-          </Pressable>
+          <View className="flex-row items-center">
+            <Image
+              source={require("../../../../assets/images/brillitos.png")}
+              style={{ width: 24, height: 24, marginRight: 12 }}
+              resizeMode="contain"
+            />
+            <Pressable onPress={() => navigation.navigate("Settings")}>
+              <Text className="text-2xl">⚙️</Text>
+            </Pressable>
+          </View>
         </View>
         <Text className="text-gray-500 mb-6">{format(new Date(), "EEEE dd MMMM")}</Text>
 

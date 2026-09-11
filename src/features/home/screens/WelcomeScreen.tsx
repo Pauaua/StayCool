@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Image, Pressable, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useProfile } from "@/features/home/hooks/useProfile";
 import { useT } from "@/lib/i18n";
@@ -41,19 +41,47 @@ function PillButton({
   label,
   onPress,
   filled,
+  icon,
+  backgroundColor,
 }: {
   label: string;
   onPress: () => void;
   filled?: boolean;
+  icon?: number;
+  backgroundColor?: string;
 }) {
   return (
     <Pressable
       onPress={onPress}
-      className={`w-full rounded-full px-6 py-3 items-center justify-center border ${
-        filled ? "bg-navy border-navy active:opacity-80" : "bg-white/40 border-navy active:bg-white/60"
+      className={`w-full rounded-full px-6 py-3 flex-row items-center justify-center border ${
+        backgroundColor
+          ? "active:opacity-80"
+          : filled
+            ? "bg-navy border-navy active:opacity-80"
+            : "bg-white/40 border-navy active:bg-white/60"
       }`}
+      style={{
+        marginTop: 7,
+        marginBottom: 7,
+        ...(backgroundColor ? { backgroundColor, borderColor: "#002054" } : null),
+      }}
     >
-      <Text className={`font-semibold ${filled ? "text-white" : "text-navy"}`} style={{ fontSize: 18 }}>
+      {icon ? (
+        <Image
+          source={icon}
+          style={{
+            width: 28,
+            height: 28,
+            marginRight: 8,
+            tintColor: filled && !backgroundColor ? "#ffffff" : undefined,
+          }}
+          resizeMode="contain"
+        />
+      ) : null}
+      <Text
+        className={`font-semibold ${backgroundColor ? "text-navy" : filled ? "text-white" : "text-navy"}`}
+        style={{ fontSize: 18 }}
+      >
         {label}
       </Text>
     </Pressable>
@@ -103,10 +131,16 @@ export function WelcomeScreen({
 
         <View style={{ flex: 2 }} />
 
-        <View className="mt-8 w-full max-w-sm items-center gap-8">
+        <View className="mt-8 w-full items-center">
           <PillButton label={t("welcome.openAgenda")} onPress={onOpenAgenda} />
           <PillButton label={t("welcome.viewResumen")} onPress={onOpenResumen} />
-          <PillButton label={t("welcome.goPremium")} onPress={onOpenPaywall} filled />
+          <PillButton
+            label={t("welcome.goPremium")}
+            onPress={onOpenPaywall}
+            filled
+            icon={require("../../../../assets/images/brillitos.png")}
+            backgroundColor="#ecc6ff"
+          />
           <PillButton label={t("welcome.settings")} onPress={onOpenConfiguracion} />
         </View>
 

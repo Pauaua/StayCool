@@ -1,5 +1,5 @@
 import React from "react";
-import { ActivityIndicator, Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
+import { ActivityIndicator, Image, Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
 import { format } from "date-fns";
 import { Card } from "@/components/ui/Card";
 import { useTodayStats } from "@/features/estadisticas/hooks/useEstadisticas";
@@ -21,9 +21,16 @@ export function EstadisticasHoyScreen({ navigation }: Props) {
         <Text className="text-sm text-brand-500 ml-1">{t("estadisticas.back")}</Text>
       </Pressable>
 
-      <Text className="text-2xl font-bold text-surface-dark dark:text-white mb-1">
-        {t("estadisticas.todayTitle")}
-      </Text>
+      <View className="flex-row items-center mb-1">
+        <Image
+          source={require("../../../../assets/images/estadisticas.png")}
+          style={{ width: 48, height: 48, marginRight: 8 }}
+          resizeMode="contain"
+        />
+        <Text className="text-2xl font-bold text-surface-dark dark:text-white">
+          {t("estadisticas.todayTitle")}
+        </Text>
+      </View>
       <Text className="text-sm text-gray-500 mb-4">
         {t("estadisticas.todaySubtitle", { date: format(new Date(), "EEEE dd MMMM") })}
       </Text>

@@ -15,4 +15,10 @@ export interface Profile {
   premium_tier: "free" | "basico" | "full";
   language: "es" | "en";
   pronoun: "masculino" | "femenino" | "no_binarie" | "no_se";
+  is_menstruating: boolean;
+  period_reminder_enabled: boolean;
+  last_period_date: string | null; // "YYYY-MM-DD"
+  cycle_length_days: number;
+  period_reminder_message: string | null;
+  period_reminder_days_before: number;
 }

@@ -16,7 +16,7 @@ const dict = {
     "welcome.subtitle": "Qué bueno tenerte de vuelta",
     "welcome.openAgenda": "Abrir Agenda",
     "welcome.viewResumen": "Ver Resumen",
-    "welcome.goPremium": "✨ Hazte Diva",
+    "welcome.goPremium": "Hazte Diva",
     "welcome.settings": "Configuración",
 
     // Configuración
@@ -43,10 +43,29 @@ const dict = {
     "config.pronoun.note":
       "Algunas frases de la app (como el saludo de bienvenida o los mensajes de confirmación) ya se ajustan a este pronombre. El resto de la app usa un lenguaje neutro que no depende del pronombre elegido.",
 
+    "config.period.title": "Recordatorio de menstruación",
+    "config.period.subtitle": "¿Eres una persona menstruante? Activa esto para recibir un aviso antes de que llegue tu período.",
+    "config.period.yes": "Sí",
+    "config.period.no": "No",
+    "config.period.knowsExact": "Sé mi día 1 exacto",
+    "config.period.approximate.m": "No estoy seguro (aproximado)",
+    "config.period.approximate.f": "No estoy segura (aproximado)",
+    "config.period.approximate.n": "No estoy segure (aproximado)",
+    "config.period.day1Label": "Fecha de tu día 1",
+    "config.period.day1ApproxLabel": "Fecha aproximada de tu día 1",
+    "config.period.pickDate": "Toca para elegir la fecha",
+    "config.period.closeCalendar": "Cerrar",
+    "config.legal.link": "Política de Privacidad y Términos de Uso",
+    "config.period.cycleLengthLabel": "Duración de tu ciclo (días)",
+    "config.period.daysBeforeLabel": "¿Cuántos días antes quieres el aviso?",
+    "config.period.messageLabel": "Personaliza el mensaje del aviso (opcional)",
+    "config.period.note":
+      "Calculamos la fecha estimada de tu próximo período a partir de tu día 1 y la duración de tu ciclo, y te avisamos con la anticipación y el mensaje que elegiste. Si dejas el mensaje vacío, usamos: \"Se aproxima desprendimiento de endometrio, ¡Prepárate!\".",
+
     "common.confirmSignOutTitle": "Cerrar sesión",
-    "common.confirmSignOutMessage.m": "¿Seguro que querés salir?",
-    "common.confirmSignOutMessage.f": "¿Segura que querés salir?",
-    "common.confirmSignOutMessage.n": "¿Segure que querés salir?",
+    "common.confirmSignOutMessage.m": "¿Seguro que quieres salir?",
+    "common.confirmSignOutMessage.f": "¿Segura que quieres salir?",
+    "common.confirmSignOutMessage.n": "¿Segure que quieres salir?",
     "common.cancel": "Cancelar",
     "common.signOut": "Cerrar sesión",
 
@@ -62,7 +81,7 @@ const dict = {
 
     // Home
     "home.back": "Panel inicial",
-    "home.greeting": "Hola{name} 👋",
+    "home.greeting": "Hola{name}",
     "home.loadingDay": "Cargando tu día...",
     "home.hygieneToday": "Higiene de hoy",
     "home.hygieneAllDone": "¡Todo listo! 🎉",
@@ -192,7 +211,7 @@ const dict = {
     "common.tapForDetail": "Presiona para ver en detalle.",
 
     // Vestuario
-    "vestuario.title": "👚 Vestuario",
+    "vestuario.title": "Vestuario",
     "vestuario.whatToday": "¿Qué usarás hoy?",
     "vestuario.description": "Descripción",
     "vestuario.weather": "Clima",
@@ -213,7 +232,7 @@ const dict = {
     "vestuario.notesLabel": "Notas Adicionales: {value}",
 
     // Zapatos
-    "zapatos.title": "👟 Zapatos",
+    "zapatos.title": "Zapatos",
     "zapatos.whatToday": "¿Qué zapatos usarás hoy?",
     "zapatos.shoeType": "Tipo de zapato",
     "zapatos.color": "Color",
@@ -226,7 +245,7 @@ const dict = {
     "zapatos.conditionLabel": "Estado: {value}",
 
     // Higiene / Cuidado Personal
-    "higiene.title": "🧼 Cuidado Personal de hoy",
+    "higiene.title": "Cuidado Personal de hoy",
     "higiene.missedYesterday": "Ayer no cumpliste con tus labores de higiene. Hoy será el día, ¡vamos, tú puedes!",
     "higiene.loadingChecklist": "Cargando checklist...",
     "higiene.addToday": "Añadir hoy",
@@ -264,7 +283,7 @@ const dict = {
     "higiene.preset.masajeCapilar": "Masaje capilar",
 
     // Pelo
-    "pelo.title": "💇‍♀️ Pelo",
+    "pelo.title": "Pelo",
     "pelo.lastWash": "Último lavado",
     "pelo.noRecordsYet": "Sin registros aún",
     "pelo.addCharacteristics": "Añade las características de tu cabello.",
@@ -344,7 +363,7 @@ const dict = {
     "social.hasNextMeeting": "Tiene un próximo encuentro agendado.",
 
     // Gastos
-    "gastos.title": "💸 Gastos",
+    "gastos.title": "Gastos",
     "gastos.monthlyBudget": "Presupuesto mensual",
     "gastos.amount": "Monto",
     "gastos.amountPlaceholder": "ej: 500000",
@@ -395,7 +414,7 @@ const dict = {
     "gastos.remainingBalance": "Quedaste con",
 
     // Gustos
-    "gustos.title": "💜 Gustos",
+    "gustos.title": "Gustos",
     "gustos.quickRecord": "Registro rápido",
     "gustos.musicSeriesBooks": "Música / series / libros",
     "gustos.record": "Registro de gustos",
@@ -428,7 +447,7 @@ const dict = {
     "gustos.notesOptional": "Notas (opcional)",
 
     // Notas
-    "notas.title": "📝 Notas",
+    "notas.title": "Notas",
     "notas.quickIdea": "Idea rápida",
     "notas.fullIdea": "Idea completa",
     "notas.record": "Registro de notas",
@@ -454,7 +473,7 @@ const dict = {
     "notas.feeling.confundida": "confundida",
 
     // Estadísticas home
-    "estadisticas.title": "📊 Estadísticas",
+    "estadisticas.title": "Estadísticas",
     "estadisticas.today": "HOY",
     "estadisticas.todayDesc": "Lo que registraste hoy",
     "estadisticas.weekly": "Estadística semanal",
@@ -462,13 +481,13 @@ const dict = {
     "estadisticas.yearly": "Estadística Anual",
     "estadisticas.yearlyDesc": "Este año",
     "estadisticas.back": "Estadísticas",
-    "estadisticas.todayTitle": "📊 Hoy",
+    "estadisticas.todayTitle": "Hoy",
     "estadisticas.todaySubtitle": "{date} — basado en la información que nos has entregado hoy",
     "estadisticas.noData": "No tenemos registro de datos disponibles",
-    "estadisticas.weeklyTitle": "📊 Estadística semanal",
+    "estadisticas.weeklyTitle": "Estadística semanal",
     "estadisticas.weeklyRange": "Datos del {from} al {to}",
     "estadisticas.viewSpecificWeek": "Ver una semana en particular",
-    "estadisticas.yearlyTitle": "📊 Estadística anual",
+    "estadisticas.yearlyTitle": "Estadística anual",
     "estadisticas.yearlyRange": "Datos año {year}",
     "estadisticas.viewSpecificDay": "Ver un día en particular",
     "estadisticas.noDataTitle": "Sin datos",
@@ -621,7 +640,7 @@ const dict = {
     "welcome.subtitle": "Great to have you back",
     "welcome.openAgenda": "Open Agenda",
     "welcome.viewResumen": "View Summary",
-    "welcome.goPremium": "✨ Go Diva",
+    "welcome.goPremium": "Go Diva",
     "welcome.settings": "Settings",
 
     "config.title": "⚙️ Settings",
@@ -647,6 +666,25 @@ const dict = {
     "config.pronoun.note":
       "Some phrases in the app (like the welcome greeting or confirmation messages) already adjust to this pronoun. The rest of the app uses neutral language that doesn't depend on the chosen pronoun.",
 
+    "config.period.title": "Period reminder",
+    "config.period.subtitle": "Are you a menstruating person? Turn this on to get a heads-up before your period arrives.",
+    "config.period.yes": "Yes",
+    "config.period.no": "No",
+    "config.period.knowsExact": "I know my exact day 1",
+    "config.period.approximate.m": "Not sure (approximate)",
+    "config.period.approximate.f": "Not sure (approximate)",
+    "config.period.approximate.n": "Not sure (approximate)",
+    "config.period.day1Label": "Your day 1 date",
+    "config.period.day1ApproxLabel": "Approximate day 1 date",
+    "config.period.pickDate": "Tap to pick a date",
+    "config.period.closeCalendar": "Close",
+    "config.legal.link": "Privacy Policy and Terms of Use",
+    "config.period.cycleLengthLabel": "Cycle length (days)",
+    "config.period.daysBeforeLabel": "How many days ahead do you want the alert?",
+    "config.period.messageLabel": "Customize the alert message (optional)",
+    "config.period.note":
+      "We estimate your next period from your day 1 and cycle length, and notify you with the lead time and message you chose. If the message is empty, we use: \"Your lining is about to shed, get ready!\".",
+
     "common.confirmSignOutTitle": "Log out",
     "common.confirmSignOutMessage.m": "Are you sure you want to log out?",
     "common.confirmSignOutMessage.f": "Are you sure you want to log out?",
@@ -664,7 +702,7 @@ const dict = {
     "paywall.restore": "Restore purchases",
 
     "home.back": "Home",
-    "home.greeting": "Hi{name} 👋",
+    "home.greeting": "Hi{name}",
     "home.loadingDay": "Loading your day...",
     "home.hygieneToday": "Today's hygiene",
     "home.hygieneAllDone": "All done! 🎉",
@@ -787,7 +825,7 @@ const dict = {
     "common.no": "No",
     "common.tapForDetail": "Tap to see the detail.",
 
-    "vestuario.title": "👚 Outfits",
+    "vestuario.title": "Outfits",
     "vestuario.whatToday": "What will you wear today?",
     "vestuario.description": "Description",
     "vestuario.weather": "Weather",
@@ -807,7 +845,7 @@ const dict = {
     "vestuario.accessoriesLabel": "Accessories: {value}",
     "vestuario.notesLabel": "Additional notes: {value}",
 
-    "zapatos.title": "👟 Shoes",
+    "zapatos.title": "Shoes",
     "zapatos.whatToday": "What shoes will you wear today?",
     "zapatos.shoeType": "Shoe type",
     "zapatos.color": "Color",
@@ -819,7 +857,7 @@ const dict = {
     "zapatos.brandLabel": "Brand: {value}",
     "zapatos.conditionLabel": "Condition: {value}",
 
-    "higiene.title": "🧼 Today's Personal Care",
+    "higiene.title": "Today's Personal Care",
     "higiene.missedYesterday": "You didn't finish your hygiene tasks yesterday. Today's the day — you got this!",
     "higiene.loadingChecklist": "Loading checklist...",
     "higiene.addToday": "Add today",
@@ -856,7 +894,7 @@ const dict = {
     "higiene.preset.exfoliacion": "Exfoliation",
     "higiene.preset.masajeCapilar": "Scalp massage",
 
-    "pelo.title": "💇‍♀️ Hair",
+    "pelo.title": "Hair",
     "pelo.lastWash": "Last wash",
     "pelo.noRecordsYet": "No records yet",
     "pelo.addCharacteristics": "Add your hair's characteristics.",
@@ -933,7 +971,7 @@ const dict = {
     "social.withLabel": "With: {value}",
     "social.hasNextMeeting": "Has a next meeting scheduled.",
 
-    "gastos.title": "💸 Expenses",
+    "gastos.title": "Expenses",
     "gastos.monthlyBudget": "Monthly budget",
     "gastos.amount": "Amount",
     "gastos.amountPlaceholder": "e.g. 500000",
@@ -983,7 +1021,7 @@ const dict = {
     "gastos.no": "No",
     "gastos.remainingBalance": "You had left",
 
-    "gustos.title": "💜 Interests",
+    "gustos.title": "Interests",
     "gustos.quickRecord": "Quick log",
     "gustos.musicSeriesBooks": "Music / shows / books",
     "gustos.record": "Interests log",
@@ -1015,7 +1053,7 @@ const dict = {
     "gustos.sagaOptional": "Series (optional)",
     "gustos.notesOptional": "Notes (optional)",
 
-    "notas.title": "📝 Notes",
+    "notas.title": "Notes",
     "notas.quickIdea": "Quick idea",
     "notas.fullIdea": "Full idea",
     "notas.record": "Notes log",
@@ -1040,7 +1078,7 @@ const dict = {
     "notas.feeling.tranquila": "calm",
     "notas.feeling.confundida": "confused",
 
-    "estadisticas.title": "📊 Statistics",
+    "estadisticas.title": "Statistics",
     "estadisticas.today": "TODAY",
     "estadisticas.todayDesc": "What you logged today",
     "estadisticas.weekly": "Weekly statistics",
@@ -1048,13 +1086,13 @@ const dict = {
     "estadisticas.yearly": "Yearly statistics",
     "estadisticas.yearlyDesc": "This year",
     "estadisticas.back": "Statistics",
-    "estadisticas.todayTitle": "📊 Today",
+    "estadisticas.todayTitle": "Today",
     "estadisticas.todaySubtitle": "{date} — based on what you've logged today",
     "estadisticas.noData": "We don't have any data on record",
-    "estadisticas.weeklyTitle": "📊 Weekly statistics",
+    "estadisticas.weeklyTitle": "Weekly statistics",
     "estadisticas.weeklyRange": "Data from {from} to {to}",
     "estadisticas.viewSpecificWeek": "View a specific week",
-    "estadisticas.yearlyTitle": "📊 Yearly statistics",
+    "estadisticas.yearlyTitle": "Yearly statistics",
     "estadisticas.yearlyRange": "{year} data",
     "estadisticas.viewSpecificDay": "View a specific day",
     "estadisticas.noDataTitle": "No data",

@@ -35,7 +35,7 @@ const PLAN_INFO: {
   },
   {
     tier: "basico",
-    name: "Plan So Basic! ✨",
+    name: "Plan So Basic!",
     fallbackPrice: "$2.990/mes",
     features: [
       "Todo lo del plan Gratis",
@@ -145,7 +145,7 @@ export function PaywallScreen() {
         </View>
         <Text className="text-sm text-gray-500 dark:text-gray-400 mb-6 text-center">
           {t("paywall.currentPlan", {
-            plan: tier === "full" ? "Diva 💎" : tier === "basico" ? "So Basic! ✨" : "Gratis",
+            plan: tier === "full" ? "Diva 💎" : tier === "basico" ? "So Basic!" : "Gratis",
           })}
         </Text>
 
@@ -180,7 +180,16 @@ export function PaywallScreen() {
                 </Text>
               ))}
 
-              {plan.tier === "free" || isCurrentPlan ? null : (
+              {plan.tier === "free" ? null : plan.tier === "full" && isCurrentPlan ? (
+                <View
+                  className="mt-3 rounded-full px-5 py-3.5 items-center justify-center"
+                  style={{ backgroundColor: "#fef1ba", opacity: 0.7 }}
+                >
+                  <Text className="font-semibold text-base" style={{ color: "#002054" }}>
+                    ¡Ya eres una Diva!
+                  </Text>
+                </View>
+              ) : isCurrentPlan ? null : (
                 <Pressable
                   onPress={() => pkg && handlePurchase(plan.tier, pkg)}
                   disabled={!pkg || pendingTier !== null}

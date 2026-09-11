@@ -1,5 +1,5 @@
 import React from "react";
-import { Pressable, Text, View } from "react-native";
+import { Image, Pressable, View } from "react-native";
 
 interface StarToggleProps {
   value: boolean;
@@ -18,8 +18,15 @@ export function StarToggle({ value, onValueChange }: StarToggleProps) {
       }`}
     >
       <View style={{ alignItems: value ? "flex-end" : "flex-start" }}>
-        <View className="w-7 h-7 rounded-full bg-white items-center justify-center shadow-sm">
-          <Text style={{ fontSize: 16 }}>{value ? "☀️" : "🌙"}</Text>
+        <View
+          className="w-7 h-7 rounded-full bg-white items-center justify-center shadow-sm"
+          style={{ overflow: "visible" }}
+        >
+          <Image
+            source={value ? require("../../../assets/images/solazo.png") : require("../../../assets/images/lunita.png")}
+            style={{ width: 34, height: 34 }}
+            resizeMode="contain"
+          />
         </View>
       </View>
     </Pressable>

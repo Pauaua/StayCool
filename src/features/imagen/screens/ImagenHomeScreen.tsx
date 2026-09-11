@@ -1,5 +1,5 @@
 import React from "react";
-import { Pressable, SafeAreaView, Text, View } from "react-native";
+import { Image, Pressable, SafeAreaView, Text, View } from "react-native";
 import { Card } from "@/components/ui/Card";
 import { useT, type TranslationKey } from "@/lib/i18n";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -10,12 +10,28 @@ type Props = NativeStackScreenProps<ImagenStackParamList, "ImagenHome">;
 const SECTIONS: {
   key: keyof ImagenStackParamList;
   labelKey: TranslationKey;
-  emoji: string;
+  emoji?: string;
+  icon?: number;
   descKey: TranslationKey;
 }[] = [
-  { key: "CaraSection", labelKey: "imagen.cara", emoji: "💄", descKey: "imagen.caraDesc" },
-  { key: "VestuarioHome", labelKey: "imagen.vestuario", emoji: "👗", descKey: "imagen.vestuarioDesc" },
-  { key: "ZapatosHome", labelKey: "imagen.zapatos", emoji: "👠", descKey: "imagen.zapatosDesc" },
+  {
+    key: "CaraSection",
+    labelKey: "imagen.cara",
+    icon: require("../../../../assets/images/makeup.png"),
+    descKey: "imagen.caraDesc",
+  },
+  {
+    key: "VestuarioHome",
+    labelKey: "imagen.vestuario",
+    icon: require("../../../../assets/images/vestidosss.png"),
+    descKey: "imagen.vestuarioDesc",
+  },
+  {
+    key: "ZapatosHome",
+    labelKey: "imagen.zapatos",
+    icon: require("../../../../assets/images/zapatitos.png"),
+    descKey: "imagen.zapatosDesc",
+  },
 ];
 
 export function ImagenHomeScreen({ navigation }: Props) {
@@ -28,7 +44,15 @@ export function ImagenHomeScreen({ navigation }: Props) {
         {SECTIONS.map((section) => (
           <Pressable key={section.key} onPress={() => navigation.navigate(section.key as never)}>
             <Card className="mb-3 flex-row items-center">
-              <Text style={{ fontSize: 28, marginRight: 12 }}>{section.emoji}</Text>
+              {section.icon ? (
+                <Image
+                  source={section.icon}
+                  style={{ width: 28, height: 28, marginRight: 12 }}
+                  resizeMode="contain"
+                />
+              ) : (
+                <Text style={{ fontSize: 28, marginRight: 12 }}>{section.emoji}</Text>
+              )}
               <View>
                 <Text className="text-lg font-semibold text-surface-dark dark:text-white">
                   {t(section.labelKey)}

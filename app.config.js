@@ -37,6 +37,11 @@ module.exports = {
           "fb-messenger-share-api",
           "tiktoksharesdk",
         ],
+        // La app solo lee fotos existentes de la galería (para tu foto de
+        // perfil y tus registros de Pelo/Imagen); nunca usa la cámara
+        // directamente, por eso no se declara NSCameraUsageDescription.
+        NSPhotoLibraryUsageDescription:
+          "Necesitamos acceso a tus fotos para que puedas elegir una imagen de perfil y agregar fotos a tus registros de Pelo e Imagen.",
       },
     },
     android: {

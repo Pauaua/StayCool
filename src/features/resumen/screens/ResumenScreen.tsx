@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { ActivityIndicator, Alert, Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
+import { ActivityIndicator, Alert, Image, Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { PremiumGate } from "@/features/premium/components/PremiumGate";
@@ -213,7 +213,11 @@ function ResumenContent() {
         </Card>
       ) : periodStillOngoing ? (
         <Card className="items-center py-10 px-6">
-          <Text style={{ fontSize: 36 }}>😔</Text>
+          <Image
+            source={require("../../../../assets/images/troste.png")}
+            style={{ width: 40, height: 40 }}
+            resizeMode="contain"
+          />
           <Text className="text-base font-bold text-surface-dark dark:text-white text-center mt-3">
             Aún no podemos darte esa información
           </Text>
