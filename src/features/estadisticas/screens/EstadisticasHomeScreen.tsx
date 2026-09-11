@@ -1,5 +1,5 @@
 import React from "react";
-import { Pressable, SafeAreaView, Text, View } from "react-native";
+import { Image, Pressable, SafeAreaView, Text, View } from "react-native";
 import { Card } from "@/components/ui/Card";
 import { PremiumGate } from "@/features/premium/components/PremiumGate";
 import { useT, type TranslationKey } from "@/lib/i18n";
@@ -23,9 +23,16 @@ export function EstadisticasHomeScreen({ navigation }: Props) {
   const { t } = useT();
   return (
     <SafeAreaView className="flex-1 bg-gray-50 dark:bg-surface-dark px-5 pt-4">
-      <Text className="text-2xl font-bold text-surface-dark dark:text-white mb-4">
-        {t("estadisticas.title")}
-      </Text>
+      <View className="flex-row items-center mb-4">
+        <Image
+          source={require("../../../../assets/images/estadisticas.png")}
+          style={{ width: 56, height: 56, marginRight: 8 }}
+          resizeMode="contain"
+        />
+        <Text className="text-2xl font-bold text-surface-dark dark:text-white">
+          {t("estadisticas.title")}
+        </Text>
+      </View>
 
       <PremiumGate minTier="full">
         <View>

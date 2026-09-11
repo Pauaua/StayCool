@@ -55,7 +55,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (nextSession?.user) {
         analytics.identify(nextSession.user.id, { email: nextSession.user.email });
         identifyRevenueCatUser(nextSession.user.id);
-      } else {
+      } else if (event === "SIGNED_OUT") {
+        // Solo cerramos sesión en RevenueCat ante un logout explícito; el
+        // evento inicial sin sesión (nunca hubo login) también cae en este
+        // "else" y llamar logOut ahí generaba el warning "Called logout but
+        // the current user is anonymous" en cada arranque de la app.
         analytics.reset();
         resetRevenueCatUser();
       }

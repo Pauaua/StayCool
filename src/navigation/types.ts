@@ -14,6 +14,7 @@ export type HomeStackParamList = {
   Resumen: undefined;
   Paywall: undefined;
   Configuracion: undefined;
+  Legal: undefined;
 };
 
 export type BienestarStackParamList = {

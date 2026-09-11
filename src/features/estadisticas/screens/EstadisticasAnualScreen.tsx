@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { Alert, Pressable, SafeAreaView, ScrollView, Text } from "react-native";
+import { Alert, Image, Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
 import { Calendar, DateData } from "react-native-calendars";
 import { endOfYear, format, startOfYear } from "date-fns";
 import { Card } from "@/components/ui/Card";
@@ -77,9 +77,16 @@ export function EstadisticasAnualScreen({ navigation }: Props) {
           <Text className="text-sm text-brand-500 ml-1">{t("estadisticas.back")}</Text>
         </Pressable>
 
-        <Text className="text-2xl font-bold text-surface-dark dark:text-white mb-1">
-          {t("estadisticas.yearlyTitle")}
-        </Text>
+        <View className="flex-row items-center mb-1">
+          <Image
+            source={require("../../../../assets/images/estadisticas.png")}
+            style={{ width: 48, height: 48, marginRight: 8 }}
+            resizeMode="contain"
+          />
+          <Text className="text-2xl font-bold text-surface-dark dark:text-white">
+            {t("estadisticas.yearlyTitle")}
+          </Text>
+        </View>
         <Text className="text-sm text-gray-500 mb-4">
           {t("estadisticas.yearlyRange", { year: format(now, "yyyy") })}
         </Text>

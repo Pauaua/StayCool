@@ -87,7 +87,7 @@ export function SideRail({
                     borderRadius: ICON_SIZE / 2,
                   }}
                   className={`items-center justify-center border ${
-                    active ? "bg-navy border-navy" : "bg-white/70 border-white"
+                    active ? "bg-pastel-purple border-pastel-purple" : "bg-white/70 border-white"
                   }`}
                 >
                   {item.icon ? (

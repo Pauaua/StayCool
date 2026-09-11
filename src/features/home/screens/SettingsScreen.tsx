@@ -80,7 +80,7 @@ export function SettingsScreen({ navigation }: Props) {
           {isFull ? (
             <>
               <Text className="text-sm font-semibold text-brand-500 mt-2">
-                🪙 {mooneyBalance ?? 0} MOOney
+                🪙 {mooneyBalance ?? 0} Sparkless
               </Text>
               <View className="mt-3 w-full">
                 <Button

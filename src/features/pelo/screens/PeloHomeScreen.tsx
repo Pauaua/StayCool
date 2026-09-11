@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Pressable, SafeAreaView, ScrollView, Switch, Text, View } from "react-native";
+import { Image, Pressable, SafeAreaView, ScrollView, Switch, Text, View } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { format } from "date-fns";
 import { Card } from "@/components/ui/Card";
@@ -43,7 +43,14 @@ export function PeloHomeScreen({ navigation }: Props) {
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50 dark:bg-surface-dark px-5 pt-4">
-      <Text className="text-2xl font-bold text-surface-dark dark:text-white mb-4">{t("pelo.title")}</Text>
+      <View className="flex-row items-center mb-4">
+        <Image
+          source={require("../../../../assets/images/pelito.png")}
+          style={{ width: 56, height: 56, marginRight: 8 }}
+          resizeMode="contain"
+        />
+        <Text className="text-2xl font-bold text-surface-dark dark:text-white">{t("pelo.title")}</Text>
+      </View>
 
       <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
         <Card className="mb-2">
@@ -123,10 +130,19 @@ export function PeloHomeScreen({ navigation }: Props) {
           />
         </Card>
 
-        <Text className="text-lg font-semibold text-surface-dark dark:text-white mb-2">
-          {t("pelo.hairstyleRecord")}{" "}
-          <Text className="text-xs font-normal text-gray-400">{t("pelo.tapForDetail")}</Text>
-        </Text>
+        <View className="flex-row items-center mb-2">
+          <Image
+            source={require("../../../../assets/images/pelito lavado.png")}
+            style={{ width: 99, height: 99, marginRight: 6 }}
+            resizeMode="contain"
+          />
+          <View>
+            <Text className="text-lg font-semibold text-surface-dark dark:text-white">
+              {t("pelo.hairstyleRecord")}
+            </Text>
+            <Text className="text-xs font-normal text-gray-400">{t("pelo.tapForDetail")}</Text>
+          </View>
+        </View>
         {hairstyleItems.map((item) => (
           <Pressable
             key={item.id}

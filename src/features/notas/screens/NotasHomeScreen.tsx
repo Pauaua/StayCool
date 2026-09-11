@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FlatList, SafeAreaView, Text, View } from "react-native";
+import { FlatList, Image, SafeAreaView, Text, View } from "react-native";
 import { format } from "date-fns";
 import { Card } from "@/components/ui/Card";
 import { Chip } from "@/components/ui/Chip";
@@ -19,7 +19,14 @@ export function NotasHomeScreen({ navigation }: Props) {
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50 dark:bg-surface-dark px-5 pt-8">
-      <Text className="text-2xl font-bold text-surface-dark dark:text-white mb-4">{t("notas.title")}</Text>
+      <View className="flex-row items-center mb-4">
+        <Image
+          source={require("../../../../assets/images/notas2.png")}
+          style={{ width: 56, height: 56, marginRight: 8 }}
+          resizeMode="contain"
+        />
+        <Text className="text-2xl font-bold text-surface-dark dark:text-white">{t("notas.title")}</Text>
+      </View>
 
       <View className="mb-4">
         <View className="mb-2">

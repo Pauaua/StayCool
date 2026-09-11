@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { Alert, Modal, Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
+import { Alert, Image, Modal, Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
 import { Calendar, DateData } from "react-native-calendars";
 import { format } from "date-fns";
 import { Card } from "@/components/ui/Card";
@@ -244,9 +244,16 @@ export function SocialCalendarioScreen({ navigation }: Props) {
   return (
     <SafeAreaView className="flex-1 bg-gray-50 dark:bg-surface-dark">
       <View className="px-5 pt-4">
-        <Text className="text-2xl font-bold text-surface-dark dark:text-white mb-3">
-          {t("social.title")}
-        </Text>
+        <View className="flex-row items-center mb-3">
+          <Image
+            source={require("../../../../assets/images/eventos sociales.png")}
+            style={{ width: 56, height: 56, marginRight: 8 }}
+            resizeMode="contain"
+          />
+          <Text className="text-2xl font-bold text-surface-dark dark:text-white">
+            {t("social.title")}
+          </Text>
+        </View>
       </View>
 
       <Calendar

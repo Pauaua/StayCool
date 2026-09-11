@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FlatList, Pressable, SafeAreaView, Switch, Text, View } from "react-native";
+import { FlatList, Image, Pressable, SafeAreaView, Switch, Text, View } from "react-native";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { TextField } from "@/components/ui/TextField";
@@ -157,9 +157,16 @@ export function CaraSectionScreen() {
         keyExtractor={(item) => item.id}
         ListHeaderComponent={
           <>
-            <Text className="text-2xl font-bold text-pastel-purple dark:text-white mb-4">
-              {t("cara.title")}
-            </Text>
+            <View className="flex-row items-center mb-4">
+              <Image
+                source={require("../../../../assets/images/makeup.png")}
+                style={{ width: 56, height: 56, marginRight: 8 }}
+                resizeMode="contain"
+              />
+              <Text className="text-2xl font-bold text-pastel-purple dark:text-white">
+                {t("cara.title")}
+              </Text>
+            </View>
 
             <Card className="mb-4">
               <View className="flex-row items-center justify-between mb-4">

@@ -7,6 +7,7 @@ import { AvatarShopScreen } from "@/features/premium/screens/AvatarShopScreen";
 import { PaywallScreen } from "@/features/premium/screens/PaywallScreen";
 import { ResumenScreen } from "@/features/resumen/screens/ResumenScreen";
 import { ConfiguracionScreen } from "@/features/home/screens/ConfiguracionScreen";
+import { LegalScreen } from "@/features/home/screens/LegalScreen";
 import type { HomeStackParamList } from "@/navigation/types";
 
 const Stack = createNativeStackNavigator<HomeStackParamList>();
@@ -48,6 +49,11 @@ export function HomeNavigator({
           name="Configuracion"
           component={ConfiguracionScreen}
           options={{ headerShown: true, title: "Configuración" }}
+        />
+        <Stack.Screen
+          name="Legal"
+          component={LegalScreen}
+          options={{ headerShown: true, title: "Legal" }}
         />
       </Stack.Navigator>
     </NavigationContainer>

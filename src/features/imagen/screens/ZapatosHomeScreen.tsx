@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FlatList, Pressable, SafeAreaView, Text, View } from "react-native";
+import { FlatList, Image, Pressable, SafeAreaView, Text, View } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { format } from "date-fns";
 import { Card } from "@/components/ui/Card";
@@ -86,9 +86,16 @@ export function ZapatosHomeScreen({ navigation }: Props) {
         keyExtractor={(item) => item.id}
         ListHeaderComponent={
           <>
-            <Text className="text-2xl font-bold text-surface-dark dark:text-white mb-4">
-              {t("zapatos.title")}
-            </Text>
+            <View className="flex-row items-center mb-4">
+              <Image
+                source={require("../../../../assets/images/zapatitos.png")}
+                style={{ width: 56, height: 56, marginRight: 8 }}
+                resizeMode="contain"
+              />
+              <Text className="text-2xl font-bold text-surface-dark dark:text-white">
+                {t("zapatos.title")}
+              </Text>
+            </View>
 
             <Card className="mb-4">
               <Text className="text-sm font-semibold text-surface-dark dark:text-white mb-2">
