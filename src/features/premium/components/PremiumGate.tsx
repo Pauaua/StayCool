@@ -21,20 +21,15 @@ export function PremiumGate({ minTier, children }: PremiumGateProps) {
   if (isLoading) return null;
   if (TIER_RANK[tier] >= TIER_RANK[minTier]) return <>{children}</>;
 
-  const planLabel = minTier === "full" ? "StayCoolPlus Diva" : "StayCoolPlus So Basic!";
-
   return (
     <Card className="items-center py-8 px-6">
       <Image
-        source={require("../../../../assets/images/candado.png")}
+        source={require("../../../../assets/images/uñotas.png")}
         style={{ width: 40, height: 40 }}
         resizeMode="contain"
       />
       <Text className="text-lg font-bold text-surface-dark dark:text-white mt-3 text-center">
-        Esto es parte de {planLabel}
-      </Text>
-      <Text className="text-sm text-gray-500 dark:text-gray-400 mt-2 text-center">
-        Suscribite para desbloquear esta función.
+        Hazte diva para acceder a esta sección
       </Text>
       <View className="mt-4 w-full">
         <Button label="Ver planes" onPress={() => navigation.navigate("Paywall")} />

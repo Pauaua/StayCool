@@ -78,6 +78,7 @@ const dict = {
     "paywall.subscribe": "Suscribirme",
     "paywall.comingSoon": "Próximamente",
     "paywall.restore": "Restaurar compras",
+    "paywall.cancelSubscription": "Cancelar mi suscripción",
 
     // Home
     "home.back": "Panel inicial",
@@ -700,6 +701,7 @@ const dict = {
     "paywall.subscribe": "Subscribe",
     "paywall.comingSoon": "Coming soon",
     "paywall.restore": "Restore purchases",
+    "paywall.cancelSubscription": "Cancel my subscription",
 
     "home.back": "Home",
     "home.greeting": "Hi{name}",
