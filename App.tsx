@@ -21,6 +21,13 @@ import { ensureNotificationPermissions } from "@/notifications/notifications";
 import { SparkleOverlay } from "@/components/ui/SparkleOverlay";
 
 initSentry();
+// Debe correr a nivel de módulo, no en un useEffect de App: PremiumProvider
+// es un componente hijo, y los useEffect de los hijos corren ANTES que los
+// del padre. Si initRevenueCat() estuviera en el useEffect de App, el
+// primer getCustomerInfo() de PremiumProvider dispararía contra el SDK
+// todavía sin configurar (Purchases.configure() no habría corrido aún),
+// tirando un error de "no hay singleton" al intentar hacer fetch.
+initRevenueCat();
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -32,7 +39,6 @@ export default function App() {
 
   useEffect(() => {
     initAnalytics();
-    initRevenueCat();
     ensureNotificationPermissions();
   }, []);
 
