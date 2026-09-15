@@ -12,18 +12,25 @@ export function OnboardingScreen({ navigation }: Props) {
     <GradientBackground>
       <SafeAreaView className="flex-1 px-6 py-12">
         <View className="mt-16">
-          <Text className="font-script text-navy mb-3" style={{ fontSize: 48 }}>
-            Agenda Cool
-          </Text>
-          <Text className="text-lg text-navy/80">
+          <View className="flex-row items-center mb-3">
+            <Text className="font-script text-navy" style={{ fontSize: 48 }}>
+              Agenda Cool
+            </Text>
+            <Image
+              source={require("../../../../assets/images/brillitos.png")}
+              style={{ width: 32, height: 32, marginLeft: 8 }}
+              resizeMode="contain"
+            />
+          </View>
+          <Text className="text-navy/80" style={{ fontSize: 14 }}>
             Tu bienestar, imagen, vida social y gastos, en un solo lugar. Rápido, simple y bonito.
           </Text>
         </View>
 
-        <View className="flex-1 items-center justify-center">
+        <View className="flex-1 items-center justify-start">
           <Image
-            source={require("../../../../assets/estilo/monahome.png")}
-            style={{ width: "100%", height: 280 }}
+            source={require("../../../../assets/images/imagen_home.png")}
+            style={{ width: "100%", height: 420 }}
             resizeMode="contain"
           />
         </View>

@@ -38,7 +38,14 @@ export function ImagenHomeScreen({ navigation }: Props) {
   const { t } = useT();
   return (
     <SafeAreaView className="flex-1 bg-gray-50 dark:bg-surface-dark px-5 pt-4">
-      <Text className="text-2xl font-bold text-surface-dark dark:text-white mb-4">{t("imagen.title")}</Text>
+      <View className="flex-row items-center mb-4">
+        <Image
+          source={require("../../../../assets/images/aufit.png")}
+          style={{ width: 56, height: 56, marginRight: 8 }}
+          resizeMode="contain"
+        />
+        <Text className="text-2xl font-bold text-surface-dark dark:text-white">{t("imagen.title")}</Text>
+      </View>
 
       <View>
         {SECTIONS.map((section) => (

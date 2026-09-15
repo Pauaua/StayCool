@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Pressable, SafeAreaView, Text, View, Alert } from "react-native";
+import { Image, Pressable, SafeAreaView, Text, View, Alert } from "react-native";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
 import { GradientBackground } from "@/components/ui/GradientBackground";
@@ -29,9 +29,23 @@ export function SignInScreen({ navigation }: Props) {
   return (
     <GradientBackground>
       <SafeAreaView className="flex-1 px-6 justify-center">
-        <Text className="font-script text-navy mb-8" style={{ fontSize: 40 }}>
-          Ingresa tus datos
-        </Text>
+        <View className="items-center mb-4">
+          <Image
+            source={require("../../../../assets/images/Logo.jpg")}
+            style={{ width: 64, height: 64 }}
+            resizeMode="contain"
+          />
+        </View>
+        <View className="flex-row items-center mb-8">
+          <Image
+            source={require("../../../../assets/images/brillitos.png")}
+            style={{ width: 32, height: 32, marginRight: 8 }}
+            resizeMode="contain"
+          />
+          <Text className="font-script text-navy" style={{ fontSize: 40 }}>
+            Ingresa tus datos
+          </Text>
+        </View>
         <TextField
           label="Email"
           autoCapitalize="none"

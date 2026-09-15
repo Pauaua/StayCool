@@ -67,6 +67,14 @@ export function SideRail({
           paddingBottom: insets.bottom + 8,
         }}
       >
+        <View className="items-center mb-2">
+          <Image
+            source={require("../../assets/images/Logo.jpg")}
+            style={{ width: expanded ? 56 : 36, height: expanded ? 56 : 36 }}
+            resizeMode="contain"
+          />
+        </View>
+
         <Pressable onPress={toggle} className="items-center py-2 mb-3" hitSlop={8}>
           <Text className="text-navy text-lg">{expanded ? "◀" : "☰"}</Text>
         </Pressable>
@@ -78,7 +86,7 @@ export function SideRail({
               <Pressable
                 key={item.key}
                 onPress={() => onSelect(item.key)}
-                className="flex-row items-center px-2.5 py-1.5 mx-2 mb-2"
+                className="flex-row items-center px-2.5 py-1 mx-2 mb-1"
               >
                 <View
                   style={{

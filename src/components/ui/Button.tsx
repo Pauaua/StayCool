@@ -1,5 +1,5 @@
 import React from "react";
-import { Pressable, Text, ActivityIndicator } from "react-native";
+import { Image, ImageSourcePropType, Pressable, Text, View, ActivityIndicator } from "react-native";
 
 interface ButtonProps {
   label: string;
@@ -11,6 +11,8 @@ interface ButtonProps {
   // Tipografía del label: "semibold" (Rethink Sans, default) o "script"
   // (Parisienne, para pantallas de auth/bienvenida).
   font?: "semibold" | "script";
+  // Ícono opcional a la izquierda del label, dentro del botón.
+  icon?: ImageSourcePropType;
 }
 
 const variantStyles: Record<NonNullable<ButtonProps["variant"]>, string> = {
@@ -33,6 +35,7 @@ export function Button({
   loading,
   disabled,
   font = "semibold",
+  icon,
 }: ButtonProps) {
   return (
     <Pressable
@@ -47,22 +50,36 @@ export function Button({
       {loading ? (
         <ActivityIndicator color="#fff" />
       ) : (
-        <Text
-          numberOfLines={1}
-          adjustsFontSizeToFit
-          minimumFontScale={0.5}
-          className={`w-full ${font === "script" ? "font-script" : "font-semibold"} text-center ${
-            font === "script"
-              ? size === "sm"
-                ? "text-3xl"
-                : "text-5xl"
-              : size === "sm"
-                ? "text-sm"
-                : "text-base"
-          } ${variantTextStyles[variant]}`}
-        >
-          {label}
-        </Text>
+        <View className="flex-row items-center justify-center">
+          {icon ? (
+            <Image
+              source={icon}
+              style={{
+                width: 28,
+                height: 28,
+                marginRight: 8,
+                tintColor: variant === "primary" ? "#fff" : undefined,
+              }}
+              resizeMode="contain"
+            />
+          ) : null}
+          <Text
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            minimumFontScale={0.5}
+            className={`${font === "script" ? "font-script" : "font-semibold"} text-center ${
+              font === "script"
+                ? size === "sm"
+                  ? "text-3xl"
+                  : "text-5xl"
+                : size === "sm"
+                  ? "text-sm"
+                  : "text-base"
+            } ${variantTextStyles[variant]}`}
+          >
+            {label}
+          </Text>
+        </View>
       )}
     </Pressable>
   );

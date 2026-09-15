@@ -11,12 +11,27 @@ type Props = NativeStackScreenProps<EstadisticasStackParamList, "EstadisticasHom
 const SECTIONS: {
   key: keyof EstadisticasStackParamList;
   labelKey: TranslationKey;
-  emoji: string;
+  icon: number;
   descKey: TranslationKey;
 }[] = [
-  { key: "EstadisticasHoy", labelKey: "estadisticas.today", emoji: "📅", descKey: "estadisticas.todayDesc" },
-  { key: "EstadisticasSemanal", labelKey: "estadisticas.weekly", emoji: "🗓️", descKey: "estadisticas.weeklyDesc" },
-  { key: "EstadisticasAnual", labelKey: "estadisticas.yearly", emoji: "📆", descKey: "estadisticas.yearlyDesc" },
+  {
+    key: "EstadisticasHoy",
+    labelKey: "estadisticas.today",
+    icon: require("../../../../assets/images/Hoy.png"),
+    descKey: "estadisticas.todayDesc",
+  },
+  {
+    key: "EstadisticasSemanal",
+    labelKey: "estadisticas.weekly",
+    icon: require("../../../../assets/images/semanal.png"),
+    descKey: "estadisticas.weeklyDesc",
+  },
+  {
+    key: "EstadisticasAnual",
+    labelKey: "estadisticas.yearly",
+    icon: require("../../../../assets/images/anual.png"),
+    descKey: "estadisticas.yearlyDesc",
+  },
 ];
 
 export function EstadisticasHomeScreen({ navigation }: Props) {
@@ -39,7 +54,11 @@ export function EstadisticasHomeScreen({ navigation }: Props) {
           {SECTIONS.map((section) => (
             <Pressable key={section.key} onPress={() => navigation.navigate(section.key as never)}>
               <Card className="mb-3 flex-row items-center">
-                <Text style={{ fontSize: 28, marginRight: 12 }}>{section.emoji}</Text>
+                <Image
+                  source={section.icon}
+                  style={{ width: 36, height: 36, marginRight: 12 }}
+                  resizeMode="contain"
+                />
                 <View>
                   <Text className="text-lg font-semibold text-surface-dark dark:text-white">
                     {t(section.labelKey)}

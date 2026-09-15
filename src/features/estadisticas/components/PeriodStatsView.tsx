@@ -28,7 +28,6 @@ export function PeriodStatsView({ data, isLoading }: { data: PeriodStats | undef
       <View className="gap-3">
         <Card>
           <Text className="text-surface-dark dark:text-white">
-            <Text style={{ fontSize: 12 }}>🌿 </Text>
             <Text className="font-bold">{t("estadisticas.section.bienestar")}</Text>
             {t("estadisticas.period.bienestar", {
               meals: String(data.mealsCount),
@@ -41,7 +40,6 @@ export function PeriodStatsView({ data, isLoading }: { data: PeriodStats | undef
 
         <Card>
           <Text className="text-surface-dark dark:text-white">
-            <Text style={{ fontSize: 12 }}>🧼 </Text>
             <Text className="font-bold">{t("estadisticas.section.higiene")}</Text>
             {t("estadisticas.period.higiene", { percent: String(data.hygieneCompletionPercent) })}
           </Text>
@@ -49,7 +47,6 @@ export function PeriodStatsView({ data, isLoading }: { data: PeriodStats | undef
 
         <Card>
           <Text className="text-surface-dark dark:text-white">
-            <Text style={{ fontSize: 12 }}>💇‍♀️ </Text>
             <Text className="font-bold">{t("estadisticas.section.pelo")}</Text>
             {t("estadisticas.period.pelo", {
               washes: String(data.hairWashCount),
@@ -62,7 +59,6 @@ export function PeriodStatsView({ data, isLoading }: { data: PeriodStats | undef
 
         <Card>
           <Text className="text-surface-dark dark:text-white">
-            <Text style={{ fontSize: 12 }}>💄 </Text>
             <Text className="font-bold">{t("estadisticas.section.cara")}</Text>
             {t("estadisticas.period.cara", {
               n: String(data.makeupDaysCount),
@@ -73,7 +69,6 @@ export function PeriodStatsView({ data, isLoading }: { data: PeriodStats | undef
 
         <Card>
           <Text className="text-surface-dark dark:text-white">
-            <Text style={{ fontSize: 12 }}>👗 </Text>
             <Text className="font-bold">{t("estadisticas.section.imagen")}</Text>
             {t("estadisticas.period.imagen", {
               outfits: String(data.outfitsCount),
@@ -88,7 +83,6 @@ export function PeriodStatsView({ data, isLoading }: { data: PeriodStats | undef
 
         <Card>
           <Text className="text-surface-dark dark:text-white">
-            <Text style={{ fontSize: 12 }}>🎉 </Text>
             <Text className="font-bold">{t("estadisticas.section.social")}</Text>
             {t("estadisticas.period.social", {
               n: String(data.activitiesCount),
@@ -103,7 +97,6 @@ export function PeriodStatsView({ data, isLoading }: { data: PeriodStats | undef
 
         <Card>
           <Text className="text-surface-dark dark:text-white">
-            <Text style={{ fontSize: 12 }}>💸 </Text>
             <Text className="font-bold">{t("estadisticas.section.gastos")}</Text>
             {t("estadisticas.period.gastos", { amount: data.expenseTotal.toLocaleString("es-CL") })}
           </Text>

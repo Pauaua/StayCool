@@ -191,14 +191,23 @@ function ResumenContent() {
             style={period === tab.id ? { backgroundColor: "#ecc6ff" } : undefined}
             className="flex-1 py-2 rounded-card items-center"
           >
-            <Text
-              className={
-                period === tab.id ? "font-bold" : "text-gray-500 dark:text-gray-400"
-              }
-              style={period === tab.id ? { color: "#002054" } : undefined}
-            >
-              {canViewPeriod(tab.id) ? tab.label : `🔒 ${tab.label}`}
-            </Text>
+            <View className="flex-row items-center">
+              {canViewPeriod(tab.id) ? null : (
+                <Image
+                  source={require("../../../../assets/images/candado.png")}
+                  style={{ width: 14, height: 14, marginRight: 4 }}
+                  resizeMode="contain"
+                />
+              )}
+              <Text
+                className={
+                  period === tab.id ? "font-bold" : "text-gray-500 dark:text-gray-400"
+                }
+                style={period === tab.id ? { color: "#002054" } : undefined}
+              >
+                {tab.label}
+              </Text>
+            </View>
           </Pressable>
         ))}
       </View>
@@ -337,17 +346,24 @@ function ResumenContent() {
           <View className="gap-3">
             <Pressable
               onPress={canShareThisPeriod ? () => setShareSheetVisible(true) : showShareLockedMessage}
-              className="rounded-full px-5 py-3.5 items-center justify-center"
+              className="rounded-full px-5 py-3.5 flex-row items-center justify-center"
               style={{ backgroundColor: "#ecc6ff" }}
             >
+              {canShareThisPeriod ? null : (
+                <Image
+                  source={require("../../../../assets/images/candado.png")}
+                  style={{ width: 18, height: 18, marginRight: 8 }}
+                  resizeMode="contain"
+                />
+              )}
               <Text className="font-semibold text-base" style={{ color: "#002054" }}>
-                {canShareThisPeriod ? "Compartir" : "🔒 Compartir"}
+                Compartir
               </Text>
             </Pressable>
             <Button
               label={
                 !canShareThisPeriod
-                  ? "🔒 Descargar PDF"
+                  ? "Descargar PDF"
                   : isExportingPdf
                   ? "Generando PDF..."
                   : "Descargar PDF"
@@ -355,6 +371,7 @@ function ResumenContent() {
               variant="ghost"
               loading={canShareThisPeriod && isExportingPdf}
               onPress={canShareThisPeriod ? handleDownloadPdf : showShareLockedMessage}
+              icon={!canShareThisPeriod ? require("../../../../assets/images/candado.png") : undefined}
             />
           </View>
 

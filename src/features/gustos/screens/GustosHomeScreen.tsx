@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { Card } from "@/components/ui/Card";
 import { Chip } from "@/components/ui/Chip";
 import { Button } from "@/components/ui/Button";
+import { StarRating } from "@/components/ui/StarRating";
 import { useDetailedTastes, useQuickTastes } from "@/features/gustos/hooks/useGustos";
 import { useT, type TranslationKey } from "@/lib/i18n";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -73,7 +74,10 @@ export function GustosHomeScreen({ navigation }: Props) {
           onEndReachedThreshold={0.4}
           renderItem={({ item }) => (
             <Card className="mb-2">
-              <Text className="text-surface-dark dark:text-white font-semibold">{item.name}</Text>
+              <View className="flex-row items-center justify-between">
+                <Text className="text-surface-dark dark:text-white font-semibold flex-1 pr-2">{item.name}</Text>
+                {item.rating ? <StarRating value={item.rating} size={14} /> : null}
+              </View>
               {item.description ? (
                 <Text className="text-gray-500 text-sm">{item.description}</Text>
               ) : null}
@@ -98,6 +102,11 @@ export function GustosHomeScreen({ navigation }: Props) {
                   {t(CATEGORY_KEY[item.category] ?? "gustos.category.otro")}
                 </Text>
               </View>
+              {item.rating ? (
+                <View className="mt-1">
+                  <StarRating value={item.rating} size={14} />
+                </View>
+              ) : null}
               {item.genre ? (
                 <Text className="text-gray-500 text-sm">{t("gustos.genreLabel", { value: item.genre })}</Text>
               ) : null}

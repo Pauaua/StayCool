@@ -4,7 +4,8 @@ import {
   equipStarterPiece,
   fetchAvatarSelection,
   fetchUnlockedPieceIds,
-  purchaseAndEquipPiece,
+  // Sparkless/MOOney para modificar el avatar: deshabilitado a propósito.
+  // purchaseAndEquipPiece,
 } from "@/features/premium/services/avatarService";
 import type { AvatarCategory } from "@/features/premium/avatar/types";
 
@@ -46,13 +47,14 @@ export function useEquipStarterPiece() {
   });
 }
 
-export function usePurchaseAvatarPiece() {
-  const { session } = useAuth();
-  const userId = session?.user.id;
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({ category, pieceId, cost }: { category: AvatarCategory; pieceId: string; cost: number }) =>
-      purchaseAndEquipPiece(category, pieceId, cost),
-    onSuccess: () => invalidateAvatarQueries(queryClient, userId),
-  });
-}
+// Sparkless/MOOney para modificar el avatar: deshabilitado a propósito.
+// export function usePurchaseAvatarPiece() {
+//   const { session } = useAuth();
+//   const userId = session?.user.id;
+//   const queryClient = useQueryClient();
+//   return useMutation({
+//     mutationFn: ({ category, pieceId, cost }: { category: AvatarCategory; pieceId: string; cost: number }) =>
+//       purchaseAndEquipPiece(category, pieceId, cost),
+//     onSuccess: () => invalidateAvatarQueries(queryClient, userId),
+//   });
+// }

@@ -7,10 +7,11 @@ import { renderAvatarUrl } from "@/features/premium/avatar/renderAvatar";
 import {
   useAvatarSelection,
   useEquipStarterPiece,
-  usePurchaseAvatarPiece,
+  // Sparkless/MOOney para modificar el avatar: deshabilitado a propósito.
+  // usePurchaseAvatarPiece,
   useUnlockedPieces,
 } from "@/features/premium/hooks/useAvatar";
-import { useMooneyBalance } from "@/features/premium/hooks/useMooney";
+// import { useMooneyBalance } from "@/features/premium/hooks/useMooney";
 
 const CATEGORY_LABELS: Record<AvatarCategory, string> = {
   cara: "Cara",
@@ -22,12 +23,12 @@ const CATEGORY_LABELS: Record<AvatarCategory, string> = {
 export function AvatarShopScreen() {
   const { data: selection } = useAvatarSelection();
   const { data: unlocked } = useUnlockedPieces();
-  const { data: balance } = useMooneyBalance();
+  // const { data: balance } = useMooneyBalance();
   const equipStarter = useEquipStarterPiece();
-  const purchase = usePurchaseAvatarPiece();
+  // const purchase = usePurchaseAvatarPiece();
   const [pendingPieceKey, setPendingPieceKey] = useState<string | null>(null);
 
-  if (!selection || !unlocked || balance === undefined) {
+  if (!selection || !unlocked) {
     return (
       <SafeAreaView className="flex-1 items-center justify-center bg-gray-50 dark:bg-surface-dark">
         <ActivityIndicator color="#b825f2" size="large" />
@@ -49,11 +50,13 @@ export function AvatarShopScreen() {
         await equipStarter.mutateAsync({ category, pieceId });
         return;
       }
-      if ((balance ?? 0) < cost) {
-        Alert.alert("MOOney insuficiente", `Necesitás ${cost} MOOney para esta pieza. Tenés ${balance}.`);
-        return;
-      }
-      await purchase.mutateAsync({ category, pieceId, cost });
+      // Sparkless/MOOney para modificar el avatar: deshabilitado a propósito.
+      // if ((balance ?? 0) < cost) {
+      //   Alert.alert("MOOney insuficiente", `Necesitás ${cost} MOOney para esta pieza. Tenés ${balance}.`);
+      //   return;
+      // }
+      // await purchase.mutateAsync({ category, pieceId, cost });
+      return;
     } catch (error) {
       Alert.alert("No se pudo aplicar", error instanceof Error ? error.message : "Intenta de nuevo.");
     } finally {
@@ -69,7 +72,9 @@ export function AvatarShopScreen() {
             source={{ uri: renderAvatarUrl(selection, 320) }}
             style={{ width: 120, height: 120, borderRadius: 60, borderWidth: 3, borderColor: "#e485ff" }}
           />
+          {/* Sparkless/MOOney para modificar el avatar: deshabilitado a propósito.
           <Text className="mt-3 text-sm font-semibold text-brand-500">🪙 {balance} MOOney</Text>
+          */}
         </View>
 
         {(Object.keys(AVATAR_CATALOG) as AvatarCategory[]).map((category) => (

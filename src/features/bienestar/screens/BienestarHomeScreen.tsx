@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FlatList, Modal, Pressable, SafeAreaView, Text, View } from "react-native";
+import { FlatList, Image, Modal, Pressable, SafeAreaView, Text, View } from "react-native";
 import { Card } from "@/components/ui/Card";
 import { Chip } from "@/components/ui/Chip";
 import { TextField } from "@/components/ui/TextField";
@@ -91,9 +91,16 @@ export function BienestarHomeScreen() {
         onEndReachedThreshold={0.4}
         ListHeaderComponent={
           <>
-            <Text className="text-2xl font-bold text-surface-dark dark:text-white mb-4">
-              {t("bienestar.title")}
-            </Text>
+            <View className="flex-row items-center mb-4">
+              <Image
+                source={require("../../../../assets/images/bienestar(_).png")}
+                style={{ width: 56, height: 56, marginRight: 8 }}
+                resizeMode="contain"
+              />
+              <Text className="text-2xl font-bold text-surface-dark dark:text-white">
+                {t("bienestar.title")}
+              </Text>
+            </View>
 
             <Card className="mb-4">
               <Text className="text-xl font-bold text-surface-dark dark:text-white mb-3">

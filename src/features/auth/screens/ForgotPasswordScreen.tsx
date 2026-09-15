@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Alert, SafeAreaView, Text } from "react-native";
+import { Alert, Image, SafeAreaView, Text, View } from "react-native";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
 import { GradientBackground } from "@/components/ui/GradientBackground";
@@ -34,11 +34,26 @@ export function ForgotPasswordScreen({ navigation }: Props) {
   return (
     <GradientBackground>
       <SafeAreaView className="flex-1 px-6 justify-center">
-        <Text className="font-script text-navy mb-3" style={{ fontSize: 36 }}>
-          Recuperar contraseña 🔑
-        </Text>
+        <View className="items-center mb-4">
+          <Image
+            source={require("../../../../assets/images/Logo.jpg")}
+            style={{ width: 64, height: 64 }}
+            resizeMode="contain"
+          />
+        </View>
+        <View className="flex-row items-center mb-3">
+          <Image
+            source={require("../../../../assets/images/candado.png")}
+            style={{ width: 32, height: 32, marginRight: 8 }}
+            resizeMode="contain"
+          />
+          <Text className="font-script text-navy" style={{ fontSize: 36 }}>
+            Recuperar contraseña
+          </Text>
+        </View>
         <Text className="text-navy/70 mb-6">
-          Ingresá tu email y te mandamos un link para elegir una contraseña nueva.
+          Ingresa tu correo electrónico y, si está asociada a alguna cuenta creada en StayCool, te
+          llegará un correo para restaurar tu contraseña. ¡Atenta!
         </Text>
         <TextField
           label="Email"

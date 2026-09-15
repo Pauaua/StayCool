@@ -13,6 +13,10 @@ const HYGIENE_ITEM_ICONS: Record<string, number> = {
   Cepillado: require("../../../../assets/images/cepillito.png"),
   "Corte de uñas": require("../../../../assets/images/uñotas.png"),
   "Lavado de pelo": require("../../../../assets/images/pelito lavado.png"),
+  "Protector solar": require("../../../../assets/images/solazo.png"),
+  "Masaje capilar": require("../../../../assets/images/brillitos.png"),
+  Skincare: require("../../../../assets/images/makeup.png"),
+  Exfoliación: require("../../../../assets/images/higuiene.png"),
 };
 
 export function HygieneChecklistItem({

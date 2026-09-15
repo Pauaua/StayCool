@@ -36,14 +36,15 @@ export async function equipStarterPiece(userId: string, category: AvatarCategory
   if (error) throw error;
 }
 
+// Sparkless/MOOney para modificar el avatar: deshabilitado a propósito.
 // Piezas pagas: todo pasa por la función RPC (paga + desbloquea + equipa
 // atómico y validado en el servidor).
-export async function purchaseAndEquipPiece(category: AvatarCategory, pieceId: string, cost: number) {
-  const { data, error } = await supabase.rpc("purchase_avatar_piece", {
-    p_category: category,
-    p_piece_id: pieceId,
-    p_cost: cost,
-  });
-  if (error) throw error;
-  return data as number; // saldo restante
-}
+// export async function purchaseAndEquipPiece(category: AvatarCategory, pieceId: string, cost: number) {
+//   const { data, error } = await supabase.rpc("purchase_avatar_piece", {
+//     p_category: category,
+//     p_piece_id: pieceId,
+//     p_cost: cost,
+//   });
+//   if (error) throw error;
+//   return data as number; // saldo restante
+// }

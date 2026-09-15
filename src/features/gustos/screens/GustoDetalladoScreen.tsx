@@ -4,6 +4,7 @@ import { TextField } from "@/components/ui/TextField";
 import { Chip } from "@/components/ui/Chip";
 import { Button } from "@/components/ui/Button";
 import { FormScreen } from "@/components/ui/FormScreen";
+import { StarRating } from "@/components/ui/StarRating";
 import { useCreateDetailedTaste } from "@/features/gustos/hooks/useGustos";
 import { useT, type TranslationKey } from "@/lib/i18n";
 import type { TasteCategory } from "@/features/gustos/types";
@@ -36,6 +37,7 @@ export function GustoDetalladoScreen({ navigation }: Props) {
   const [season, setSeason] = useState("");
   const [author, setAuthor] = useState("");
   const [saga, setSaga] = useState("");
+  const [rating, setRating] = useState(0);
 
   const create = useCreateDetailedTaste();
 
@@ -57,6 +59,7 @@ export function GustoDetalladoScreen({ navigation }: Props) {
       genre: genre.trim() || undefined,
       notes: notes.trim() || undefined,
       details,
+      rating: rating || undefined,
     });
     navigation.goBack();
   }
@@ -109,6 +112,13 @@ export function GustoDetalladoScreen({ navigation }: Props) {
         ) : null}
 
         <TextField label={t("gustos.notesOptional")} value={notes} onChangeText={setNotes} multiline />
+
+        <View className="mb-4">
+          <Text className="text-sm font-semibold text-surface-dark dark:text-white mb-1.5">
+            {t("gustos.howMuchLiked")}
+          </Text>
+          <StarRating value={rating} onChange={setRating} />
+        </View>
 
         <Button label={t("gustos.save")} onPress={handleSave} loading={create.isPending} />
     </FormScreen>

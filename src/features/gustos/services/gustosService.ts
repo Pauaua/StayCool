@@ -4,11 +4,15 @@ import type { DetailedTaste, QuickTaste, TasteCategory, TasteDetails } from "@/f
 
 const PAGE_SIZE = 20;
 
-export async function createQuickTaste(userId: string, input: { name: string; description?: string }) {
+export async function createQuickTaste(
+  userId: string,
+  input: { name: string; description?: string; rating?: number }
+) {
   const { error } = await supabase.from("taste_quick_logs").insert({
     user_id: userId,
     name: input.name,
     description: input.description ?? null,
+    rating: input.rating ?? null,
   });
   if (error) throw error;
 }
@@ -28,7 +32,14 @@ export async function fetchQuickTastesPage(userId: string, page: number) {
 
 export async function createDetailedTaste(
   userId: string,
-  input: { category: TasteCategory; name: string; genre?: string; notes?: string; details: TasteDetails }
+  input: {
+    category: TasteCategory;
+    name: string;
+    genre?: string;
+    notes?: string;
+    details: TasteDetails;
+    rating?: number;
+  }
 ) {
   const { error } = await supabase.from("taste_detailed_logs").insert({
     user_id: userId,
@@ -39,6 +50,7 @@ export async function createDetailedTaste(
     // TasteDetails son todos campos opcionales de texto; Json exige un
     // index signature explícito que la interfaz de dominio no necesita.
     details: input.details as Json,
+    rating: input.rating ?? null,
   });
   if (error) throw error;
 }
