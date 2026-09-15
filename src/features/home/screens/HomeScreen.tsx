@@ -52,7 +52,11 @@ export function HomeScreen({ navigation }: Props) {
               resizeMode="contain"
             />
             <Pressable onPress={() => navigation.navigate("Settings")}>
-              <Text className="text-2xl">⚙️</Text>
+              <Image
+                source={require("../../../../assets/images/tuerca.png")}
+                style={{ width: 48, height: 48 }}
+                resizeMode="contain"
+              />
             </Pressable>
           </View>
         </View>

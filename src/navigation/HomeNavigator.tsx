@@ -3,7 +3,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { HomeScreen } from "@/features/home/screens/HomeScreen";
 import { SettingsScreen } from "@/features/home/screens/SettingsScreen";
-import { AvatarShopScreen } from "@/features/premium/screens/AvatarShopScreen";
+// Sparkless/MOOney para modificar el avatar: deshabilitado a propósito.
+// import { AvatarShopScreen } from "@/features/premium/screens/AvatarShopScreen";
 import { PaywallScreen } from "@/features/premium/screens/PaywallScreen";
 import { ResumenScreen } from "@/features/resumen/screens/ResumenScreen";
 import { ConfiguracionScreen } from "@/features/home/screens/ConfiguracionScreen";
@@ -30,11 +31,12 @@ export function HomeNavigator({
           component={SettingsScreen}
           options={{ headerShown: true, title: "Ajustes" }}
         />
+        {/* Sparkless/MOOney para modificar el avatar: deshabilitado a propósito.
         <Stack.Screen
           name="AvatarShop"
           component={AvatarShopScreen}
           options={{ headerShown: true, title: "Personalizar avatar" }}
-        />
+        /> */}
         <Stack.Screen
           name="Resumen"
           component={ResumenScreen}

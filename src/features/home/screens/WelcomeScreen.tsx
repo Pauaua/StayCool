@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Image, Pressable, Text, View } from "react-native";
+import { Alert, Image, Pressable, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useProfile } from "@/features/home/hooks/useProfile";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useT } from "@/lib/i18n";
 
 interface WelcomeScreenProps {
@@ -70,8 +71,8 @@ function PillButton({
         <Image
           source={icon}
           style={{
-            width: 28,
-            height: 28,
+            width: 42,
+            height: 42,
             marginRight: 8,
             tintColor: filled && !backgroundColor ? "#ffffff" : undefined,
           }}
@@ -99,6 +100,7 @@ export function WelcomeScreen({
   onOpenConfiguracion,
 }: WelcomeScreenProps) {
   const { data: profile } = useProfile();
+  const { signOut } = useAuth();
   const { t, tg } = useT();
   const [now, setNow] = useState(() => new Date());
 
@@ -108,6 +110,13 @@ export function WelcomeScreen({
   }, []);
 
   const displayName = profile?.display_name?.trim();
+
+  function handleSignOut() {
+    Alert.alert(t("common.confirmSignOutTitle"), tg("common.confirmSignOutMessage"), [
+      { text: t("common.cancel"), style: "cancel" },
+      { text: t("common.signOut"), style: "destructive", onPress: signOut },
+    ]);
+  }
 
   return (
     <LinearGradient
@@ -132,8 +141,16 @@ export function WelcomeScreen({
         <View style={{ flex: 2 }} />
 
         <View className="mt-8 w-full items-center">
-          <PillButton label={t("welcome.openAgenda")} onPress={onOpenAgenda} />
-          <PillButton label={t("welcome.viewResumen")} onPress={onOpenResumen} />
+          <PillButton
+            label={t("welcome.openAgenda")}
+            onPress={onOpenAgenda}
+            icon={require("../../../../assets/images/notas2.png")}
+          />
+          <PillButton
+            label={t("welcome.viewResumen")}
+            onPress={onOpenResumen}
+            icon={require("../../../../assets/images/estadisticas.png")}
+          />
           <PillButton
             label={t("welcome.goPremium")}
             onPress={onOpenPaywall}
@@ -141,7 +158,16 @@ export function WelcomeScreen({
             icon={require("../../../../assets/images/brillitos.png")}
             backgroundColor="#ecc6ff"
           />
-          <PillButton label={t("welcome.settings")} onPress={onOpenConfiguracion} />
+          <PillButton
+            label={t("welcome.settings")}
+            onPress={onOpenConfiguracion}
+            icon={require("../../../../assets/images/tuerca.png")}
+          />
+          <PillButton
+            label={t("common.signOut")}
+            onPress={handleSignOut}
+            icon={require("../../../../assets/images/log out.png")}
+          />
         </View>
 
         <View style={{ flex: 1 }} />

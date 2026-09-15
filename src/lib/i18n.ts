@@ -112,12 +112,12 @@ const dict = {
     "settings.plan": "Plan {tier}",
     "settings.nameLabel": "Nombre",
     "settings.customizeAvatar": "Personalizar avatar",
-    "settings.changePhoto": "🔒 Cambiar foto de perfil",
+    "settings.changePhoto": "Cambiar foto de perfil",
     "settings.viewPlans": "Ver planes StayCoolPlus",
     "settings.signOut": "Cerrar sesión",
 
     // Bienestar
-    "bienestar.title": "🌿 Bienestar",
+    "bienestar.title": "Bienestar",
     "bienestar.howFeel": "¿Cómo te sientes hoy?",
     "bienestar.logMeal": "Registrar comida",
     "bienestar.whatAte": "¿Qué comiste?",
@@ -152,7 +152,7 @@ const dict = {
     "bienestar.mood.agotado": "agotado",
 
     // Imagen
-    "imagen.title": "👗 Imagen",
+    "imagen.title": "Imagen",
     "imagen.cara": "Cara",
     "imagen.caraDesc": "¿Cómo lucirás hoy?",
     "imagen.vestuario": "Vestuario",
@@ -446,6 +446,7 @@ const dict = {
     "gustos.author": "Autor",
     "gustos.sagaOptional": "Saga (opcional)",
     "gustos.notesOptional": "Notas (opcional)",
+    "gustos.howMuchLiked": "¿Qué tanto te gustó?",
 
     // Notas
     "notas.title": "Notas",
@@ -732,11 +733,11 @@ const dict = {
     "settings.plan": "{tier} plan",
     "settings.nameLabel": "Name",
     "settings.customizeAvatar": "Customize avatar",
-    "settings.changePhoto": "🔒 Change profile photo",
+    "settings.changePhoto": "Change profile photo",
     "settings.viewPlans": "View StayCoolPlus plans",
     "settings.signOut": "Log out",
 
-    "bienestar.title": "🌿 Wellness",
+    "bienestar.title": "Wellness",
     "bienestar.howFeel": "How are you feeling today?",
     "bienestar.logMeal": "Log a meal",
     "bienestar.whatAte": "What did you eat?",
@@ -770,7 +771,7 @@ const dict = {
     "bienestar.mood.mal": "bad",
     "bienestar.mood.agotado": "exhausted",
 
-    "imagen.title": "👗 Image",
+    "imagen.title": "Image",
     "imagen.cara": "Face",
     "imagen.caraDesc": "How will you look today?",
     "imagen.vestuario": "Outfits",
@@ -1054,6 +1055,7 @@ const dict = {
     "gustos.author": "Author",
     "gustos.sagaOptional": "Series (optional)",
     "gustos.notesOptional": "Notes (optional)",
+    "gustos.howMuchLiked": "How much did you like it?",
 
     "notas.title": "Notes",
     "notas.quickIdea": "Quick idea",

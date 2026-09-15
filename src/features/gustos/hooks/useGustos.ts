@@ -29,7 +29,7 @@ export function useCreateQuickTaste() {
   const userId = useUserId();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (input: { name: string; description?: string }) =>
+    mutationFn: (input: { name: string; description?: string; rating?: number }) =>
       createQuickTaste(userId as string, input),
     onSuccess: () => {
       analytics.track("gusto_rapido_creado");
@@ -59,6 +59,7 @@ export function useCreateDetailedTaste() {
       genre?: string;
       notes?: string;
       details: TasteDetails;
+      rating?: number;
     }) => createDetailedTaste(userId as string, input),
     onSuccess: () => {
       analytics.track("gusto_detallado_creado");

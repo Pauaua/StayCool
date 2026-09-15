@@ -1,7 +1,18 @@
 import React, { useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Image, Pressable, Text, View } from "react-native";
 import { Button } from "@/components/ui/Button";
 import { useT, type TranslationKey } from "@/lib/i18n";
+
+// Íconos propios que reemplazan el emoji de algunos presets acá y en
+// HygieneChecklistItem — buscado por label canónico (no cambia con el
+// idioma). Presets sin match acá siguen mostrando su emoji tal cual.
+const PRESET_ICON_IMAGES: Record<string, number> = {
+  "Corte de uñas": require("../../../../assets/images/uñotas.png"),
+  "Protector solar": require("../../../../assets/images/solazo.png"),
+  "Masaje capilar": require("../../../../assets/images/brillitos.png"),
+  Skincare: require("../../../../assets/images/makeup.png"),
+  Exfoliación: require("../../../../assets/images/higuiene.png"),
+};
 
 // Catálogo cerrado de ítems que se pueden sumar al checklist de Higiene.
 // A propósito no es texto libre: dejar agregar "cualquier cosa" desvirtúa el
@@ -18,7 +29,6 @@ export const HYGIENE_PRESETS: { label: string; labelKey: TranslationKey; icon: s
   { label: "Enjuague bucal", labelKey: "higiene.preset.enjuagueBucal", icon: "🧴" },
   { label: "Aplicación de crema", labelKey: "higiene.preset.aplicacionCrema", icon: "🧴" },
   { label: "Protector solar", labelKey: "higiene.preset.protectorSolar", icon: "☀️" },
-  { label: "Exfoliación facial", labelKey: "higiene.preset.exfoliacionFacial", icon: "✨" },
   { label: "Corte de uñas", labelKey: "higiene.preset.corteUnas", icon: "💅" },
   { label: "Depilación", labelKey: "higiene.preset.depilacion", icon: "🪒" },
   { label: "Skincare", labelKey: "higiene.preset.skincare", icon: "🧖‍♀️" },
@@ -69,7 +79,15 @@ export function AddHygieneItemPicker({
               }}
               className="flex-row items-center bg-white dark:bg-surface-cardDark border border-gray-200 dark:border-gray-700 rounded-full px-2.5 py-1.5"
             >
-              <Text className="mr-1 text-xs">{preset.icon}</Text>
+              {PRESET_ICON_IMAGES[preset.label] ? (
+                <Image
+                  source={PRESET_ICON_IMAGES[preset.label]}
+                  style={{ width: 24, height: 24, marginRight: 4 }}
+                  resizeMode="contain"
+                />
+              ) : (
+                <Text className="mr-1 text-xs">{preset.icon}</Text>
+              )}
               <Text className="text-xs text-surface-dark dark:text-white">{t(preset.labelKey)}</Text>
             </Pressable>
           ))}

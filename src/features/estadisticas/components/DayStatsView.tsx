@@ -37,7 +37,6 @@ export function DayStatsView({ data }: { data: TodayStats }) {
     <View className="gap-3">
       <Card>
         <Text className="text-surface-dark dark:text-white">
-          <Text style={{ fontSize: 12 }}>🌿 </Text>
           <Text className="font-bold">{t("estadisticas.section.bienestar")}</Text>
           {t("estadisticas.day.bienestar", {
             meals: String(data.mealsCount),
@@ -50,7 +49,6 @@ export function DayStatsView({ data }: { data: TodayStats }) {
 
       <Card>
         <Text className="text-surface-dark dark:text-white">
-          <Text style={{ fontSize: 12 }}>🧼 </Text>
           <Text className="font-bold">{t("estadisticas.section.higiene")}</Text>
           {t("estadisticas.day.higiene", {
             showered: t(data.showered ? "estadisticas.day.showered" : "estadisticas.day.notShowered"),
@@ -62,7 +60,6 @@ export function DayStatsView({ data }: { data: TodayStats }) {
 
       <Card>
         <Text className="text-surface-dark dark:text-white">
-          <Text style={{ fontSize: 12 }}>💇‍♀️ </Text>
           <Text className="font-bold">{t("estadisticas.section.pelo")}</Text>
           {t("estadisticas.day.pelo", {
             washed: t(data.hairWashed ? "estadisticas.day.hairWashed" : "estadisticas.day.hairNotWashed"),
@@ -75,7 +72,6 @@ export function DayStatsView({ data }: { data: TodayStats }) {
 
       <Card>
         <Text className="text-surface-dark dark:text-white">
-          <Text style={{ fontSize: 12 }}>💄 </Text>
           <Text className="font-bold">{t("estadisticas.section.cara")}</Text>
           {t(data.madeUp ? "estadisticas.day.madeUp" : "estadisticas.day.notMadeUp")}
         </Text>
@@ -83,7 +79,6 @@ export function DayStatsView({ data }: { data: TodayStats }) {
 
       <Card>
         <Text className="text-surface-dark dark:text-white">
-          <Text style={{ fontSize: 12 }}>👗 </Text>
           <Text className="font-bold">{t("estadisticas.section.imagen")}</Text>
           {t("estadisticas.day.imagen", {
             outfit: t(data.outfitLogged ? "estadisticas.day.outfitLogged" : "estadisticas.day.outfitNotLogged"),
@@ -94,7 +89,6 @@ export function DayStatsView({ data }: { data: TodayStats }) {
 
       <Card>
         <Text className="text-surface-dark dark:text-white">
-          <Text style={{ fontSize: 12 }}>💭 </Text>
           <Text className="font-bold">{t("estadisticas.section.sentires")}</Text>
           {data.mood
             ? t("estadisticas.day.moodLogged", { mood: t(MOOD_KEY[data.mood] ?? "bienestar.mood.neutral") })
@@ -104,7 +98,6 @@ export function DayStatsView({ data }: { data: TodayStats }) {
 
       <Card>
         <Text className="text-surface-dark dark:text-white">
-          <Text style={{ fontSize: 12 }}>🎉 </Text>
           <Text className="font-bold">{t("estadisticas.section.social")}</Text>
           {t("estadisticas.day.social", {
             n: String(data.activitiesCount),
@@ -119,7 +112,6 @@ export function DayStatsView({ data }: { data: TodayStats }) {
 
       <Card>
         <Text className="text-surface-dark dark:text-white">
-          <Text style={{ fontSize: 12 }}>💸 </Text>
           <Text className="font-bold">{t("estadisticas.section.gastos")}</Text>
           {t("estadisticas.day.gastos", { amount: data.expenseTotal.toLocaleString("es-CL") })}
         </Text>

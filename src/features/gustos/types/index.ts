@@ -6,6 +6,7 @@ export interface QuickTaste {
   logged_date: string;
   name: string;
   description: string | null;
+  rating: number | null;
 }
 
 // Campos específicos por categoría. Se guardan tal cual en la columna
@@ -38,4 +39,5 @@ export interface DetailedTaste {
   genre: string | null;
   notes: string | null;
   details: TasteDetails;
+  rating: number | null;
 }

@@ -8,7 +8,8 @@ import { TextField } from "@/components/ui/TextField";
 import { useProfile, useUpdateProfile, useUploadAvatarPhoto } from "@/features/home/hooks/useProfile";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { usePremium } from "@/features/premium/hooks/usePremium";
-import { useMooneyBalance } from "@/features/premium/hooks/useMooney";
+// Sparkless/MOOney para modificar el avatar: deshabilitado a propósito.
+// import { useMooneyBalance } from "@/features/premium/hooks/useMooney";
 import { UserAvatar } from "@/features/premium/components/UserAvatar";
 import { NicknameWithBadge } from "@/features/premium/components/PremiumBadge";
 import { useT } from "@/lib/i18n";
@@ -22,7 +23,7 @@ export function SettingsScreen({ navigation }: Props) {
   const uploadAvatar = useUploadAvatarPhoto();
   const { signOut } = useAuth();
   const { tier, isFull } = usePremium();
-  const { data: mooneyBalance } = useMooneyBalance();
+  // const { data: mooneyBalance } = useMooneyBalance();
   const { t } = useT();
 
   if (isLoading || !profile) {
@@ -77,6 +78,7 @@ export function SettingsScreen({ navigation }: Props) {
             />
           </View>
 
+          {/* Sparkless/MOOney para modificar el avatar: deshabilitado a propósito.
           {isFull ? (
             <>
               <Text className="text-sm font-semibold text-brand-500 mt-2">
@@ -91,9 +93,15 @@ export function SettingsScreen({ navigation }: Props) {
               </View>
             </>
           ) : null}
+          */}
 
           <View className="mt-3 w-full">
-            <Button label={t("settings.changePhoto")} variant="ghost" onPress={handlePickPhoto} />
+            <Button
+              label={t("settings.changePhoto")}
+              variant="ghost"
+              onPress={handlePickPhoto}
+              icon={!isFull ? require("../../../../assets/images/candado.png") : undefined}
+            />
           </View>
 
           {!isFull ? (
