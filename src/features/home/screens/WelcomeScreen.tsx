@@ -141,7 +141,7 @@ export function WelcomeScreen({
         </View>
 
         <View style={{ flex: 2 }} className="items-center justify-center">
-          <TrialGiftBox />
+          <TrialGiftBox onOpenAgenda={onOpenAgenda} />
         </View>
 
         <View className="mt-8 w-full items-center">
