@@ -22,4 +22,6 @@ export interface Profile {
   period_reminder_message: string | null;
   period_reminder_days_before: number;
   paused_at: string | null;
+  trial_claimed_at: string | null;
+  trial_ends_at: string | null;
 }

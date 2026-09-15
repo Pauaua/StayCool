@@ -628,6 +628,8 @@ export type Database = {
           skincare_night_reminder_enabled: boolean
           skincare_night_reminder_time: string
           timezone: string
+          trial_claimed_at: string | null
+          trial_ends_at: string | null
           updated_at: string
         }
         Insert: {
@@ -655,6 +657,8 @@ export type Database = {
           skincare_night_reminder_enabled?: boolean
           skincare_night_reminder_time?: string
           timezone?: string
+          trial_claimed_at?: string | null
+          trial_ends_at?: string | null
           updated_at?: string
         }
         Update: {
@@ -682,6 +686,8 @@ export type Database = {
           skincare_night_reminder_enabled?: boolean
           skincare_night_reminder_time?: string
           timezone?: string
+          trial_claimed_at?: string | null
+          trial_ends_at?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -1036,6 +1042,7 @@ export type Database = {
         Args: { p_end_date: string; p_user_id: string }
         Returns: number
       }
+      claim_trial: { Args: never; Returns: string }
       grant_mooney_for_resumen: {
         Args: { p_period_key: string }
         Returns: number

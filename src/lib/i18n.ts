@@ -18,6 +18,12 @@ const dict = {
     "welcome.viewResumen": "Ver Resumen",
     "welcome.goPremium": "Hazte Diva",
     "welcome.settings": "Configuración",
+    "trial.giftLabel": "¡Tienes un regalo!",
+    "trial.successLine1": "Te has ganado ser Diva",
+    "trial.successLine1Suffix": "por tres días.",
+    "trial.successLine2": "Disfruta and stay cool",
+    "trial.closeButton": "Ya",
+    "trial.errorTitle": "No se pudo activar la prueba",
 
     // Configuración
     "config.title": "Configuración",
@@ -655,6 +661,12 @@ const dict = {
     "welcome.viewResumen": "View Summary",
     "welcome.goPremium": "Go Diva",
     "welcome.settings": "Settings",
+    "trial.giftLabel": "You have a gift!",
+    "trial.successLine1": "You've earned Diva status",
+    "trial.successLine1Suffix": "for three days.",
+    "trial.successLine2": "Enjoy and stay cool",
+    "trial.closeButton": "Got it",
+    "trial.errorTitle": "Couldn't activate the trial",
 
     "config.title": "Settings",
     "config.back": "Home",

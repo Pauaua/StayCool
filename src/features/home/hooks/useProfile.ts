@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { fetchProfile, updateProfile, uploadAvatarPhoto } from "@/features/home/services/profileService";
+import { claimTrial, fetchProfile, updateProfile, uploadAvatarPhoto } from "@/features/home/services/profileService";
 import { deleteAccount } from "@/features/home/services/accountService";
 import {
   cancelReminder,
@@ -51,6 +51,16 @@ export function useUpdateProfile() {
 export function useDeleteAccount() {
   return useMutation({
     mutationFn: deleteAccount,
+  });
+}
+
+export function useClaimTrial() {
+  const { session } = useAuth();
+  const userId = session?.user.id;
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: claimTrial,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["profile", userId] }),
   });
 }
 

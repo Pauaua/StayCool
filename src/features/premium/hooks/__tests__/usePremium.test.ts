@@ -16,6 +16,14 @@ jest.mock("@/config/env", () => ({
   env: { revenueCatApiKeyIos: "", revenueCatApiKeyAndroid: "" },
 }));
 
+// usePremium.tsx también usa useProfile (para saber si hay una prueba
+// gratuita activa), que arrastra useAuth -> supabase/AsyncStorage.
+// resolveTier() no depende de React ni de este hook, así que lo mockeamos
+// para poder testearla en aislamiento.
+jest.mock("@/features/home/hooks/useProfile", () => ({
+  useProfile: () => ({ data: undefined }),
+}));
+
 import { resolveTier } from "@/features/premium/hooks/usePremium";
 
 function customerInfoWithEntitlements(active: string[]): CustomerInfo {
@@ -38,28 +46,37 @@ describe("resolveTier", () => {
   });
 
   it("devuelve 'free' cuando no hay CustomerInfo", () => {
-    expect(resolveTier(null)).toBe("free");
+    expect(resolveTier(null, false)).toBe("free");
   });
 
   it("devuelve 'free' cuando no hay entitlements activos", () => {
-    expect(resolveTier(customerInfoWithEntitlements([]))).toBe("free");
+    expect(resolveTier(customerInfoWithEntitlements([]), false)).toBe("free");
   });
 
   it("devuelve 'basico' cuando solo el entitlement basico está activo", () => {
-    expect(resolveTier(customerInfoWithEntitlements(["basico"]))).toBe("basico");
+    expect(resolveTier(customerInfoWithEntitlements(["basico"]), false)).toBe("basico");
   });
 
   it("devuelve 'full' cuando el entitlement full está activo", () => {
-    expect(resolveTier(customerInfoWithEntitlements(["full"]))).toBe("full");
+    expect(resolveTier(customerInfoWithEntitlements(["full"]), false)).toBe("full");
   });
 
   it("prioriza 'full' sobre 'basico' cuando ambos están activos", () => {
-    expect(resolveTier(customerInfoWithEntitlements(["basico", "full"]))).toBe("full");
+    expect(resolveTier(customerInfoWithEntitlements(["basico", "full"]), false)).toBe("full");
+  });
+
+  it("con la prueba gratuita activa devuelve 'full' aunque no haya entitlements", () => {
+    expect(resolveTier(null, true)).toBe("full");
+    expect(resolveTier(customerInfoWithEntitlements([]), true)).toBe("full");
+  });
+
+  it("la prueba gratuita no pisa 'basico' hacia abajo, pero sí lo sube a 'full'", () => {
+    expect(resolveTier(customerInfoWithEntitlements(["basico"]), true)).toBe("full");
   });
 
   it("en __DEV__ siempre devuelve 'full', sin importar los entitlements", () => {
     (global as any).__DEV__ = true;
-    expect(resolveTier(null)).toBe("full");
-    expect(resolveTier(customerInfoWithEntitlements([]))).toBe("full");
+    expect(resolveTier(null, false)).toBe("full");
+    expect(resolveTier(customerInfoWithEntitlements([]), false)).toBe("full");
   });
 });

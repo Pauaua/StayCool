@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Alert, Image, Pressable, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useAutoReactivateAccount, useProfile } from "@/features/home/hooks/useProfile";
+import { TrialGiftBox } from "@/features/premium/components/TrialGiftBox";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useT } from "@/lib/i18n";
 
@@ -139,7 +140,9 @@ export function WelcomeScreen({
           </View>
         </View>
 
-        <View style={{ flex: 2 }} />
+        <View style={{ flex: 2 }} className="items-center justify-center">
+          <TrialGiftBox />
+        </View>
 
         <View className="mt-8 w-full items-center">
           <PillButton
