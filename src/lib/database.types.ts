@@ -617,6 +617,7 @@ export type Database = {
           makeup_reminder_enabled: boolean
           makeup_reminder_time: string
           monthly_budget: number | null
+          paused_at: string | null
           period_reminder_days_before: number
           period_reminder_enabled: boolean
           period_reminder_message: string | null
@@ -643,6 +644,7 @@ export type Database = {
           makeup_reminder_enabled?: boolean
           makeup_reminder_time?: string
           monthly_budget?: number | null
+          paused_at?: string | null
           period_reminder_days_before?: number
           period_reminder_enabled?: boolean
           period_reminder_message?: string | null
@@ -669,6 +671,7 @@ export type Database = {
           makeup_reminder_enabled?: boolean
           makeup_reminder_time?: string
           monthly_budget?: number | null
+          paused_at?: string | null
           period_reminder_days_before?: number
           period_reminder_enabled?: boolean
           period_reminder_message?: string | null

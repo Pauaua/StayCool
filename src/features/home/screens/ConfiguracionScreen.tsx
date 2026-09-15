@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { Image, Modal, Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
+import { Alert, Image, Modal, Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
 import { Calendar } from "react-native-calendars";
 import { format } from "date-fns";
 import { Card } from "@/components/ui/Card";
 import { TextField } from "@/components/ui/TextField";
-import { useProfile, useUpdateProfile } from "@/features/home/hooks/useProfile";
+import { Button } from "@/components/ui/Button";
+import { useDeleteAccount, useProfile, useUpdateProfile } from "@/features/home/hooks/useProfile";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useGoToWelcome } from "@/navigation/WelcomeNavigationContext";
 import { useHideRailWhileMounted } from "@/navigation/RailVisibilityContext";
 import { FallingCircles } from "@/components/ui/FallingCircles";
@@ -38,6 +40,8 @@ export function ConfiguracionScreen({ navigation }: Props) {
   useHideRailWhileMounted();
   const { data: profile } = useProfile();
   const update = useUpdateProfile();
+  const deleteAccount = useDeleteAccount();
+  const { signOut } = useAuth();
   const { t, tg } = useT();
   // Si ya hay una fecha guardada, partimos asumiendo que fue la exacta;
   // si no, arrancamos en "no sé" para no forzar a nadie a tipear una fecha
@@ -45,6 +49,46 @@ export function ConfiguracionScreen({ navigation }: Props) {
   // guarda (last_period_date) es el mismo en ambos casos.
   const [knowsExactDate, setKnowsExactDate] = useState(true);
   const [showDay1Calendar, setShowDay1Calendar] = useState(false);
+
+  function handlePauseAccount() {
+    Alert.alert(t("config.pauseAccount.confirmTitle"), t("config.pauseAccount.confirmMessage"), [
+      { text: t("common.cancel"), style: "cancel" },
+      {
+        text: t("config.pauseAccount.confirmButton"),
+        style: "destructive",
+        onPress: async () => {
+          await update.mutateAsync({ paused_at: new Date().toISOString() });
+          await signOut();
+        },
+      },
+    ]);
+  }
+
+  function handleDeleteAccount() {
+    Alert.alert(t("config.deleteAccount.confirmTitle"), t("config.deleteAccount.confirmMessage"), [
+      { text: t("common.cancel"), style: "cancel" },
+      {
+        text: t("config.deleteAccount.confirmButton"),
+        style: "destructive",
+        onPress: async () => {
+          try {
+            await deleteAccount.mutateAsync();
+            // La cuenta ya no existe en el servidor; solo limpiamos la
+            // sesión local (signOut() puede fallar contra el servidor
+            // porque el usuario ya no existe, pero igual queremos que la
+            // app vuelva a Auth, así que no dejamos que ese error se
+            // propague).
+            await signOut().catch(() => {});
+          } catch (error) {
+            Alert.alert(
+              t("config.deleteAccount.errorTitle"),
+              error instanceof Error ? error.message : "Intenta de nuevo."
+            );
+          }
+        },
+      },
+    ]);
+  }
 
   return (
     <SafeAreaView className="flex-1 px-5 pt-4" style={{ backgroundColor: "#eef4ff" }}>
@@ -302,6 +346,26 @@ export function ConfiguracionScreen({ navigation }: Props) {
           {t("config.legal.link")}
         </Text>
       </Pressable>
+
+      <View className="mt-6">
+        <Button
+          label={t("config.pauseAccount.button")}
+          variant="secondary"
+          onPress={handlePauseAccount}
+          loading={update.isPending}
+        />
+        <View className="h-3" />
+        <Pressable
+          onPress={handleDeleteAccount}
+          disabled={deleteAccount.isPending}
+          className="rounded-full px-6 py-3.5 items-center justify-center border"
+          style={{ borderColor: "#ff6b6b", opacity: deleteAccount.isPending ? 0.5 : 1 }}
+        >
+          <Text className="font-semibold text-base" style={{ color: "#ff6b6b" }}>
+            {deleteAccount.isPending ? "..." : t("config.deleteAccount.button")}
+          </Text>
+        </Pressable>
+      </View>
       </ScrollView>
     </SafeAreaView>
   );

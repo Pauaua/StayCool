@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { fetchProfile, updateProfile, uploadAvatarPhoto } from "@/features/home/services/profileService";
+import { deleteAccount } from "@/features/home/services/accountService";
 import {
   cancelReminder,
   REMINDER_IDS,
@@ -20,6 +21,23 @@ export function useProfile() {
   });
 }
 
+// Si la cuenta está pausada (ver "Pausar cuenta" en Configuración), el solo
+// hecho de volver a loguearse y cargar el perfil la reactiva automáticamente
+// — mismo comportamiento que Instagram/Facebook con la desactivación
+// temporal. No hay nada que bloquear del lado de auth: la cuenta nunca dejó
+// de poder loguearse, solo estaba marcada como pausada.
+export function useAutoReactivateAccount() {
+  const { data: profile } = useProfile();
+  const update = useUpdateProfile();
+
+  useEffect(() => {
+    if (profile?.paused_at) {
+      update.mutate({ paused_at: null });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile?.paused_at]);
+}
+
 export function useUpdateProfile() {
   const { session } = useAuth();
   const userId = session?.user.id;
@@ -27,6 +45,12 @@ export function useUpdateProfile() {
   return useMutation({
     mutationFn: (patch: Partial<Profile>) => updateProfile(userId as string, patch),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["profile", userId] }),
+  });
+}
+
+export function useDeleteAccount() {
+  return useMutation({
+    mutationFn: deleteAccount,
   });
 }
 

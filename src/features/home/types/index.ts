@@ -21,4 +21,5 @@ export interface Profile {
   cycle_length_days: number;
   period_reminder_message: string | null;
   period_reminder_days_before: number;
+  paused_at: string | null;
 }
