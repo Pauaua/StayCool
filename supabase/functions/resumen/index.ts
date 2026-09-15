@@ -46,12 +46,9 @@ Deno.serve(async (req) => {
       .eq("id", user.id)
       .single();
     if (profileError) throw profileError;
-    // TODO: reactivar este gate junto con <PremiumGate minTier="basico"> en
-    // ResumenScreen.tsx cuando el paywall esté terminado — por ahora queda
-    // abierto para poder previsualizar el diseño sin comprar.
-    // if (profile.premium_tier === "free") {
-    //   return json({ error: "Mi Resumen requiere el plan Básico o Full." }, 403);
-    // }
+    if (profile.premium_tier === "free") {
+      return json({ error: "Mi Resumen requiere el plan Básico o Full." }, 403);
+    }
 
     const { from, to } = await req.json();
     if (!from || !to) {
