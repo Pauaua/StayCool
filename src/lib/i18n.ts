@@ -19,10 +19,8 @@ const dict = {
     "welcome.goPremium": "Hazte Diva",
     "welcome.settings": "Configuración",
     "trial.giftLabel": "¡Tienes un regalo!",
-    "trial.successLine1": "Te has ganado ser Diva",
-    "trial.successLine1Suffix": "por tres días.",
-    "trial.successLine2": "Disfruta and stay cool",
-    "trial.closeButton": "Ya",
+    "trial.inviteMessage": "Te invitamos a ser Diva por 3 días, ¡disfrútalo!",
+    "trial.closeButton": "Cerrar",
     "trial.errorTitle": "No se pudo activar la prueba",
 
     // Configuración
@@ -662,10 +660,8 @@ const dict = {
     "welcome.goPremium": "Go Diva",
     "welcome.settings": "Settings",
     "trial.giftLabel": "You have a gift!",
-    "trial.successLine1": "You've earned Diva status",
-    "trial.successLine1Suffix": "for three days.",
-    "trial.successLine2": "Enjoy and stay cool",
-    "trial.closeButton": "Got it",
+    "trial.inviteMessage": "We're inviting you to be Diva for 3 days, enjoy it!",
+    "trial.closeButton": "Close",
     "trial.errorTitle": "Couldn't activate the trial",
 
     "config.title": "Settings",
