@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal, Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
+import { Image, Modal, Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
 import { Calendar } from "react-native-calendars";
 import { format } from "date-fns";
 import { Card } from "@/components/ui/Card";
@@ -57,6 +57,11 @@ export function ConfiguracionScreen({ navigation }: Props) {
       <View className="flex-row items-center mb-4">
         <View
           style={{ width: 8, height: 24, borderRadius: 4, backgroundColor: "#002054", marginRight: 8 }}
+        />
+        <Image
+          source={require("../../../../assets/images/tuerca.png")}
+          style={{ width: 28, height: 28, marginRight: 8 }}
+          resizeMode="contain"
         />
         <Text className="text-2xl font-bold text-surface-dark dark:text-white">{t("config.title")}</Text>
       </View>

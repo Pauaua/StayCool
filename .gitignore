@@ -8,3 +8,4 @@ ios/
 android/
 .DS_Store
 supabase/.temp/
+google-service-account.json

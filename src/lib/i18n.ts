@@ -20,7 +20,7 @@ const dict = {
     "welcome.settings": "Configuración",
 
     // Configuración
-    "config.title": "⚙️ Configuración",
+    "config.title": "Configuración",
     "config.back": "Panel inicial",
     "config.language.title": "Idioma",
     "config.language.subtitle": "Elegí en qué idioma querés usar la app.",
@@ -645,7 +645,7 @@ const dict = {
     "welcome.goPremium": "Go Diva",
     "welcome.settings": "Settings",
 
-    "config.title": "⚙️ Settings",
+    "config.title": "Settings",
     "config.back": "Home",
     "config.language.title": "Language",
     "config.language.subtitle": "Choose what language you want to use the app in.",
