@@ -17,6 +17,15 @@ export async function updateProfile(userId: string, patch: Partial<Profile>) {
   if (error) throw error;
 }
 
+// Activa la prueba gratuita de 3 días del plan Full. Todo el trabajo (que
+// no se pueda reclamar dos veces, que quede marcada) pasa por la función
+// claim_trial() en Postgres — ver supabase/migrations/0025_trial.sql.
+export async function claimTrial(): Promise<string> {
+  const { data, error } = await supabase.rpc("claim_trial");
+  if (error) throw error;
+  return data as string;
+}
+
 // Avatar fijo (free/básico): foto subida al bucket privado 'avatars' bajo
 // <user_id>/avatar.jpg, mismo patrón que outfits/hairstyles.
 export async function uploadAvatarPhoto(userId: string, localImageUri: string) {

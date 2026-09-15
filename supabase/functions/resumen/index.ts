@@ -42,11 +42,12 @@ Deno.serve(async (req) => {
 
     const { data: profile, error: profileError } = await serviceClient
       .from("profiles")
-      .select("premium_tier, display_name")
+      .select("premium_tier, display_name, trial_ends_at")
       .eq("id", user.id)
       .single();
     if (profileError) throw profileError;
-    if (profile.premium_tier === "free") {
+    const trialActive = !!profile.trial_ends_at && new Date(profile.trial_ends_at) > new Date();
+    if (profile.premium_tier === "free" && !trialActive) {
       return json({ error: "Mi Resumen requiere el plan Básico o Full." }, 403);
     }
 
