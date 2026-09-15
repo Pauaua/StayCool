@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Alert, Image, Pressable, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { useProfile } from "@/features/home/hooks/useProfile";
+import { useAutoReactivateAccount, useProfile } from "@/features/home/hooks/useProfile";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useT } from "@/lib/i18n";
 
@@ -100,6 +100,7 @@ export function WelcomeScreen({
   onOpenConfiguracion,
 }: WelcomeScreenProps) {
   const { data: profile } = useProfile();
+  useAutoReactivateAccount();
   const { signOut } = useAuth();
   const { t, tg } = useT();
   const [now, setNow] = useState(() => new Date());
