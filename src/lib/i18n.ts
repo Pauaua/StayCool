@@ -297,6 +297,11 @@ const dict = {
     "higiene.preset.skincare": "Skincare",
     "higiene.preset.exfoliacion": "Exfoliación",
     "higiene.preset.masajeCapilar": "Masaje capilar",
+    "higiene.default.ducha": "Ducha",
+    "higiene.default.cepillado": "Cepillado",
+    "higiene.default.enjuagueBucal": "Enjuague bucal",
+    "higiene.default.desodorante": "Desodorante",
+    "higiene.default.lavadoPelo": "Lavado de pelo",
 
     // Pelo
     "pelo.title": "Pelo",
@@ -926,6 +931,11 @@ const dict = {
     "higiene.preset.skincare": "Skincare",
     "higiene.preset.exfoliacion": "Exfoliation",
     "higiene.preset.masajeCapilar": "Scalp massage",
+    "higiene.default.ducha": "Shower",
+    "higiene.default.cepillado": "Brushing",
+    "higiene.default.enjuagueBucal": "Mouthwash",
+    "higiene.default.desodorante": "Deodorant",
+    "higiene.default.lavadoPelo": "Hair wash",
 
     "pelo.title": "Hair",
     "pelo.lastWash": "Last wash",

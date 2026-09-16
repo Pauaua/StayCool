@@ -22,6 +22,7 @@ import {
 } from "@/features/higiene/hooks/useHygiene";
 import { HygieneChecklistItem } from "@/features/higiene/components/HygieneChecklistItem";
 import { AddHygieneItemPicker } from "@/features/higiene/components/AddHygieneItemPicker";
+import { translateHygieneLabel } from "@/features/higiene/labelTranslation";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { useT } from "@/lib/i18n";
@@ -98,7 +99,7 @@ function DayDetailModal({
               <View key={row.key} className="flex-row items-center justify-between mb-2">
                 <Text className="text-surface-dark dark:text-white">
                   {row.icon ? `${row.icon} ` : ""}
-                  {row.label}
+                  {translateHygieneLabel(t, row.label)}
                 </Text>
                 <Text>{row.completed ? "✅" : "❌"}</Text>
               </View>
