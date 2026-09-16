@@ -216,6 +216,10 @@ export function TrialGiftBox() {
             >
               <Text className="font-semibold text-white">{t("trial.goHomeButton")}</Text>
             </Pressable>
+
+            <Text className="text-xs text-center mt-4" style={{ color: "#002054", opacity: 0.7 }}>
+              {t("trial.disclaimer")}
+            </Text>
           </LinearGradient>
         </View>
       </Modal>

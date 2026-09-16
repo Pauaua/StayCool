@@ -22,6 +22,8 @@ const dict = {
     "trial.successMessage": "Te invitamos a ser Diva por tres días, ¡disfrútalo!",
     "trial.goHomeButton": "Ir al Home",
     "trial.errorTitle": "No se pudo activar la prueba",
+    "trial.disclaimer":
+      "Si cancelas antes de los tres días no hay cobro, sino continuará plan Diva. Puedes cambiar de plan cuando quieras.",
 
     // Configuración
     "config.title": "Configuración",
@@ -668,6 +670,8 @@ const dict = {
     "trial.successMessage": "We're inviting you to be Diva for three days, enjoy it!",
     "trial.goHomeButton": "Go Home",
     "trial.errorTitle": "Couldn't activate the trial",
+    "trial.disclaimer":
+      "If you cancel before three days there's no charge, otherwise your Diva plan will continue. You can change plans anytime.",
 
     "config.title": "Settings",
     "config.back": "Home",
