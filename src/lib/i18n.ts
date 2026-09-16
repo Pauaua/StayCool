@@ -19,8 +19,8 @@ const dict = {
     "welcome.goPremium": "Hazte Diva",
     "welcome.settings": "Configuración",
     "trial.giftLabel": "¡Tienes un regalo!",
-    "trial.successMessage": "Ya estás dentro de StayCoolPlus, ¡disfrútalo!",
-    "trial.goToAgendaButton": "Ir a Mi Agenda",
+    "trial.successMessage": "Te invitamos a ser Diva por tres días, ¡disfrútalo!",
+    "trial.goHomeButton": "Ir al Home",
     "trial.errorTitle": "No se pudo activar la prueba",
 
     // Configuración
@@ -660,8 +660,8 @@ const dict = {
     "welcome.goPremium": "Go Diva",
     "welcome.settings": "Settings",
     "trial.giftLabel": "You have a gift!",
-    "trial.successMessage": "You're in StayCoolPlus now, enjoy it!",
-    "trial.goToAgendaButton": "Go to My Agenda",
+    "trial.successMessage": "We're inviting you to be Diva for three days, enjoy it!",
+    "trial.goHomeButton": "Go Home",
     "trial.errorTitle": "Couldn't activate the trial",
 
     "config.title": "Settings",

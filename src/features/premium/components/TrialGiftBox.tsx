@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Alert, Animated, Easing, Image, Modal, Pressable, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useClaimTrial, useProfile } from "@/features/home/hooks/useProfile";
@@ -12,27 +12,51 @@ import { useT } from "@/lib/i18n";
 // claim_trial() del lado del servidor (ver 0025_trial.sql), esto es solo
 // la UI.
 //
-// Flujo: tocar la caja activa la prueba (claim_trial()) y, si funciona,
-// abre el modal de confirmación. El Modal vive fuera del "if" que oculta
-// la caja — si estuviera adentro, en cuanto claim_trial() invalida el
-// perfil y trial_claimed_at deja de ser null, todo el componente (modal
-// incluido) se desmontaría de golpe.
+// Flujo: tocar la caja dispara una explosión de brillitos que se
+// desvanecen, activa la prueba (claim_trial()) y, si funciona, abre el
+// modal de confirmación. El Modal vive fuera del "if" que oculta la caja
+// — si estuviera adentro, en cuanto claim_trial() invalida el perfil y
+// trial_claimed_at deja de ser null, todo el componente (modal incluido)
+// se desmontaría de golpe.
 const SPARKLES = [
-  { size: 40, top: -10, left: 4, delay: 0 },
-  { size: 26, top: 16, right: -6, delay: 150 },
-  { size: 22, bottom: 10, left: -8, delay: 300 },
-  { size: 34, bottom: -8, right: 10, delay: 450 },
-  { size: 18, top: 40, left: -4, delay: 600 },
+  { size: 40, top: -10, left: 4 },
+  { size: 26, top: 16, right: -6 },
+  { size: 22, bottom: 10, left: -8 },
+  { size: 34, bottom: -8, right: 10 },
+  { size: 18, top: 40, left: -4 },
 ] as const;
 
-export function TrialGiftBox({ onOpenAgenda }: { onOpenAgenda: () => void }) {
+const BURST_COUNT = 24;
+const BURST_MIN_DISTANCE = 90;
+const BURST_MAX_DISTANCE = 220;
+
+export function TrialGiftBox() {
   const { data: profile } = useProfile();
   const claimTrial = useClaimTrial();
   const { t } = useT();
   const [successVisible, setSuccessVisible] = useState(false);
+  const [bursting, setBursting] = useState(false);
 
   const pulse = useRef(new Animated.Value(0)).current;
   const sparkleSpin = useRef(new Animated.Value(0)).current;
+  const burstProgress = useRef(new Animated.Value(0)).current;
+
+  // Ángulo y distancia de cada brillito de la explosión, calculados una
+  // sola vez: repartidos parejo en el círculo con un poco de jitter para
+  // que no se vea un patrón perfecto/artificial.
+  const burstParticles = useMemo(
+    () =>
+      Array.from({ length: BURST_COUNT }, (_, i) => {
+        const angle = (i / BURST_COUNT) * Math.PI * 2 + (Math.random() - 0.5) * 0.4;
+        const distance = BURST_MIN_DISTANCE + Math.random() * (BURST_MAX_DISTANCE - BURST_MIN_DISTANCE);
+        return {
+          dx: Math.cos(angle) * distance,
+          dy: Math.sin(angle) * distance,
+          size: 14 + Math.random() * 22,
+        };
+      }),
+    []
+  );
 
   useEffect(() => {
     const loop = Animated.loop(
@@ -59,26 +83,65 @@ export function TrialGiftBox({ onOpenAgenda }: { onOpenAgenda: () => void }) {
 
   const showBox = !!profile && !profile.trial_claimed_at;
 
-  async function handlePress() {
-    try {
-      await claimTrial.mutateAsync();
-      setSuccessVisible(true);
-    } catch (error) {
-      Alert.alert(t("trial.errorTitle"), error instanceof Error ? error.message : "Intenta de nuevo.");
-    }
-  }
-
-  function handleGoToAgenda() {
-    setSuccessVisible(false);
-    onOpenAgenda();
+  function handlePress() {
+    if (bursting || claimTrial.isPending) return;
+    setBursting(true);
+    burstProgress.setValue(0);
+    Animated.timing(burstProgress, {
+      toValue: 1,
+      duration: 750,
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: true,
+    }).start(async () => {
+      setBursting(false);
+      try {
+        await claimTrial.mutateAsync();
+        setSuccessVisible(true);
+      } catch (error) {
+        Alert.alert(t("trial.errorTitle"), error instanceof Error ? error.message : "Intenta de nuevo.");
+      }
+    });
   }
 
   return (
     <>
       {showBox ? (
         <View className="items-center">
-          <Pressable onPress={handlePress} disabled={claimTrial.isPending} hitSlop={12}>
+          <Pressable onPress={handlePress} disabled={bursting || claimTrial.isPending} hitSlop={12}>
             <View style={{ width: 288, height: 288, alignItems: "center", justifyContent: "center" }}>
+              {bursting
+                ? burstParticles.map((p, i) => {
+                    const translateX = burstProgress.interpolate({ inputRange: [0, 1], outputRange: [0, p.dx] });
+                    const translateY = burstProgress.interpolate({ inputRange: [0, 1], outputRange: [0, p.dy] });
+                    const opacity = burstProgress.interpolate({
+                      inputRange: [0, 0.15, 1],
+                      outputRange: [0, 1, 0],
+                    });
+                    const burstScale = burstProgress.interpolate({
+                      inputRange: [0, 0.15, 1],
+                      outputRange: [0.4, 1.2, 0.7],
+                    });
+                    return (
+                      <Animated.View
+                        key={i}
+                        style={{
+                          position: "absolute",
+                          width: p.size,
+                          height: p.size,
+                          opacity,
+                          transform: [{ translateX }, { translateY }, { scale: burstScale }],
+                        }}
+                      >
+                        <Image
+                          source={require("../../../../assets/images/brillitos.png")}
+                          style={{ width: p.size, height: p.size, tintColor: "#ffffff" }}
+                          resizeMode="contain"
+                        />
+                      </Animated.View>
+                    );
+                  })
+                : null}
+
               <Animated.View
                 style={{
                   position: "absolute",
@@ -178,11 +241,11 @@ export function TrialGiftBox({ onOpenAgenda }: { onOpenAgenda: () => void }) {
             </Text>
 
             <Pressable
-              onPress={handleGoToAgenda}
+              onPress={() => setSuccessVisible(false)}
               className="rounded-full px-8 py-3"
               style={{ backgroundColor: "#002054" }}
             >
-              <Text className="font-semibold text-white">{t("trial.goToAgendaButton")}</Text>
+              <Text className="font-semibold text-white">{t("trial.goHomeButton")}</Text>
             </Pressable>
           </LinearGradient>
         </View>
