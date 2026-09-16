@@ -24,6 +24,9 @@ const dict = {
     "trial.errorTitle": "No se pudo activar la prueba",
     "trial.disclaimer":
       "Si cancelas antes de los tres días no hay cobro, sino continuará plan Diva. Puedes cambiar de plan cuando quieras.",
+    "trial.endedNotifTitle": "Tu prueba de Diva terminó",
+    "trial.endedNotifBody":
+      "Tu prueba gratuita de StayCoolPlus se acabó. Renueva para seguir siendo Diva, o continúa en el plan gratis.",
 
     // Configuración
     "config.title": "Configuración",
@@ -672,6 +675,9 @@ const dict = {
     "trial.errorTitle": "Couldn't activate the trial",
     "trial.disclaimer":
       "If you cancel before three days there's no charge, otherwise your Diva plan will continue. You can change plans anytime.",
+    "trial.endedNotifTitle": "Your Diva trial ended",
+    "trial.endedNotifBody":
+      "Your StayCoolPlus free trial is over. Renew to keep being Diva, or continue on the free plan.",
 
     "config.title": "Settings",
     "config.back": "Home",

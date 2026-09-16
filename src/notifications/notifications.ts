@@ -74,4 +74,5 @@ export const REMINDER_IDS = {
   skincareMorning: "skincare-morning-reminder",
   skincareNight: "skincare-night-reminder",
   periodComing: "period-coming-reminder",
+  trialEnded: "trial-ended-reminder",
 } as const;

@@ -3,6 +3,7 @@ import { Alert, Animated, Dimensions, Easing, Image, Modal, Pressable, StyleShee
 import { LinearGradient } from "expo-linear-gradient";
 import { useClaimTrial, useProfile } from "@/features/home/hooks/useProfile";
 import { useT } from "@/lib/i18n";
+import { REMINDER_IDS, scheduleOneTimeReminder } from "@/notifications/notifications";
 
 // Prueba gratuita de 3 días del plan Full, ofrecida como una caja de
 // regalo brillante en el panel principal. Se muestra mientras el usuario
@@ -110,7 +111,15 @@ export function TrialGiftBox() {
   async function handlePress() {
     if (claimTrial.isPending) return;
     try {
-      await claimTrial.mutateAsync();
+      const endsAt = await claimTrial.mutateAsync();
+      // Aviso local justo cuando vence la prueba, para que sepa que volvió
+      // a free y pueda decidir si renueva o se queda así.
+      await scheduleOneTimeReminder(
+        REMINDER_IDS.trialEnded,
+        t("trial.endedNotifTitle"),
+        t("trial.endedNotifBody"),
+        new Date(endsAt)
+      );
       setSuccessVisible(true);
     } catch (error) {
       Alert.alert(t("trial.errorTitle"), error instanceof Error ? error.message : "Intenta de nuevo.");
