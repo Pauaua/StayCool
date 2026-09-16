@@ -1,6 +1,8 @@
 import React from "react";
 import { Image, Pressable, Text, View } from "react-native";
 import type { HygieneItem } from "@/features/higiene/types";
+import { translateHygieneLabel } from "@/features/higiene/labelTranslation";
+import { useT } from "@/lib/i18n";
 
 // Los ítems sembrados por defecto (y el preset "Corte de uñas") tienen un
 // emoji guardado en Supabase (item.icon); acá los pisamos por íconos propios
@@ -30,6 +32,7 @@ export function HygieneChecklistItem({
   onToggle: () => void;
   onRemove: () => void;
 }) {
+  const { t } = useT();
   return (
     <View className="flex-row items-center justify-between bg-white dark:bg-surface-cardDark rounded-card px-3 py-2.5 mb-2">
       <Pressable onPress={onToggle} className="flex-row items-center gap-2 flex-1">
@@ -38,7 +41,7 @@ export function HygieneChecklistItem({
         ) : (
           <Text className="text-base">{item.icon ?? "🧼"}</Text>
         )}
-        <Text className="text-sm text-surface-dark dark:text-white">{item.label}</Text>
+        <Text className="text-sm text-surface-dark dark:text-white">{translateHygieneLabel(t, item.label)}</Text>
       </Pressable>
       <View className="flex-row items-center gap-2.5">
         <Pressable
