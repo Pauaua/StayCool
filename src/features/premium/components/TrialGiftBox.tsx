@@ -75,7 +75,11 @@ function SparkleRain() {
   );
 }
 
-export function TrialGiftBox() {
+// `size` es el diámetro del círculo con brillo (260 = tamaño completo). El
+// contenedor lo achica cuando la pantalla es baja, para que el regalo y su
+// mensaje siempre quepan sin quedar tapados por los botones.
+export function TrialGiftBox({ size = 260 }: { size?: number }) {
+  const k = size / 260;
   const { data: profile } = useProfile();
   const claimTrial = useClaimTrial();
   const { t } = useT();
@@ -131,13 +135,13 @@ export function TrialGiftBox() {
       {showBox ? (
         <View className="items-center">
           <Pressable onPress={handlePress} disabled={claimTrial.isPending} hitSlop={12}>
-            <View style={{ width: 260, height: 260, alignItems: "center", justifyContent: "center" }}>
+            <View style={{ width: size, height: size, alignItems: "center", justifyContent: "center" }}>
               <Animated.View
                 style={{
                   position: "absolute",
-                  width: 260,
-                  height: 260,
-                  borderRadius: 130,
+                  width: size,
+                  height: size,
+                  borderRadius: size / 2,
                   backgroundColor: "#ffffff",
                   opacity: glowOpacity,
                   transform: [{ scale }],
@@ -146,20 +150,20 @@ export function TrialGiftBox() {
 
               {/* Decoración: un par de brillitos girando alrededor del círculo. */}
               <Animated.View
-                style={{ position: "absolute", width: 30, height: 30, top: 6, left: 10, transform: [{ rotate }] }}
+                style={{ position: "absolute", width: 30 * k, height: 30 * k, top: 6 * k, left: 10 * k, transform: [{ rotate }] }}
               >
                 <Image
                   source={require("../../../../assets/images/brillitos.png")}
-                  style={{ width: 30, height: 30, tintColor: "#ffffff" }}
+                  style={{ width: 30 * k, height: 30 * k, tintColor: "#ffffff" }}
                   resizeMode="contain"
                 />
               </Animated.View>
               <Animated.View
-                style={{ position: "absolute", width: 22, height: 22, bottom: 10, right: 4, transform: [{ rotate }] }}
+                style={{ position: "absolute", width: 22 * k, height: 22 * k, bottom: 10 * k, right: 4 * k, transform: [{ rotate }] }}
               >
                 <Image
                   source={require("../../../../assets/images/brillitos.png")}
-                  style={{ width: 22, height: 22, tintColor: "#ffffff" }}
+                  style={{ width: 22 * k, height: 22 * k, tintColor: "#ffffff" }}
                   resizeMode="contain"
                 />
               </Animated.View>
@@ -170,16 +174,16 @@ export function TrialGiftBox() {
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={{
-                    width: 216,
-                    height: 216,
-                    borderRadius: 108,
+                    width: 216 * k,
+                    height: 216 * k,
+                    borderRadius: 108 * k,
                     alignItems: "center",
                     justifyContent: "center",
                     borderWidth: 4,
                     borderColor: "#ffffff",
                   }}
                 >
-                  <Text style={{ fontSize: 96 }}>🎁</Text>
+                  <Text style={{ fontSize: 96 * k }}>🎁</Text>
                 </LinearGradient>
               </Animated.View>
             </View>

@@ -5,13 +5,14 @@ import { PeloHomeScreen } from "@/features/pelo/screens/PeloHomeScreen";
 import { HairstyleDetailScreen } from "@/features/pelo/screens/HairstyleDetailScreen";
 import { HairProfileScreen } from "@/features/pelo/screens/HairProfileScreen";
 import type { PeloStackParamList } from "@/navigation/types";
+import { defaultScreenOptions } from "@/navigation/screenOptions";
 
 const Stack = createNativeStackNavigator<PeloStackParamList>();
 
 export function PeloNavigator() {
   return (
     <NavigationContainer independent>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator screenOptions={{ ...defaultScreenOptions, headerShown: false }}>
         <Stack.Screen name="PeloHome" component={PeloHomeScreen} />
         <Stack.Screen
           name="HairstyleDetail"

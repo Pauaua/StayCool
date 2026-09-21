@@ -8,21 +8,34 @@ interface TextFieldProps extends TextInputProps {
 
 export function TextField({ label, error, secureTextEntry, ...rest }: TextFieldProps) {
   const [isVisible, setIsVisible] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   const isPassword = Boolean(secureTextEntry);
 
   return (
     <View className="mb-4">
-      <Text className="text-sm font-semibold text-surface-dark dark:text-white mb-1.5">
+      <Text
+        className={`text-sm font-semibold mb-1.5 ${
+          isFocused ? "text-brand-500 dark:text-pastel-purple" : "text-surface-dark dark:text-white"
+        }`}
+      >
         {label}
       </Text>
       <View className="justify-center">
         <TextInput
           placeholderTextColor="#9ca3af"
-          className={`bg-white dark:bg-surface-cardDark border border-gray-200 dark:border-gray-700 rounded-card px-4 py-3 text-base text-surface-dark dark:text-white ${
-            isPassword ? "pr-12" : ""
-          }`}
+          className={`bg-white dark:bg-surface-cardDark border rounded-card px-4 py-3 text-base text-surface-dark dark:text-white ${
+            isFocused ? "border-brand-500 dark:border-pastel-purple" : "border-gray-200 dark:border-gray-700"
+          } ${isPassword ? "pr-12" : ""}`}
           secureTextEntry={isPassword && !isVisible}
           {...rest}
+          onFocus={(e) => {
+            setIsFocused(true);
+            rest.onFocus?.(e);
+          }}
+          onBlur={(e) => {
+            setIsFocused(false);
+            rest.onBlur?.(e);
+          }}
         />
         {isPassword ? (
           <Pressable

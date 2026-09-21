@@ -16,6 +16,22 @@ export async function createQuickNote(
   if (error) throw error;
 }
 
+export async function updateQuickNote(
+  id: string,
+  input: { name: string; description?: string; feeling?: string }
+) {
+  const { error } = await supabase
+    .from("note_quick_logs")
+    .update({ name: input.name, description: input.description ?? null, feeling: input.feeling ?? null })
+    .eq("id", id);
+  if (error) throw error;
+}
+
+export async function deleteQuickNote(id: string) {
+  const { error } = await supabase.from("note_quick_logs").delete().eq("id", id);
+  if (error) throw error;
+}
+
 export async function fetchQuickNotesPage(userId: string, page: number) {
   const from = page * PAGE_SIZE;
   const to = from + PAGE_SIZE - 1;
@@ -41,6 +57,28 @@ export async function createDetailedNote(
     feelings: input.feelings ?? null,
     thoughts: input.thoughts ?? null,
   });
+  if (error) throw error;
+}
+
+export async function updateDetailedNote(
+  id: string,
+  input: { name: string; location?: string; idea: string; feelings?: string; thoughts?: string }
+) {
+  const { error } = await supabase
+    .from("note_detailed_logs")
+    .update({
+      name: input.name,
+      location: input.location ?? null,
+      idea: input.idea,
+      feelings: input.feelings ?? null,
+      thoughts: input.thoughts ?? null,
+    })
+    .eq("id", id);
+  if (error) throw error;
+}
+
+export async function deleteDetailedNote(id: string) {
+  const { error } = await supabase.from("note_detailed_logs").delete().eq("id", id);
   if (error) throw error;
 }
 

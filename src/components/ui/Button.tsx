@@ -1,5 +1,7 @@
-import React from "react";
-import { Image, ImageSourcePropType, Pressable, Text, View, ActivityIndicator } from "react-native";
+import React, { useState } from "react";
+import { Image, ImageSourcePropType, Text, View, ActivityIndicator } from "react-native";
+import { PressableScale } from "@/components/ui/PressableScale";
+import { TapSparkles } from "@/components/ui/TapSparkles";
 
 interface ButtonProps {
   label: string;
@@ -37,9 +39,16 @@ export function Button({
   font = "semibold",
   icon,
 }: ButtonProps) {
+  // Cada toque dispara una mini explosión de brillitos desde el botón.
+  const [sparkleTrigger, setSparkleTrigger] = useState(0);
+
   return (
-    <Pressable
-      onPress={onPress}
+    <PressableScale
+      wrapperClassName={font === "script" ? "w-full" : undefined}
+      onPress={() => {
+        setSparkleTrigger((n) => n + 1);
+        onPress();
+      }}
       disabled={disabled || loading}
       className={`rounded-full items-center justify-center ${
         font === "script" ? "w-full" : ""
@@ -81,6 +90,7 @@ export function Button({
           </Text>
         </View>
       )}
-    </Pressable>
+      <TapSparkles trigger={sparkleTrigger} />
+    </PressableScale>
   );
 }

@@ -1,14 +1,21 @@
 import React, { useState } from "react";
-import { Image, Pressable, SafeAreaView, ScrollView, Switch, Text, View } from "react-native";
+import { Alert, Image, Modal, Pressable, SafeAreaView, ScrollView, Switch, Text, View } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import { Calendar, DateData } from "react-native-calendars";
 import { format } from "date-fns";
 import { Card } from "@/components/ui/Card";
 import { Chip } from "@/components/ui/Chip";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
-import { useHairstyles, useHairWashHistory, useLogHairstyle } from "@/features/pelo/hooks/usePelo";
+import {
+  useDeleteHairWash,
+  useHairstyles,
+  useHairWashHistory,
+  useLogHairstyle,
+  useUpdateHairWash,
+} from "@/features/pelo/hooks/usePelo";
 import { useT, type TranslationKey } from "@/lib/i18n";
-import type { HairstyleType } from "@/features/pelo/types";
+import type { HairstyleType, HairWashLog } from "@/features/pelo/types";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { PeloStackParamList } from "@/navigation/types";
 
@@ -25,12 +32,45 @@ export function PeloHomeScreen({ navigation }: Props) {
   const washHistory = useHairWashHistory();
   const hairstyles = useHairstyles();
   const logStyle = useLogHairstyle();
-  const { t } = useT();
+  const deleteWash = useDeleteHairWash();
+  const updateWash = useUpdateHairWash();
+  const { t, tg } = useT();
   const [hairstyle, setHairstyle] = useState("");
   const [styleType, setStyleType] = useState<HairstyleType | undefined>();
   const [isSpecialOccasion, setIsSpecialOccasion] = useState(false);
   const [occasionDetails, setOccasionDetails] = useState("");
   const [imageUri, setImageUri] = useState<string | undefined>();
+  const [editingWash, setEditingWash] = useState<HairWashLog | null>(null);
+  const [editWashDate, setEditWashDate] = useState("");
+  const [editWashTime, setEditWashTime] = useState("");
+
+  function openEditWash(item: HairWashLog) {
+    const current = new Date(item.washed_at);
+    setEditingWash(item);
+    setEditWashDate(format(current, "yyyy-MM-dd"));
+    setEditWashTime(format(current, "HH:mm"));
+  }
+
+  function saveEditWash() {
+    if (!editingWash) return;
+    const match = /^(\d{1,2}):(\d{2})$/.exec(editWashTime.trim());
+    if (!match) {
+      Alert.alert(t("pelo.invalidTime"));
+      return;
+    }
+    const hours = Number(match[1]);
+    const minutes = Number(match[2]);
+    if (hours > 23 || minutes > 59) {
+      Alert.alert(t("pelo.invalidTime"));
+      return;
+    }
+    const washedAt = new Date(`${editWashDate}T00:00:00`);
+    washedAt.setHours(hours, minutes, 0, 0);
+    updateWash.mutate(
+      { id: editingWash.id, washedAt },
+      { onSuccess: () => setEditingWash(null) }
+    );
+  }
 
   async function pickImage() {
     const result = await ImagePicker.launchImageLibraryAsync({ quality: 0.7 });
@@ -166,16 +206,63 @@ export function PeloHomeScreen({ navigation }: Props) {
           {t("pelo.washHistory")}
         </Text>
         {washItems.map((item) => (
-          <Card key={item.id} className="mb-2">
-            <Text className="text-surface-dark dark:text-white">
+          <Card key={item.id} className="mb-2 flex-row items-center justify-between">
+            <Text className="text-surface-dark dark:text-white flex-1 pr-2" numberOfLines={1}>
               {format(new Date(item.washed_at), "dd MMM yyyy HH:mm")}
             </Text>
+            <View className="flex-row gap-4 flex-shrink-0">
+              <Pressable onPress={() => openEditWash(item)}>
+                <Text className="text-xs text-brand-500 font-semibold">{t("common.edit")}</Text>
+              </Pressable>
+              <Pressable
+                onPress={() =>
+                  Alert.alert(t("pelo.deleteWashTitle"), tg("pelo.deleteWashMessage"), [
+                    { text: t("common.cancel"), style: "cancel" },
+                    { text: t("common.delete"), style: "destructive", onPress: () => deleteWash.mutate(item.id) },
+                  ])
+                }
+              >
+                <Text className="text-xs text-accent-coral font-semibold">{t("common.delete")}</Text>
+              </Pressable>
+            </View>
           </Card>
         ))}
         {washHistory.hasNextPage ? (
           <Button label={t("pelo.loadMore")} variant="ghost" onPress={() => washHistory.fetchNextPage()} />
         ) : null}
       </ScrollView>
+
+      <Modal
+        visible={editingWash !== null}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setEditingWash(null)}
+      >
+        <View className="flex-1 items-center justify-center bg-black/40 px-6">
+          <Card className="w-full">
+            <Text className="text-lg font-bold text-surface-dark dark:text-white mb-3">
+              {t("pelo.editWashTitle")}
+            </Text>
+            <Calendar
+              current={editWashDate}
+              markedDates={{ [editWashDate]: { selected: true, selectedColor: "#002054" } }}
+              onDayPress={(day: DateData) => setEditWashDate(day.dateString)}
+              theme={{ selectedDayBackgroundColor: "#002054", todayTextColor: "#002054" }}
+            />
+            <View className="mt-2">
+              <TextField label={t("pelo.washTime")} value={editWashTime} onChangeText={setEditWashTime} />
+            </View>
+            <View className="flex-row gap-2">
+              <View className="flex-1">
+                <Button label={t("bienestar.saveChanges")} onPress={saveEditWash} loading={updateWash.isPending} />
+              </View>
+              <View className="flex-1">
+                <Button label={t("common.cancel")} variant="ghost" onPress={() => setEditingWash(null)} />
+              </View>
+            </View>
+          </Card>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }

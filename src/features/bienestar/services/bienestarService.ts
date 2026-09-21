@@ -17,6 +17,28 @@ export async function logMeal(
   if (error) throw error;
 }
 
+export async function updateMeal(
+  userId: string,
+  id: string,
+  updates: { description: string; category?: MealCategory; rating?: number }
+) {
+  const { error } = await supabase
+    .from("wellness_meals")
+    .update({
+      description: updates.description,
+      category: updates.category ?? null,
+      rating: updates.rating ?? null,
+    })
+    .eq("id", id)
+    .eq("user_id", userId);
+  if (error) throw error;
+}
+
+export async function deleteMeal(userId: string, id: string) {
+  const { error } = await supabase.from("wellness_meals").delete().eq("id", id).eq("user_id", userId);
+  if (error) throw error;
+}
+
 export async function logSleep(userId: string, sleptAt: string, wokeAt: string) {
   const { error } = await supabase
     .from("wellness_sleep")
@@ -41,12 +63,53 @@ export async function logExercise(
   if (error) throw error;
 }
 
+export async function updateExercise(
+  userId: string,
+  id: string,
+  updates: { exerciseType: string; durationMinutes?: number; sets?: number; weightKg?: number }
+) {
+  const { error } = await supabase
+    .from("wellness_exercise")
+    .update({
+      exercise_type: updates.exerciseType,
+      duration_minutes: updates.durationMinutes ?? null,
+      sets: updates.sets ?? null,
+      weight_kg: updates.weightKg ?? null,
+    })
+    .eq("id", id)
+    .eq("user_id", userId);
+  if (error) throw error;
+}
+
+export async function deleteExercise(userId: string, id: string) {
+  const { error } = await supabase.from("wellness_exercise").delete().eq("id", id).eq("user_id", userId);
+  if (error) throw error;
+}
+
 export async function upsertMood(userId: string, mood: Mood, note?: string, energyLevel?: number) {
   const today = new Date().toISOString().slice(0, 10);
   const { error } = await supabase.from("wellness_mood").upsert(
     { user_id: userId, mood_date: today, mood, note: note ?? null, energy_level: energyLevel ?? null },
     { onConflict: "user_id,mood_date" }
   );
+  if (error) throw error;
+}
+
+export async function updateMood(
+  userId: string,
+  id: string,
+  updates: { mood: Mood; note?: string }
+) {
+  const { error } = await supabase
+    .from("wellness_mood")
+    .update({ mood: updates.mood, note: updates.note ?? null })
+    .eq("id", id)
+    .eq("user_id", userId);
+  if (error) throw error;
+}
+
+export async function deleteMood(userId: string, id: string) {
+  const { error } = await supabase.from("wellness_mood").delete().eq("id", id).eq("user_id", userId);
   if (error) throw error;
 }
 

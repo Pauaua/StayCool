@@ -8,6 +8,7 @@ import {
   useCreateFaceProduct,
   useDeleteFaceProduct,
   useFaceProducts,
+  useUpdateFaceProduct,
   useUpsertFaceLog,
   useWeekFaceLogs,
 } from "@/features/imagen/hooks/useImagen";
@@ -72,8 +73,36 @@ function AddProductForm({
 
 function ProductRow({ product, category }: { product: FaceProduct; category: FaceProductCategory }) {
   const [expanded, setExpanded] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [name, setName] = useState(product.name);
+  const [brand, setBrand] = useState(product.brand ?? "");
+  const [price, setPrice] = useState(product.price !== null ? String(product.price) : "");
+  const [rating, setRating] = useState(product.rating ?? 0);
   const remove = useDeleteFaceProduct(category);
+  const update = useUpdateFaceProduct(category);
   const { t } = useT();
+
+  function startEditing() {
+    setName(product.name);
+    setBrand(product.brand ?? "");
+    setPrice(product.price !== null ? String(product.price) : "");
+    setRating(product.rating ?? 0);
+    setEditing(true);
+  }
+
+  function handleSaveEdit() {
+    if (!name.trim()) return;
+    update.mutate(
+      {
+        productId: product.id,
+        name: name.trim(),
+        brand: brand.trim() || undefined,
+        price: price ? Number(price) : undefined,
+        rating: rating || undefined,
+      },
+      { onSuccess: () => setEditing(false) }
+    );
+  }
 
   return (
     <Card className="mb-2">
@@ -84,7 +113,27 @@ function ProductRow({ product, category }: { product: FaceProduct; category: Fac
         <StarRating value={product.rating ?? 0} size={14} />
         <Text className="text-gray-400 ml-2">{expanded ? "▲" : "▼"}</Text>
       </Pressable>
-      {expanded ? (
+      {expanded && editing ? (
+        <View className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
+          <TextField label={t("cara.productName")} value={name} onChangeText={setName} />
+          <TextField label={t("cara.brandOptional")} value={brand} onChangeText={setBrand} />
+          <TextField label={t("cara.priceOptional")} keyboardType="numeric" value={price} onChangeText={setPrice} />
+          <View className="mb-4">
+            <Text className="text-sm font-semibold text-surface-dark dark:text-white mb-1.5">
+              {t("cara.rating")}
+            </Text>
+            <StarRating value={rating} onChange={setRating} />
+          </View>
+          <View className="flex-row gap-2">
+            <View className="flex-1">
+              <Button label={t("common.saveChanges")} onPress={handleSaveEdit} loading={update.isPending} />
+            </View>
+            <View className="flex-1">
+              <Button label={t("cara.cancel")} variant="ghost" onPress={() => setEditing(false)} />
+            </View>
+          </View>
+        </View>
+      ) : expanded ? (
         <View className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
           <Text className="text-sm text-gray-500 mb-1">
             {t("cara.brand", { brand: product.brand || "—" })}
@@ -92,9 +141,14 @@ function ProductRow({ product, category }: { product: FaceProduct; category: Fac
           <Text className="text-sm text-gray-500 mb-2">
             {t("cara.price", { price: product.price !== null ? `$${product.price}` : "—" })}
           </Text>
-          <Pressable onPress={() => remove.mutate(product.id)} className="mt-1">
-            <Text className="text-xs text-accent-coral">{t("cara.deleteProduct")}</Text>
-          </Pressable>
+          <View className="flex-row gap-4">
+            <Pressable onPress={startEditing}>
+              <Text className="text-xs text-brand-500 font-semibold">{t("common.edit")}</Text>
+            </Pressable>
+            <Pressable onPress={() => remove.mutate(product.id)}>
+              <Text className="text-xs text-accent-coral">{t("cara.deleteProduct")}</Text>
+            </Pressable>
+          </View>
         </View>
       ) : null}
     </Card>

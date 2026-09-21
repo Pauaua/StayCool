@@ -73,6 +73,39 @@ export async function fetchDetailedExpensesPage(
   };
 }
 
+export async function updateQuickExpense(
+  id: string,
+  input: { name: string; expenseType: string; description?: string; amount?: number }
+) {
+  const { error } = await supabase
+    .from("expense_quick_logs")
+    .update({
+      name: input.name,
+      expense_type: input.expenseType,
+      description: input.description ?? null,
+      amount: input.amount ?? null,
+    })
+    .eq("id", id);
+  if (error) throw error;
+}
+
+export async function updateDetailedExpense(
+  id: string,
+  input: { itemPurchased: string; purpose?: string; amount: number; expenseKind: ExpenseKind; couldWait: boolean }
+) {
+  const { error } = await supabase
+    .from("expense_detailed_logs")
+    .update({
+      item_purchased: input.itemPurchased,
+      purpose: input.purpose ?? null,
+      amount: input.amount,
+      expense_kind: input.expenseKind,
+      could_wait: input.couldWait,
+    })
+    .eq("id", id);
+  if (error) throw error;
+}
+
 export async function deleteQuickExpense(id: string) {
   const { error } = await supabase.from("expense_quick_logs").delete().eq("id", id);
   if (error) throw error;

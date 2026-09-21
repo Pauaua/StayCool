@@ -49,7 +49,7 @@ export function UserAvatar({ avatarUrl, size = 64 }: UserAvatarProps) {
     return (
       <Image
         source={{ uri: renderAvatarUrl(selection, size * 2) }}
-        style={[dimensionStyle, { borderWidth: 2, borderColor: "#e485ff" }]}
+        style={[dimensionStyle, { borderWidth: 2.5, borderColor: "#D4AF37" }]}
       />
     );
   }

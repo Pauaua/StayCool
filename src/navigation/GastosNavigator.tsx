@@ -6,13 +6,14 @@ import { GastoRapidoScreen } from "@/features/gastos/screens/GastoRapidoScreen";
 import { GastoDetalladoScreen } from "@/features/gastos/screens/GastoDetalladoScreen";
 import { GastoDetalleScreen } from "@/features/gastos/screens/GastoDetalleScreen";
 import type { GastosStackParamList } from "@/navigation/types";
+import { defaultScreenOptions } from "@/navigation/screenOptions";
 
 const Stack = createNativeStackNavigator<GastosStackParamList>();
 
 export function GastosNavigator() {
   return (
     <NavigationContainer independent>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator screenOptions={{ ...defaultScreenOptions, headerShown: false }}>
         <Stack.Screen name="GastosHome" component={GastosHomeScreen} />
         <Stack.Screen
           name="GastoRapido"

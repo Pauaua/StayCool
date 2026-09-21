@@ -74,12 +74,14 @@ function BudgetCard({ totalSpent }: { totalSpent: number }) {
   return (
     <Card className="mb-4">
       <View className="flex-row justify-between items-start">
-        <View>
+        <View className="flex-1 pr-2">
           <Text className="text-sm text-gray-500 mb-1">{t("gastos.availableThisMonth")}</Text>
           <Text
             className={`text-3xl font-bold ${
               (remaining ?? 0) < 0 ? "text-accent-coral" : "text-brand-500"
             }`}
+            numberOfLines={1}
+            adjustsFontSizeToFit
           >
             ${remaining !== null ? formatMoney(remaining) : "—"}
           </Text>
@@ -87,7 +89,7 @@ function BudgetCard({ totalSpent }: { totalSpent: number }) {
             {t("gastos.ofBudgeted", { amount: formatMoney(budget) })}
           </Text>
         </View>
-        <Pressable onPress={() => setEditing(true)}>
+        <Pressable onPress={() => setEditing(true)} className="flex-shrink-0">
           <Text className="text-brand-500 text-sm">{t("gastos.edit")}</Text>
         </Pressable>
       </View>
@@ -183,8 +185,12 @@ export function GastosHomeScreen({ navigation }: Props) {
             >
               <Card className="mb-2">
                 <View className="flex-row justify-between">
-                  <Text className="text-surface-dark dark:text-white">{item.name}</Text>
-                  <Text className="text-gray-500">{item.amount ? `$${formatMoney(item.amount)}` : ""}</Text>
+                  <Text className="text-surface-dark dark:text-white flex-1 pr-2" numberOfLines={1}>
+                    {item.name}
+                  </Text>
+                  <Text className="text-gray-500 flex-shrink-0">
+                    {item.amount ? `$${formatMoney(item.amount)}` : ""}
+                  </Text>
                 </View>
                 <Text className="text-xs text-gray-400 capitalize">
                   {t(EXPENSE_TYPE_KEY[item.expense_type] ?? "gastos.type.otro")}
@@ -206,8 +212,10 @@ export function GastosHomeScreen({ navigation }: Props) {
             >
               <Card className="mb-2">
                 <View className="flex-row justify-between">
-                  <Text className="text-surface-dark dark:text-white">{item.item_purchased}</Text>
-                  <Text className="text-gray-500">${formatMoney(item.amount)}</Text>
+                  <Text className="text-surface-dark dark:text-white flex-1 pr-2" numberOfLines={1}>
+                    {item.item_purchased}
+                  </Text>
+                  <Text className="text-gray-500 flex-shrink-0">${formatMoney(item.amount)}</Text>
                 </View>
                 <Text className="text-xs text-gray-400 capitalize">
                   {t(EXPENSE_KIND_KEY[item.expense_kind] ?? "gastos.kind.extra")}

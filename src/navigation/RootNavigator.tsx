@@ -9,6 +9,7 @@ import { WelcomeScreen } from "@/features/home/screens/WelcomeScreen";
 import type { HomeStackParamList } from "@/navigation/types";
 import { WelcomeNavigationProvider } from "@/navigation/WelcomeNavigationContext";
 import { RailVisibilityProvider } from "@/navigation/RailVisibilityContext";
+import { TrialEndedModal } from "@/features/premium/components/TrialEndedModal";
 
 type PostLoginStage = "welcome" | "app";
 
@@ -16,9 +17,12 @@ export function RootNavigator() {
   const { session, isLoading, isPasswordRecovery } = useAuth();
   const [stage, setStage] = useState<PostLoginStage>("welcome");
   const [initialHomeRoute, setInitialHomeRoute] = useState<keyof HomeStackParamList>("HomeDashboard");
+  // Cambiar la key remonta MainShell: así puede abrir directo en el Paywall
+  // aunque la persona ya estuviera dentro de la agenda (MainShell solo lee la
+  // ruta inicial al montarse).
+  const [shellKey, setShellKey] = useState(0);
   const fade = useRef(new Animated.Value(0)).current;
   const wasLoggedIn = useRef(false);
-
   useEffect(() => {
     if (session && !wasLoggedIn.current) {
       // Recién se logueó: arranca en el saludo, con el login desapareciendo
@@ -33,6 +37,12 @@ export function RootNavigator() {
     }
     wasLoggedIn.current = !!session;
   }, [session, fade]);
+
+  function openPaywall() {
+    setInitialHomeRoute("Paywall");
+    setShellKey((k) => k + 1);
+    setStage("app");
+  }
 
   if (isLoading) {
     return (
@@ -57,15 +67,19 @@ export function RootNavigator() {
       // compartido (React Navigation no permite más de un navigator raíz por
       // contenedor).
       return (
-        <WelcomeNavigationProvider onBackToWelcome={() => setStage("welcome")}>
-          <RailVisibilityProvider>
-            <MainShell initialHomeRoute={initialHomeRoute} />
-          </RailVisibilityProvider>
-        </WelcomeNavigationProvider>
+        <>
+          <WelcomeNavigationProvider onBackToWelcome={() => setStage("welcome")}>
+            <RailVisibilityProvider>
+              <MainShell key={shellKey} initialHomeRoute={initialHomeRoute} />
+            </RailVisibilityProvider>
+          </WelcomeNavigationProvider>
+          <TrialEndedModal onSubscribe={openPaywall} />
+        </>
       );
     }
 
     return (
+      <>
       <Animated.View style={{ flex: 1, opacity: fade }}>
         <WelcomeScreen
           onOpenAgenda={() => {
@@ -76,16 +90,15 @@ export function RootNavigator() {
             setInitialHomeRoute("Resumen");
             setStage("app");
           }}
-          onOpenPaywall={() => {
-            setInitialHomeRoute("Paywall");
-            setStage("app");
-          }}
+          onOpenPaywall={openPaywall}
           onOpenConfiguracion={() => {
             setInitialHomeRoute("Configuracion");
             setStage("app");
           }}
         />
       </Animated.View>
+      <TrialEndedModal onSubscribe={openPaywall} />
+      </>
     );
   }
 

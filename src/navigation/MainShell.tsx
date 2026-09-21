@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from "react";
-import { View } from "react-native";
+import React, { useMemo, useRef, useState } from "react";
+import { Animated, Easing, View } from "react-native";
 import { SideRail, RailItem } from "@/navigation/SideRail";
 import { HomeNavigator } from "@/navigation/HomeNavigator";
 import { usePremium } from "@/features/premium/hooks/usePremium";
@@ -90,6 +90,7 @@ function buildModules(
       icon: isFull
         ? require("../../assets/images/estadisticas.png")
         : require("../../assets/images/candado.png"),
+      premium: isFull,
       Component: EstadisticasNavigator,
     },
   ];
@@ -110,17 +111,38 @@ export function MainShell({
   const [activeKey, setActiveKey] = useState("Home");
   const [initialRoute] = useState(initialHomeRoute);
   const modules = useMemo(() => buildModules(initialRoute, isFull), [initialRoute, isFull]);
+  // Al cambiar de módulo, el contenido entra con fade + un leve deslizamiento
+  // hacia arriba (mismo timing que el resto de las entradas de la app).
+  const enter = useRef(new Animated.Value(1)).current;
+
+  function handleSelect(key: string) {
+    if (key === activeKey) return;
+    setActiveKey(key);
+    enter.setValue(0);
+    Animated.timing(enter, {
+      toValue: 1,
+      duration: 320,
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: true,
+    }).start();
+  }
 
   return (
     <View className="flex-1 flex-row bg-white dark:bg-surface-dark">
-      {railHidden ? null : <SideRail items={modules} activeKey={activeKey} onSelect={setActiveKey} />}
-      <View className="flex-1">
+      {railHidden ? null : <SideRail items={modules} activeKey={activeKey} onSelect={handleSelect} />}
+      <Animated.View
+        className="flex-1"
+        style={{
+          opacity: enter,
+          transform: [{ translateY: enter.interpolate({ inputRange: [0, 1], outputRange: [16, 0] }) }],
+        }}
+      >
         {modules.map(({ key, Component }) => (
           <View key={key} style={{ flex: 1, display: activeKey === key ? "flex" : "none" }}>
             <Component />
           </View>
         ))}
-      </View>
+      </Animated.View>
     </View>
   );
 }

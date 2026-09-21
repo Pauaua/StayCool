@@ -66,7 +66,7 @@ export function HomeScreen({ navigation }: Props) {
           <Text className="text-gray-400">{t("home.loadingDay")}</Text>
         ) : (
           <View className="gap-3">
-            <Card>
+            <Card delay={60}>
               <Text className="text-sm text-gray-500">{t("home.hygieneToday")}</Text>
               <Text className="text-xl font-semibold text-surface-dark dark:text-white">
                 {data?.pendingHygieneItems === 0
@@ -78,7 +78,7 @@ export function HomeScreen({ navigation }: Props) {
               </Text>
             </Card>
 
-            <Card>
+            <Card delay={140}>
               <Text className="text-sm text-gray-500">{t("home.nextActivity")}</Text>
               <Text className="text-xl font-semibold text-surface-dark dark:text-white">
                 {data?.nextActivity
@@ -90,7 +90,7 @@ export function HomeScreen({ navigation }: Props) {
               </Text>
             </Card>
 
-            <Card>
+            <Card delay={220}>
               <Text className="text-sm text-gray-500">{t("home.expenseToday")}</Text>
               <Text className="text-xl font-semibold text-brand-500">
                 ${data?.todayExpenseTotal.toFixed(2) ?? "0.00"}
@@ -98,7 +98,7 @@ export function HomeScreen({ navigation }: Props) {
             </Card>
 
             {data?.needsMakeupRemoval ? (
-              <Card className="bg-accent-coral/10 border border-accent-coral">
+              <Card delay={300} className="bg-accent-coral/10 border border-accent-coral">
                 <Text className="text-accent-coral font-semibold">{t("home.makeupReminder")}</Text>
               </Card>
             ) : null}
