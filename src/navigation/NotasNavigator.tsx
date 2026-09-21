@@ -5,13 +5,14 @@ import { NotasHomeScreen } from "@/features/notas/screens/NotasHomeScreen";
 import { NotaRapidaScreen } from "@/features/notas/screens/NotaRapidaScreen";
 import { NotaDetalladaScreen } from "@/features/notas/screens/NotaDetalladaScreen";
 import type { NotasStackParamList } from "@/navigation/types";
+import { defaultScreenOptions } from "@/navigation/screenOptions";
 
 const Stack = createNativeStackNavigator<NotasStackParamList>();
 
 export function NotasNavigator() {
   return (
     <NavigationContainer independent>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator screenOptions={{ ...defaultScreenOptions, headerShown: false }}>
         <Stack.Screen name="NotasHome" component={NotasHomeScreen} />
         <Stack.Screen
           name="NotaRapida"

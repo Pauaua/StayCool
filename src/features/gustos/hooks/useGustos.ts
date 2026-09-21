@@ -3,8 +3,12 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 import {
   createDetailedTaste,
   createQuickTaste,
+  deleteDetailedTaste,
+  deleteQuickTaste,
   fetchDetailedTastesPage,
   fetchQuickTastesPage,
+  updateDetailedTaste,
+  updateQuickTaste,
 } from "@/features/gustos/services/gustosService";
 import { analytics } from "@/analytics/posthog";
 import type { TasteCategory, TasteDetails } from "@/features/gustos/types";
@@ -38,6 +42,29 @@ export function useCreateQuickTaste() {
   });
 }
 
+export function useUpdateQuickTaste() {
+  const userId = useUserId();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, name, description, rating }: { id: string; name: string; description?: string; rating?: number }) =>
+      updateQuickTaste(id, { name, description, rating }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["gustos", "quick", userId] });
+    },
+  });
+}
+
+export function useDeleteQuickTaste() {
+  const userId = useUserId();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => deleteQuickTaste(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["gustos", "quick", userId] });
+    },
+  });
+}
+
 export function useDetailedTastes() {
   const userId = useUserId();
   return useInfiniteQuery({
@@ -63,6 +90,39 @@ export function useCreateDetailedTaste() {
     }) => createDetailedTaste(userId as string, input),
     onSuccess: () => {
       analytics.track("gusto_detallado_creado");
+      queryClient.invalidateQueries({ queryKey: ["gustos", "detailed", userId] });
+    },
+  });
+}
+
+export function useUpdateDetailedTaste() {
+  const userId = useUserId();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      id,
+      ...input
+    }: {
+      id: string;
+      category: TasteCategory;
+      name: string;
+      genre?: string;
+      notes?: string;
+      details: TasteDetails;
+      rating?: number;
+    }) => updateDetailedTaste(id, input),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["gustos", "detailed", userId] });
+    },
+  });
+}
+
+export function useDeleteDetailedTaste() {
+  const userId = useUserId();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => deleteDetailedTaste(id),
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["gustos", "detailed", userId] });
     },
   });

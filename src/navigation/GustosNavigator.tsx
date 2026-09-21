@@ -5,13 +5,14 @@ import { GustosHomeScreen } from "@/features/gustos/screens/GustosHomeScreen";
 import { GustoRapidoScreen } from "@/features/gustos/screens/GustoRapidoScreen";
 import { GustoDetalladoScreen } from "@/features/gustos/screens/GustoDetalladoScreen";
 import type { GustosStackParamList } from "@/navigation/types";
+import { defaultScreenOptions } from "@/navigation/screenOptions";
 
 const Stack = createNativeStackNavigator<GustosStackParamList>();
 
 export function GustosNavigator() {
   return (
     <NavigationContainer independent>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator screenOptions={{ ...defaultScreenOptions, headerShown: false }}>
         <Stack.Screen name="GustosHome" component={GustosHomeScreen} />
         <Stack.Screen
           name="GustoRapido"

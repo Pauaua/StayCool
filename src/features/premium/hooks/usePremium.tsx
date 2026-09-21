@@ -43,6 +43,17 @@ export function PremiumProvider({ children }: { children: React.ReactNode }) {
 
   const hasApiKey = Boolean(env.revenueCatApiKeyIos || env.revenueCatApiKeyAndroid);
   const trialActive = Boolean(profile?.trial_ends_at && new Date(profile.trial_ends_at) > new Date());
+  // Fuerza un re-render justo cuando vence la prueba: sin esto, con la app
+  // abierta el plan seguiría siendo "full" hasta que algo más la re-renderice.
+  const [, setExpiryTick] = useState(0);
+  const trialEndsAtIso = profile?.trial_ends_at ?? null;
+  useEffect(() => {
+    if (!trialEndsAtIso) return;
+    const msLeft = new Date(trialEndsAtIso).getTime() - Date.now();
+    if (msLeft <= 0) return;
+    const timer = setTimeout(() => setExpiryTick((n) => n + 1), msLeft + 500);
+    return () => clearTimeout(timer);
+  }, [trialEndsAtIso]);
 
   useEffect(() => {
     if (!hasApiKey) {

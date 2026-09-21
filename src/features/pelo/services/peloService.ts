@@ -1,5 +1,6 @@
 import * as FileSystem from "expo-file-system/legacy";
 import { decode } from "base64-arraybuffer";
+import { format } from "date-fns";
 import { supabase } from "@/lib/supabase";
 import type { HairProfile, HairstyleLog, HairstyleType, HairWashLog } from "@/features/pelo/types";
 
@@ -39,6 +40,62 @@ export async function logHairstyle(
     is_special_occasion: details?.isSpecialOccasion ?? false,
     occasion_details: details?.isSpecialOccasion ? details?.occasionDetails ?? null : null,
   });
+  if (error) throw error;
+}
+
+export async function updateHairstyleLog(
+  id: string,
+  userId: string,
+  hairstyle: string,
+  localImageUri: string | undefined,
+  details: {
+    styleType?: HairstyleType;
+    isSpecialOccasion?: boolean;
+    occasionDetails?: string;
+  }
+) {
+  let photoPath: string | undefined;
+  if (localImageUri) {
+    const base64 = await FileSystem.readAsStringAsync(localImageUri, {
+      encoding: FileSystem.EncodingType.Base64,
+    });
+    photoPath = `${userId}/${Date.now()}.jpg`;
+    const { error: uploadError } = await supabase.storage
+      .from("hairstyles")
+      .upload(photoPath, decode(base64), { contentType: "image/jpeg" });
+    if (uploadError) throw uploadError;
+  }
+  const { error } = await supabase
+    .from("hairstyle_logs")
+    .update({
+      hairstyle,
+      style_type: details.styleType ?? null,
+      is_special_occasion: details.isSpecialOccasion ?? false,
+      occasion_details: details.isSpecialOccasion ? details.occasionDetails ?? null : null,
+      ...(photoPath ? { photo_path: photoPath } : {}),
+    })
+    .eq("id", id);
+  if (error) throw error;
+}
+
+export async function deleteHairstyleLog(id: string) {
+  const { error } = await supabase.from("hairstyle_logs").delete().eq("id", id);
+  if (error) throw error;
+}
+
+export async function deleteHairWashLog(id: string) {
+  const { error } = await supabase.from("hair_wash_logs").delete().eq("id", id);
+  if (error) throw error;
+}
+
+export async function updateHairWashLog(id: string, washedAt: Date) {
+  const { error } = await supabase
+    .from("hair_wash_logs")
+    .update({
+      washed_at: washedAt.toISOString(),
+      wash_date: format(washedAt, "yyyy-MM-dd"),
+    })
+    .eq("id", id);
   if (error) throw error;
 }
 

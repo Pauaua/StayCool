@@ -89,6 +89,47 @@ export async function fetchOutfitById(outfitId: string): Promise<OutfitLog> {
   return data as OutfitLog;
 }
 
+export async function updateOutfitLog(
+  id: string,
+  userId: string,
+  outfitDate: string,
+  description: string,
+  localImageUri: string | undefined,
+  details: {
+    weather?: OutfitWeather;
+    clothingType?: OutfitClothingType;
+    mainColors?: string;
+    usedAccessories?: boolean;
+    accessoriesDescription?: string;
+    notes?: string;
+  }
+) {
+  let photoPath: string | undefined;
+  if (localImageUri) {
+    photoPath = `${userId}/${outfitDate}.jpg`;
+    await uploadPhoto("outfits", photoPath, localImageUri);
+  }
+  const { error } = await supabase
+    .from("outfit_logs")
+    .update({
+      description,
+      weather: details.weather ?? null,
+      clothing_type: details.clothingType ?? null,
+      main_colors: details.mainColors ?? null,
+      used_accessories: details.usedAccessories ?? false,
+      accessories_description: details.usedAccessories ? details.accessoriesDescription ?? null : null,
+      notes: details.notes ?? null,
+      ...(photoPath ? { photo_path: photoPath } : {}),
+    })
+    .eq("id", id);
+  if (error) throw error;
+}
+
+export async function deleteOutfitLog(id: string) {
+  const { error } = await supabase.from("outfit_logs").delete().eq("id", id);
+  if (error) throw error;
+}
+
 export async function getOutfitPhotoUrl(photoPath: string): Promise<string> {
   const { data, error } = await supabase.storage
     .from("outfits")
@@ -152,6 +193,47 @@ export async function fetchShoeById(shoeId: string): Promise<ShoeLog> {
   const { data, error } = await supabase.from("shoe_logs").select("*").eq("id", shoeId).single();
   if (error) throw error;
   return data as ShoeLog;
+}
+
+export async function updateShoeLog(
+  id: string,
+  userId: string,
+  shoeDate: string,
+  description: string,
+  localImageUri: string | undefined,
+  details: {
+    weather?: OutfitWeather;
+    shoeType?: ShoeType;
+    color?: string;
+    brand?: string;
+    condition?: ShoeCondition;
+    notes?: string;
+  }
+) {
+  let photoPath: string | undefined;
+  if (localImageUri) {
+    photoPath = `${userId}/${shoeDate}.jpg`;
+    await uploadPhoto("shoes", photoPath, localImageUri);
+  }
+  const { error } = await supabase
+    .from("shoe_logs")
+    .update({
+      description,
+      weather: details.weather ?? null,
+      shoe_type: details.shoeType ?? null,
+      color: details.color ?? null,
+      brand: details.brand ?? null,
+      condition: details.condition ?? null,
+      notes: details.notes ?? null,
+      ...(photoPath ? { photo_path: photoPath } : {}),
+    })
+    .eq("id", id);
+  if (error) throw error;
+}
+
+export async function deleteShoeLog(id: string) {
+  const { error } = await supabase.from("shoe_logs").delete().eq("id", id);
+  if (error) throw error;
 }
 
 export async function getShoePhotoUrl(photoPath: string): Promise<string> {
@@ -218,6 +300,22 @@ export async function createFaceProduct(
     price: input.price ?? null,
     rating: input.rating ?? null,
   });
+  if (error) throw error;
+}
+
+export async function updateFaceProduct(
+  productId: string,
+  input: { name: string; brand?: string; price?: number; rating?: number }
+) {
+  const { error } = await supabase
+    .from("face_products")
+    .update({
+      name: input.name,
+      brand: input.brand ?? null,
+      price: input.price ?? null,
+      rating: input.rating ?? null,
+    })
+    .eq("id", productId);
   if (error) throw error;
 }
 

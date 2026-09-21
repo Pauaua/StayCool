@@ -39,6 +39,7 @@ function DayDetailModal({
 }) {
   const { data: logs, isLoading } = useHygieneLogDetails(date);
   const deleteDay = useDeleteHygieneDay();
+  const toggleLog = useToggleHygieneLog(date ?? undefined);
   const { t, tg } = useT();
 
   // Combina el checklist activo (para que aparezcan también los ítems que
@@ -54,6 +55,7 @@ function DayDetailModal({
   const rows = [
     ...itemsThatExistedThatDay.map((item) => ({
       key: item.id,
+      hygieneItemId: item.id,
       label: item.label,
       icon: item.icon,
       completed: completedByItemId.get(item.id) ?? false,
@@ -62,6 +64,7 @@ function DayDetailModal({
       .filter((l) => !itemsThatExistedThatDay.some((item) => item.id === l.hygiene_item_id))
       .map((l) => ({
         key: l.id,
+        hygieneItemId: l.hygiene_item_id,
         label: l.hygiene_items?.label ?? t("higiene.deletedItem"),
         icon: l.hygiene_items?.icon ?? null,
         completed: l.completed,
@@ -90,20 +93,29 @@ function DayDetailModal({
   return (
     <Modal visible={date !== null} transparent animationType="fade" onRequestClose={onClose}>
       <View className="flex-1 items-center justify-center bg-black/40 px-6">
-        <Card className="w-full">
+        <Card className="w-full" style={{ maxHeight: "85%" }}>
           <Text className="text-lg font-bold text-surface-dark dark:text-white mb-3">{date}</Text>
           {isLoading ? (
             <ActivityIndicator color="#002054" />
           ) : rows.length > 0 ? (
-            rows.map((row) => (
-              <View key={row.key} className="flex-row items-center justify-between mb-2">
-                <Text className="text-surface-dark dark:text-white">
-                  {row.icon ? `${row.icon} ` : ""}
-                  {translateHygieneLabel(t, row.label)}
-                </Text>
-                <Text>{row.completed ? "✅" : "❌"}</Text>
-              </View>
-            ))
+            <ScrollView showsVerticalScrollIndicator={false} style={{ flexGrow: 0 }}>
+              {rows.map((row) => (
+                <Pressable
+                  key={row.key}
+                  onPress={() =>
+                    date &&
+                    toggleLog.mutate({ itemId: row.hygieneItemId, completed: !row.completed })
+                  }
+                  className="flex-row items-center justify-between mb-2"
+                >
+                  <Text className="text-surface-dark dark:text-white flex-1 pr-2">
+                    {row.icon ? `${row.icon} ` : ""}
+                    {translateHygieneLabel(t, row.label)}
+                  </Text>
+                  <Text className="flex-shrink-0">{row.completed ? "✅" : "❌"}</Text>
+                </Pressable>
+              ))}
+            </ScrollView>
           ) : (
             <Text className="text-sm text-gray-400 mb-2">{t("higiene.noItems")}</Text>
           )}

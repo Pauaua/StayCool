@@ -259,8 +259,17 @@ function ResumenContent() {
             {data.displayName ? `, ${data.displayName}` : ""} ✨
           </Text>
 
-          {/* Dashboard navegable in-app, en frases por módulo */}
-          <View className="gap-3 mb-6">
+          {/* Dashboard navegable in-app, en frases por módulo. Borde dorado
+              sutil en mensual/anual para que quede claro que es contenido
+              premium durante la prueba gratuita. */}
+          <View
+            className="gap-3 mb-6"
+            style={
+              period !== "weekly"
+                ? { borderWidth: 2, borderColor: "#D4AF37", borderRadius: 16, padding: 8 }
+                : undefined
+            }
+          >
             <Card style={{ borderLeftWidth: 4, borderLeftColor: "#ecc6ff" }}>
               <Text className="text-surface-dark dark:text-white">
                 <Text className="font-bold">Bienestar: </Text>
@@ -340,7 +349,15 @@ function ResumenContent() {
               recorta la vista visible del dashboard) */}
           <Text className="text-sm text-gray-500 mb-2">Vista previa de la tarjeta</Text>
           <View className="items-center mb-6">
-            <ResumenCard ref={cardRef} data={data} period={period} />
+            <View
+              style={
+                period !== "weekly"
+                  ? { borderWidth: 2, borderColor: "#D4AF37", borderRadius: 24, padding: 4 }
+                  : undefined
+              }
+            >
+              <ResumenCard ref={cardRef} data={data} period={period} />
+            </View>
           </View>
 
           <View className="gap-3">

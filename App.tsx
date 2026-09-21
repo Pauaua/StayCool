@@ -19,6 +19,7 @@ import { initRevenueCat } from "@/lib/revenuecat";
 import { PremiumProvider } from "@/features/premium/hooks/usePremium";
 import { ensureNotificationPermissions } from "@/notifications/notifications";
 import { SparkleOverlay } from "@/components/ui/SparkleOverlay";
+import { SparkleTransitionProvider } from "@/components/ui/SparkleTransition";
 
 initSentry();
 // Debe correr a nivel de módulo, no en un useEffect de App: PremiumProvider
@@ -52,7 +53,9 @@ export default function App() {
         <AuthProvider>
           <PremiumProvider>
             <StatusBar style="auto" />
-            <RootNavigator />
+            <SparkleTransitionProvider>
+              <RootNavigator />
+            </SparkleTransitionProvider>
             <SparkleOverlay />
           </PremiumProvider>
         </AuthProvider>

@@ -10,6 +10,8 @@ import {
   fetchExpenseSummary,
   fetchQuickExpenseById,
   fetchQuickExpensesPage,
+  updateDetailedExpense,
+  updateQuickExpense,
 } from "@/features/gastos/services/gastosService";
 import { analytics } from "@/analytics/posthog";
 import type { ExpenseKind } from "@/features/gastos/types";
@@ -82,6 +84,60 @@ export function useCreateDetailedExpense() {
     onSuccess: () => {
       analytics.track("gasto_detallado_creado");
       queryClient.invalidateQueries({ queryKey: ["gastos", "detailed", userId] });
+      queryClient.invalidateQueries({ queryKey: ["gastos", "resumen"] });
+    },
+  });
+}
+
+export function useUpdateQuickExpense() {
+  const { session } = useAuth();
+  const userId = session?.user.id;
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      id,
+      name,
+      expenseType,
+      description,
+      amount,
+    }: {
+      id: string;
+      name: string;
+      expenseType: string;
+      description?: string;
+      amount?: number;
+    }) => updateQuickExpense(id, { name, expenseType, description, amount }),
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["gastos", "quick", userId] });
+      queryClient.invalidateQueries({ queryKey: ["gastos", "quick-detail", variables.id] });
+      queryClient.invalidateQueries({ queryKey: ["gastos", "resumen"] });
+    },
+  });
+}
+
+export function useUpdateDetailedExpense() {
+  const { session } = useAuth();
+  const userId = session?.user.id;
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      id,
+      itemPurchased,
+      purpose,
+      amount,
+      expenseKind,
+      couldWait,
+    }: {
+      id: string;
+      itemPurchased: string;
+      purpose?: string;
+      amount: number;
+      expenseKind: ExpenseKind;
+      couldWait: boolean;
+    }) => updateDetailedExpense(id, { itemPurchased, purpose, amount, expenseKind, couldWait }),
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["gastos", "detailed", userId] });
+      queryClient.invalidateQueries({ queryKey: ["gastos", "detailed-detail", variables.id] });
       queryClient.invalidateQueries({ queryKey: ["gastos", "resumen"] });
     },
   });

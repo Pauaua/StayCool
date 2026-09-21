@@ -6,13 +6,14 @@ import { EstadisticasHoyScreen } from "@/features/estadisticas/screens/Estadisti
 import { EstadisticasSemanalScreen } from "@/features/estadisticas/screens/EstadisticasSemanalScreen";
 import { EstadisticasAnualScreen } from "@/features/estadisticas/screens/EstadisticasAnualScreen";
 import type { EstadisticasStackParamList } from "@/navigation/types";
+import { defaultScreenOptions } from "@/navigation/screenOptions";
 
 const Stack = createNativeStackNavigator<EstadisticasStackParamList>();
 
 export function EstadisticasNavigator() {
   return (
     <NavigationContainer independent>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator screenOptions={{ ...defaultScreenOptions, headerShown: false }}>
         <Stack.Screen name="EstadisticasHome" component={EstadisticasHomeScreen} />
         <Stack.Screen name="EstadisticasHoy" component={EstadisticasHoyScreen} />
         <Stack.Screen name="EstadisticasSemanal" component={EstadisticasSemanalScreen} />

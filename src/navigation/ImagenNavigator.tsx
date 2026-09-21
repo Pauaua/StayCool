@@ -8,13 +8,14 @@ import { OutfitDetailScreen } from "@/features/imagen/screens/OutfitDetailScreen
 import { ZapatosHomeScreen } from "@/features/imagen/screens/ZapatosHomeScreen";
 import { ShoeDetailScreen } from "@/features/imagen/screens/ShoeDetailScreen";
 import type { ImagenStackParamList } from "@/navigation/types";
+import { defaultScreenOptions } from "@/navigation/screenOptions";
 
 const Stack = createNativeStackNavigator<ImagenStackParamList>();
 
 export function ImagenNavigator() {
   return (
     <NavigationContainer independent>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator screenOptions={{ ...defaultScreenOptions, headerShown: false }}>
         <Stack.Screen name="ImagenHome" component={ImagenHomeScreen} />
         <Stack.Screen
           name="CaraSection"

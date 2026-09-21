@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Alert, Image, Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
+import { format } from "date-fns";
 import type { PurchasesOffering, PurchasesPackage } from "react-native-purchases";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Purchases } from "@/lib/revenuecat";
+import { ENTITLEMENT_FULL, Purchases } from "@/lib/revenuecat";
+import { useProfile } from "@/features/home/hooks/useProfile";
 import { usePremium, type PremiumTier } from "@/features/premium/hooks/usePremium";
 import { useGoToWelcome } from "@/navigation/WelcomeNavigationContext";
 import { useHideRailWhileMounted } from "@/navigation/RailVisibilityContext";
@@ -85,7 +87,14 @@ export function PaywallScreen() {
   const goToWelcome = useGoToWelcome();
   useHideRailWhileMounted();
   const { t } = useT();
-  const { tier, refresh } = usePremium();
+  const { tier, refresh, customerInfo } = usePremium();
+  const { data: profile } = useProfile();
+  // "Prueba" = es Diva solo por el regalo, sin una suscripción real activa. Si
+  // además tiene el entitlement pagado, el mensaje de prueba no aplica.
+  const hasPaidFull = Boolean(customerInfo?.entitlements.active[ENTITLEMENT_FULL]);
+  const trialEndsAt = profile?.trial_ends_at ? new Date(profile.trial_ends_at) : null;
+  const isTrialActive = Boolean(trialEndsAt && trialEndsAt > new Date()) && !hasPaidFull;
+  const trialEndedNotice = Boolean(profile?.trial_claimed_at) && !isTrialActive && tier === "free";
   const hasApiKey = Boolean(env.revenueCatApiKeyIos || env.revenueCatApiKeyAndroid);
   const [offering, setOffering] = useState<PurchasesOffering | null>(null);
   const [isLoading, setIsLoading] = useState(hasApiKey);
@@ -174,6 +183,16 @@ export function PaywallScreen() {
             plan: tier === "full" ? "Diva" : tier === "basico" ? "So Basic!" : "Gratis",
           })}
         </Text>
+        {isTrialActive && trialEndsAt ? (
+          <Text className="text-sm font-semibold text-brand-500 mb-6 text-center" style={{ marginTop: -18 }}>
+            {t("paywall.trialActive", { date: format(trialEndsAt, "dd/MM/yyyy HH:mm") })}
+          </Text>
+        ) : null}
+        {trialEndedNotice ? (
+          <Card className="mb-4" style={{ borderLeftWidth: 4, borderLeftColor: "#ecc6ff" }}>
+            <Text className="text-sm text-surface-dark dark:text-white">{t("paywall.trialEnded")}</Text>
+          </Card>
+        ) : null}
 
         {!hasApiKey ? (
           <Card className="mb-4 bg-accent-amber/10 border border-accent-amber">

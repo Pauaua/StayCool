@@ -4,6 +4,8 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 import {
   createFaceProduct,
   deleteFaceProduct,
+  deleteOutfitLog,
+  deleteShoeLog,
   fetchFaceProducts,
   fetchOutfitById,
   fetchShoeById,
@@ -14,6 +16,9 @@ import {
   getShoePhotoUrl,
   saveOutfitLog,
   saveShoeLog,
+  updateFaceProduct,
+  updateOutfitLog,
+  updateShoeLog,
   upsertFaceLog,
 } from "@/features/imagen/services/imagenService";
 import { analytics } from "@/analytics/posthog";
@@ -103,6 +108,59 @@ export function useSaveOutfit() {
   });
 }
 
+export function useUpdateOutfit() {
+  const userId = useUserId();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      id,
+      outfitDate,
+      description,
+      localImageUri,
+      weather,
+      clothingType,
+      mainColors,
+      usedAccessories,
+      accessoriesDescription,
+      notes,
+    }: {
+      id: string;
+      outfitDate: string;
+      description: string;
+      localImageUri?: string;
+      weather?: OutfitWeather;
+      clothingType?: OutfitClothingType;
+      mainColors?: string;
+      usedAccessories?: boolean;
+      accessoriesDescription?: string;
+      notes?: string;
+    }) =>
+      updateOutfitLog(id, userId as string, outfitDate, description, localImageUri, {
+        weather,
+        clothingType,
+        mainColors,
+        usedAccessories,
+        accessoriesDescription,
+        notes,
+      }),
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["imagen", "outfits", userId] });
+      queryClient.invalidateQueries({ queryKey: ["imagen", "outfit", variables.id] });
+    },
+  });
+}
+
+export function useDeleteOutfit() {
+  const userId = useUserId();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (outfitId: string) => deleteOutfitLog(outfitId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["imagen", "outfits", userId] });
+    },
+  });
+}
+
 // -------- Zapatos --------
 
 export function useWeekShoes() {
@@ -168,6 +226,59 @@ export function useSaveShoe() {
   });
 }
 
+export function useUpdateShoe() {
+  const userId = useUserId();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      id,
+      shoeDate,
+      description,
+      localImageUri,
+      weather,
+      shoeType,
+      color,
+      brand,
+      condition,
+      notes,
+    }: {
+      id: string;
+      shoeDate: string;
+      description: string;
+      localImageUri?: string;
+      weather?: OutfitWeather;
+      shoeType?: ShoeType;
+      color?: string;
+      brand?: string;
+      condition?: ShoeCondition;
+      notes?: string;
+    }) =>
+      updateShoeLog(id, userId as string, shoeDate, description, localImageUri, {
+        weather,
+        shoeType,
+        color,
+        brand,
+        condition,
+        notes,
+      }),
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["imagen", "shoes", userId] });
+      queryClient.invalidateQueries({ queryKey: ["imagen", "shoe", variables.id] });
+    },
+  });
+}
+
+export function useDeleteShoe() {
+  const userId = useUserId();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (shoeId: string) => deleteShoeLog(shoeId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["imagen", "shoes", userId] });
+    },
+  });
+}
+
 // -------- Cara (maquillaje) --------
 
 export function useWeekFaceLogs() {
@@ -219,6 +330,29 @@ export function useCreateFaceProduct() {
       queryClient.invalidateQueries({
         queryKey: ["imagen", "face-products", variables.category, userId],
       });
+    },
+  });
+}
+
+export function useUpdateFaceProduct(category: FaceProductCategory) {
+  const userId = useUserId();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      productId,
+      name,
+      brand,
+      price,
+      rating,
+    }: {
+      productId: string;
+      name: string;
+      brand?: string;
+      price?: number;
+      rating?: number;
+    }) => updateFaceProduct(productId, { name, brand, price, rating }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["imagen", "face-products", category, userId] });
     },
   });
 }
