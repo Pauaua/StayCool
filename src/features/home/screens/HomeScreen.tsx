@@ -1,12 +1,12 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Image, Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
 import { format } from "date-fns";
 import { Card } from "@/components/ui/Card";
 import { useDashboardSummary } from "@/features/home/hooks/useDashboard";
 import { useSyncReminders } from "@/features/home/hooks/useProfile";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { usePremium } from "@/features/premium/hooks/usePremium";
-import { useSyncMooney } from "@/features/premium/hooks/useMooney";
+// import { usePremium } from "@/features/premium/hooks/usePremium";
+// import { useSyncMooney } from "@/features/premium/hooks/useMooney";
 import { useGoToWelcome } from "@/navigation/WelcomeNavigationContext";
 import { ReminderSettings } from "@/features/home/components/ReminderSettings";
 import { useT } from "@/lib/i18n";
@@ -21,17 +21,18 @@ export function HomeScreen({ navigation }: Props) {
   const { t } = useT();
   const { data, isLoading } = useDashboardSummary();
   useSyncReminders();
-  const { isFull } = usePremium();
+  // const { isFull } = usePremium();
   const name = session?.user.user_metadata?.display_name as string | undefined;
 
+  // Sparkless/MOOney: deshabilitado a propósito (no se suman monedas).
   // sync_mooney() es idempotente y re-deriva todo del lado del servidor, así
   // que es seguro dispararla cada vez que se abre Home (cubre el caso común
   // de "abrí la app y ya había hecho registros hoy").
-  const syncMooney = useSyncMooney();
-  useEffect(() => {
-    if (isFull) syncMooney.mutate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFull]);
+  // const syncMooney = useSyncMooney();
+  // useEffect(() => {
+  //   if (isFull) syncMooney.mutate();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [isFull]);
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50 dark:bg-surface-dark">

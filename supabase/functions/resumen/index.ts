@@ -47,7 +47,10 @@ Deno.serve(async (req) => {
       .single();
     if (profileError) throw profileError;
     const trialActive = !!profile.trial_ends_at && new Date(profile.trial_ends_at) > new Date();
-    if (profile.premium_tier === "free" && !trialActive) {
+    // Promo de testeo: todas son Diva hasta el fin del 1 de octubre de 2026
+    // (hora de Chile). Misma fecha que TESTER_PROMO_ENDS_AT en usePremium.tsx.
+    const testerPromoActive = Date.now() < new Date("2026-10-02T00:00:00-03:00").getTime();
+    if (profile.premium_tier === "free" && !trialActive && !testerPromoActive) {
       return json({ error: "Mi Resumen requiere el plan Básico o Full." }, 403);
     }
 

@@ -17,6 +17,15 @@ interface PremiumContextValue {
 
 const PremiumContext = createContext<PremiumContextValue | undefined>(undefined);
 
+// Promo de testeo: mientras dure la prueba cerrada de Play Store, todas las
+// cuentas son Diva ("full"). Vence al terminar el 1 de octubre de 2026 (hora
+// de Chile); después cada cuenta vuelve a su plan real sin tocar nada más.
+export const TESTER_PROMO_ENDS_AT = new Date("2026-10-02T00:00:00-03:00");
+
+export function isTesterPromoActive(): boolean {
+  return Date.now() < TESTER_PROMO_ENDS_AT.getTime();
+}
+
 // trialActive: prueba gratuita de 3 días (ver claim_trial() en Postgres) —
 // mientras esté vigente, la cuenta se trata como "full" aunque no tenga
 // ningún entitlement real de RevenueCat activo. No pisa una suscripción
@@ -28,6 +37,7 @@ export function resolveTier(info: CustomerInfo | null, trialActive: boolean): Pr
   // Sirve para poder revisar pantallas/funciones premium sin tener que
   // pagar una suscripción real mientras se prueba en local.
   if (__DEV__) return "full";
+  if (isTesterPromoActive()) return "full";
 
   const active = info?.entitlements.active ?? {};
   if (active[ENTITLEMENT_FULL]) return "full";
@@ -43,6 +53,7 @@ export function PremiumProvider({ children }: { children: React.ReactNode }) {
 
   const hasApiKey = Boolean(env.revenueCatApiKeyIos || env.revenueCatApiKeyAndroid);
   const trialActive = Boolean(profile?.trial_ends_at && new Date(profile.trial_ends_at) > new Date());
+  const testerPromoActive = isTesterPromoActive();
   // Fuerza un re-render justo cuando vence la prueba: sin esto, con la app
   // abierta el plan seguiría siendo "full" hasta que algo más la re-renderice.
   const [, setExpiryTick] = useState(0);
@@ -54,6 +65,13 @@ export function PremiumProvider({ children }: { children: React.ReactNode }) {
     const timer = setTimeout(() => setExpiryTick((n) => n + 1), msLeft + 500);
     return () => clearTimeout(timer);
   }, [trialEndsAtIso]);
+  // Igual que arriba, pero para el fin de la promo de testeo.
+  useEffect(() => {
+    const msLeft = TESTER_PROMO_ENDS_AT.getTime() - Date.now();
+    if (msLeft <= 0) return;
+    const timer = setTimeout(() => setExpiryTick((n) => n + 1), msLeft + 500);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     if (!hasApiKey) {
@@ -87,7 +105,9 @@ export function PremiumProvider({ children }: { children: React.ReactNode }) {
         setCustomerInfo(info);
       },
     };
-  }, [customerInfo, isLoading, hasApiKey, trialActive]);
+    // testerPromoActive no se usa adentro (resolveTier lo consulta), pero
+    // está en las deps para que el plan se recalcule cuando termine la promo.
+  }, [customerInfo, isLoading, hasApiKey, trialActive, testerPromoActive]);
 
   return <PremiumContext.Provider value={value}>{children}</PremiumContext.Provider>;
 }
