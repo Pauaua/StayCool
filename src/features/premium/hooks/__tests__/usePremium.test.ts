@@ -24,7 +24,7 @@ jest.mock("@/features/home/hooks/useProfile", () => ({
   useProfile: () => ({ data: undefined }),
 }));
 
-import { resolveTier } from "@/features/premium/hooks/usePremium";
+import { resolveTier, TESTER_PROMO_ENDS_AT } from "@/features/premium/hooks/usePremium";
 
 function customerInfoWithEntitlements(active: string[]): CustomerInfo {
   const entitlements = Object.fromEntries(active.map((key) => [key, {}])) as CustomerInfo["entitlements"]["active"];
@@ -37,12 +37,16 @@ describe("resolveTier", () => {
   // resolveTier tiene un bypass a "full" en __DEV__ (para probar pantallas
   // premium sin pagar) — hay que desactivarlo para poder testear la lógica
   // real basada en entitlements, que es la que corre en producción.
+  // También fijamos la fecha después de la promo de testeo (que fuerza
+  // "full" para todas), para testear la lógica normal.
   beforeEach(() => {
     (global as any).__DEV__ = false;
+    jest.spyOn(Date, "now").mockReturnValue(TESTER_PROMO_ENDS_AT.getTime() + 1000);
   });
 
   afterEach(() => {
     (global as any).__DEV__ = originalDev;
+    jest.restoreAllMocks();
   });
 
   it("devuelve 'free' cuando no hay CustomerInfo", () => {
@@ -78,5 +82,11 @@ describe("resolveTier", () => {
     (global as any).__DEV__ = true;
     expect(resolveTier(null, false)).toBe("full");
     expect(resolveTier(customerInfoWithEntitlements([]), false)).toBe("full");
+  });
+
+  it("durante la promo de testeo siempre devuelve 'full'", () => {
+    jest.spyOn(Date, "now").mockReturnValue(TESTER_PROMO_ENDS_AT.getTime() - 1000);
+    expect(resolveTier(null, false)).toBe("full");
+    expect(resolveTier(customerInfoWithEntitlements(["basico"]), false)).toBe("full");
   });
 });

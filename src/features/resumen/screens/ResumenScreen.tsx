@@ -12,7 +12,7 @@ import { ShareSheet } from "@/features/resumen/components/ShareSheet";
 import { captureCardImage, shareGeneric, shareToNetwork, type ShareNetwork } from "@/features/resumen/services/shareService";
 import { generateAndSharePdf } from "@/features/resumen/services/pdfService";
 import { useT } from "@/lib/i18n";
-import { grantMooneyForResumen } from "@/features/premium/services/mooneyService";
+// import { grantMooneyForResumen } from "@/features/premium/services/mooneyService";
 import { FallingCircles } from "@/components/ui/FallingCircles";
 import type { ResumenPeriod } from "@/features/resumen/types";
 
@@ -125,12 +125,13 @@ function ResumenContent() {
   const [isExportingPdf, setIsExportingPdf] = useState(false);
 
   async function grantShareBonus() {
-    if (!isFull) return;
-    try {
-      await grantMooneyForResumen(periodKey);
-    } catch (error) {
-      console.warn("grant_mooney_for_resumen falló", error);
-    }
+    // Sparkless/MOOney: deshabilitado a propósito (no se suman monedas).
+    // if (!isFull) return;
+    // try {
+    //   await grantMooneyForResumen(periodKey);
+    // } catch (error) {
+    //   console.warn("grant_mooney_for_resumen falló", error);
+    // }
   }
 
   async function handleSelectNetwork(network: ShareNetwork) {

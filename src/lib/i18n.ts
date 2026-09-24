@@ -29,6 +29,8 @@ const dict = {
       "Tu cuenta volvió al plan gratis y no se te cobró nada. Para volver a ser una Diva, suscríbete acá.",
     "trial.endedModalCta": "Suscribirme",
     "trial.endedModalClose": "Ahora no",
+    "testerPromo.message": "Disfruta ser una Diva hasta el final del testeo: lo mereces",
+    "testerPromo.cta": "¡Gracias!",
     "trial.endedNotifTitle": "Tu prueba de Diva terminó",
     "trial.endedNotifBody":
       "Tu prueba gratuita de StayCoolPlus se acabó. Renueva para seguir siendo Diva, o continúa en el plan gratis.",
@@ -754,6 +756,8 @@ const dict = {
       "Your account went back to the free plan and you weren't charged anything. To be a Diva again, subscribe here.",
     "trial.endedModalCta": "Subscribe",
     "trial.endedModalClose": "Not now",
+    "testerPromo.message": "Enjoy being a Diva until the end of testing: you deserve it",
+    "testerPromo.cta": "Thank you!",
     "trial.endedNotifTitle": "Your Diva trial ended",
     "trial.endedNotifBody":
       "Your StayCoolPlus free trial is over. Renew to keep being Diva, or continue on the free plan.",

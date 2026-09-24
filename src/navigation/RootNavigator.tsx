@@ -10,6 +10,7 @@ import type { HomeStackParamList } from "@/navigation/types";
 import { WelcomeNavigationProvider } from "@/navigation/WelcomeNavigationContext";
 import { RailVisibilityProvider } from "@/navigation/RailVisibilityContext";
 import { TrialEndedModal } from "@/features/premium/components/TrialEndedModal";
+import { TesterPromoModal } from "@/features/premium/components/TesterPromoModal";
 
 type PostLoginStage = "welcome" | "app";
 
@@ -74,6 +75,7 @@ export function RootNavigator() {
             </RailVisibilityProvider>
           </WelcomeNavigationProvider>
           <TrialEndedModal onSubscribe={openPaywall} />
+          <TesterPromoModal />
         </>
       );
     }
@@ -98,6 +100,7 @@ export function RootNavigator() {
         />
       </Animated.View>
       <TrialEndedModal onSubscribe={openPaywall} />
+      <TesterPromoModal />
       </>
     );
   }
