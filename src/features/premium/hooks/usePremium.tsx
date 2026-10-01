@@ -13,6 +13,9 @@ interface PremiumContextValue {
   isLoading: boolean;
   customerInfo: CustomerInfo | null;
   refresh: () => Promise<void>;
+  // Aplica un CustomerInfo que ya tenemos en mano (p. ej. el que devuelve
+  // purchasePackage) sin volver a pedirlo a RevenueCat.
+  applyCustomerInfo: (info: CustomerInfo) => void;
 }
 
 const PremiumContext = createContext<PremiumContextValue | undefined>(undefined);
@@ -104,6 +107,7 @@ export function PremiumProvider({ children }: { children: React.ReactNode }) {
         const info = await Purchases.getCustomerInfo();
         setCustomerInfo(info);
       },
+      applyCustomerInfo: setCustomerInfo,
     };
     // testerPromoActive no se usa adentro (resolveTier lo consulta), pero
     // está en las deps para que el plan se recalcule cuando termine la promo.

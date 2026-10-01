@@ -1,10 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Alert, Image, Linking, Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import { ActivityIndicator, Alert, Image, Linking, Platform, Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
 import { format } from "date-fns";
-import type { PurchasesOffering, PurchasesPackage } from "react-native-purchases";
+import type {
+  CustomerInfo,
+  GoogleProductChangeInfo,
+  PurchasesOffering,
+  PurchasesPackage,
+} from "react-native-purchases";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { ENTITLEMENT_FULL, Purchases } from "@/lib/revenuecat";
+import { ENTITLEMENT_BASICO, ENTITLEMENT_FULL, Purchases } from "@/lib/revenuecat";
 import { useProfile } from "@/features/home/hooks/useProfile";
 import { usePremium, type PremiumTier } from "@/features/premium/hooks/usePremium";
 import { useGoToWelcome } from "@/navigation/WelcomeNavigationContext";
@@ -73,7 +78,7 @@ const PLAN_INFO: {
       "Personalizar tu foto de perfil",
       "Ver tu resumen semanal, mensual y anual",
       "Estadísticas asociadas a tus datos descargables en PDF",
-      "Recordatorios personalizados",
+      // "Recordatorios personalizados" — oculto hasta que la función exista.
     ],
   },
 ];
@@ -89,15 +94,37 @@ function findPackageForTier(packages: PurchasesPackage[], tier: PremiumTier): Pu
   );
 }
 
+// Suscripción pagada vigente en Google Play (la prueba gratis y la promo de
+// testeo no pasan por la tienda, así que no cuentan). El producto Diva otorga
+// ambos entitlements, por eso se mira "full" primero.
+function getActivePlaySubscription(
+  info: CustomerInfo | null
+): { tier: "basico" | "full"; productId: string } | null {
+  const active = info?.entitlements.active ?? {};
+  for (const entitlement of [ENTITLEMENT_FULL, ENTITLEMENT_BASICO] as const) {
+    const ent = active[entitlement];
+    if (ent && ent.store === "PLAY_STORE") {
+      // En Android el id puede venir como "full_mensual:plan-base"; Google
+      // pide solo el id de la suscripción.
+      return { tier: entitlement, productId: ent.productIdentifier.split(":")[0] };
+    }
+  }
+  return null;
+}
+
 export function PaywallScreen() {
   const goToWelcome = useGoToWelcome();
   useHideRailWhileMounted();
   const { t } = useT();
-  const { tier, refresh, customerInfo } = usePremium();
+  const { tier, refresh, applyCustomerInfo, customerInfo } = usePremium();
   const { data: profile } = useProfile();
   // "Prueba" = es Diva solo por el regalo, sin una suscripción real activa. Si
   // además tiene el entitlement pagado, el mensaje de prueba no aplica.
   const hasPaidFull = Boolean(customerInfo?.entitlements.active[ENTITLEMENT_FULL]);
+  // Solo una suscripción real de la tienda se puede gestionar/cancelar; la
+  // prueba gratis y la promo de testeo también dan tier "full" pero no tienen
+  // nada que cancelar en Google Play.
+  const hasPaidSubscription = (customerInfo?.activeSubscriptions.length ?? 0) > 0;
   const trialEndsAt = profile?.trial_ends_at ? new Date(profile.trial_ends_at) : null;
   const isTrialActive = Boolean(trialEndsAt && trialEndsAt > new Date()) && !hasPaidFull;
   const trialEndedNotice = Boolean(profile?.trial_claimed_at) && !isTrialActive && tier === "free";
@@ -106,25 +133,80 @@ export function PaywallScreen() {
   const [isLoading, setIsLoading] = useState(hasApiKey);
   const [pendingTier, setPendingTier] = useState<PremiumTier | null>(null);
   const [isRestoring, setIsRestoring] = useState(false);
+  // Sin red o con la tienda caída getOfferings falla (o no hay offering
+  // "current"), y sin esto todos los planes quedaban en "Próximamente" sin
+  // forma de reintentar.
+  const [offeringsError, setOfferingsError] = useState(false);
 
-  useEffect(() => {
-    if (!hasApiKey) return;
+  const loadOfferings = useCallback(() => {
+    setIsLoading(true);
+    setOfferingsError(false);
     Purchases.getOfferings()
-      .then((offerings) => setOffering(offerings.current))
+      .then((offerings) => {
+        setOffering(offerings.current);
+        if (!offerings.current) setOfferingsError(true);
+      })
       .catch((error) => {
         console.warn("RevenueCat getOfferings falló", error);
+        setOfferingsError(true);
       })
       .finally(() => setIsLoading(false));
-  }, [hasApiKey]);
+  }, []);
+
+  useEffect(() => {
+    if (hasApiKey) loadOfferings();
+  }, [hasApiKey, loadOfferings]);
 
   async function handlePurchase(planTier: PremiumTier, pkg: PurchasesPackage) {
+    // Cambio entre So Basic! y Diva en Android: sin productChangeInfo Google
+    // lo trata como una suscripción nueva y la usuaria queda pagando las dos.
+    // Subir cambia de inmediato y cobra solo la diferencia del período en
+    // curso; bajar se aplica al terminar el período ya pagado de Diva.
+    const current = Platform.OS === "android" ? getActivePlaySubscription(customerInfo) : null;
+    const isUpgrade = current?.tier === "basico" && planTier === "full";
+    const isDowngrade = current?.tier === "full" && planTier === "basico";
+    const productChangeInfo: GoogleProductChangeInfo | null =
+      current && (isUpgrade || isDowngrade)
+        ? {
+            oldProductIdentifier: current.productId,
+            prorationMode: isUpgrade
+              ? Purchases.PRORATION_MODE.IMMEDIATE_AND_CHARGE_PRORATED_PRICE
+              : Purchases.PRORATION_MODE.DEFERRED,
+          }
+        : null;
+
     setPendingTier(planTier);
     try {
-      await Purchases.purchasePackage(pkg);
-      await refresh();
-      Alert.alert("¡Listo!", "Tu suscripción está activa.");
+      const { customerInfo: info } = await Purchases.purchasePackage(pkg, null, productChangeInfo);
+      // Usamos el CustomerInfo que devuelve la compra en vez de volver a
+      // pedirlo: si ese segundo pedido fallaba, mostrábamos "No se pudo
+      // completar la compra" con el cobro ya hecho.
+      applyCustomerInfo(info);
+      const purchasedEntitlement = planTier === "full" ? ENTITLEMENT_FULL : ENTITLEMENT_BASICO;
+      if (isDowngrade) {
+        Alert.alert(
+          "Cambio programado",
+          "Seguirás siendo Diva hasta el fin de tu período actual; después tu plan pasa a So Basic!."
+        );
+      } else if (info.entitlements.active[purchasedEntitlement]) {
+        Alert.alert("¡Listo!", "Tu suscripción está activa.");
+      } else {
+        Alert.alert(
+          "Recibimos tu compra",
+          'Tu plan se actualizará en unos minutos. Si no ves el cambio, toca "Restaurar compras".'
+        );
+      }
     } catch (error: any) {
       if (error?.userCancelled) return;
+      // Pago pendiente (p. ej. efectivo o transferencia en Google Play): no es
+      // un error, la compra se activa sola cuando la tienda la confirme.
+      if (error?.code === Purchases.PURCHASES_ERROR_CODE.PAYMENT_PENDING_ERROR) {
+        Alert.alert(
+          "Tu pago está pendiente",
+          "La tienda todavía está procesando tu pago. Tu plan se activará apenas se confirme; no necesitas volver a comprar."
+        );
+        return;
+      }
       // "No se encontró el artículo" de Google Play: el producto que devuelve
       // RevenueCat no está disponible para esta instalación (producto o plan
       // base inactivo en Play Console, app instalada por fuera de Play, o
@@ -218,6 +300,15 @@ export function PaywallScreen() {
           </Card>
         ) : null}
 
+        {hasApiKey && offeringsError ? (
+          <Card className="mb-4 bg-accent-amber/10 border border-accent-amber">
+            <Text className="text-sm text-surface-dark dark:text-white">{t("paywall.offeringsError")}</Text>
+            <View className="mt-3">
+              <Button label={t("paywall.retry")} variant="ghost" onPress={loadOfferings} />
+            </View>
+          </Card>
+        ) : null}
+
         {PLAN_INFO.map((plan) => {
           const pkg = findPackageForTier(packages, plan.tier);
           const isCurrentPlan = tier === plan.tier;
@@ -279,7 +370,11 @@ export function PaywallScreen() {
                     <ActivityIndicator color="#002054" />
                   ) : (
                     <Text className="font-semibold text-base" style={{ color: "#002054" }}>
-                      {pkg ? t("paywall.subscribe") : t("paywall.comingSoon")}
+                      {pkg
+                        ? hasPaidSubscription
+                          ? t("paywall.changePlan")
+                          : t("paywall.subscribe")
+                        : t("paywall.comingSoon")}
                     </Text>
                   )}
                 </Pressable>
@@ -298,7 +393,7 @@ export function PaywallScreen() {
           />
         </View>
 
-        {tier !== "free" ? (
+        {hasPaidSubscription ? (
           <Pressable
             onPress={handleManageSubscription}
             disabled={pendingTier !== null}
