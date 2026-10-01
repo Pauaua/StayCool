@@ -77,7 +77,7 @@ export function UserAvatar({ avatarUrl, size = 64 }: UserAvatarProps) {
   return (
     <View style={dimensionStyle} className="bg-brand-100 dark:bg-surface-cardDark items-center justify-center">
       <Image
-        source={{ uri: "https://api.dicebear.com/9.x/initials/png?seed=Agenda%20Cool&size=" + size * 2 }}
+        source={{ uri: "https://api.dicebear.com/9.x/initials/png?seed=StayCool&size=" + size * 2 }}
         style={dimensionStyle}
       />
     </View>

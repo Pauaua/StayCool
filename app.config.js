@@ -7,7 +7,7 @@ require("dotenv/config");
 // Expo inlinea automáticamente) y leerlas en runtime con expo-constants.
 module.exports = {
   expo: {
-    name: "Agenda Cool",
+    name: "StayCool",
     slug: "coolthings",
     owner: "coolthingss-team",
     scheme: "agendacool",
@@ -64,7 +64,7 @@ module.exports = {
       [
         "@sentry/react-native/expo",
         {
-          organization: "your-org",
+          organization: "cool-things",
           project: "agenda-cool",
         },
       ],
