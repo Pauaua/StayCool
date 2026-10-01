@@ -7,7 +7,7 @@ require("dotenv/config");
 // Expo inlinea automáticamente) y leerlas en runtime con expo-constants.
 module.exports = {
   expo: {
-    name: "StayCool",
+    name: "Cool",
     slug: "coolthings",
     owner: "coolthingss-team",
     scheme: "agendacool",

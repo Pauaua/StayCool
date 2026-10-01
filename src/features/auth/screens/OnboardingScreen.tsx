@@ -22,7 +22,7 @@ export function OnboardingScreen({ navigation }: Props) {
         <Reveal className="mt-16" offset={-16} duration={500}>
           <View className="flex-row items-center mb-3">
             <Text className="font-script text-navy" style={{ fontSize: 48 }}>
-              StayCool
+              Cool
             </Text>
             <Image
               source={require("../../../../assets/images/brillitos.png")}
