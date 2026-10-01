@@ -113,6 +113,10 @@ const dict = {
     "paywall.comingSoon": "Próximamente",
     "paywall.restore": "Restaurar compras",
     "paywall.cancelSubscription": "Cancelar mi suscripción",
+    "paywall.autoRenewNotice":
+      "Las suscripciones son mensuales y se renuevan automáticamente, salvo que las canceles al menos 24 horas antes del fin del período. El cobro se hace a tu cuenta de la tienda y puedes gestionarla o cancelarla desde ahí.",
+    "paywall.privacy": "Política de Privacidad",
+    "paywall.terms": "Términos de Uso",
     "paywall.trialActive": "Prueba gratuita de Diva · vence el {date}",
     "paywall.trialEnded": "Tu prueba gratuita de Diva terminó. ¡Suscríbete para seguir siendo Diva!",
 
@@ -847,6 +851,10 @@ const dict = {
     "paywall.comingSoon": "Coming soon",
     "paywall.restore": "Restore purchases",
     "paywall.cancelSubscription": "Cancel my subscription",
+    "paywall.autoRenewNotice":
+      "Subscriptions are monthly and renew automatically unless cancelled at least 24 hours before the end of the period. Payment is charged to your store account, where you can manage or cancel it.",
+    "paywall.privacy": "Privacy Policy",
+    "paywall.terms": "Terms of Use",
     "paywall.trialActive": "Diva free trial · ends {date}",
     "paywall.trialEnded": "Your Diva free trial has ended. Subscribe to keep being Diva!",
 

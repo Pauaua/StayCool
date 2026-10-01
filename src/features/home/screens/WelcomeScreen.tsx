@@ -7,7 +7,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { useAutoReactivateAccount, useProfile } from "@/features/home/hooks/useProfile";
 import { TrialGiftBox } from "@/features/premium/components/TrialGiftBox";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { useT } from "@/lib/i18n";
+import { useT, type Language } from "@/lib/i18n";
 
 interface WelcomeScreenProps {
   onOpenAgenda: () => void;
@@ -35,7 +35,26 @@ const MONTHS = [
 // Alto reservado bajo el círculo del regalo para su mensaje ("¡Tienes un regalo!").
 const GIFT_LABEL_SPACE = 44;
 
-function formatDate(date: Date): string {
+const WEEKDAYS_EN = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const MONTHS_EN = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+function formatDate(date: Date, lang: Language): string {
+  if (lang === "en") {
+    return `${WEEKDAYS_EN[date.getDay()]}, ${MONTHS_EN[date.getMonth()]} ${date.getDate()}`;
+  }
   return `${WEEKDAYS[date.getDay()]}, ${date.getDate()} de ${MONTHS[date.getMonth()]}`;
 }
 
@@ -110,7 +129,7 @@ export function WelcomeScreen({
   const { data: profile } = useProfile();
   useAutoReactivateAccount();
   const { signOut } = useAuth();
-  const { t, tg } = useT();
+  const { t, tg, lang } = useT();
   const [now, setNow] = useState(() => new Date());
   const sparkle = useSparkleTransition();
   const busy = useRef(false);
@@ -162,7 +181,7 @@ export function WelcomeScreen({
 
           <View className="mt-8 items-center">
             <Text className="text-5xl font-bold text-navy">{formatTime(now)}</Text>
-            <Text className="mt-1 text-base capitalize text-navy">{formatDate(now)}</Text>
+            <Text className="mt-1 text-base capitalize text-navy">{formatDate(now, lang)}</Text>
           </View>
         </Reveal>
 

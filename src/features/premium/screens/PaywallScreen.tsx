@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Alert, Image, Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
+import { ActivityIndicator, Alert, Image, Linking, Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
 import { format } from "date-fns";
 import type { PurchasesOffering, PurchasesPackage } from "react-native-purchases";
 import { Card } from "@/components/ui/Card";
@@ -25,6 +25,11 @@ const PAYWALL_CIRCLE_COLORS = ["#fef1ba", "#fef1ba", "#fef1ba", "#ecc6ff", "#d9e
 // bien porque es solo orientativo, la tienda siempre cobra en la moneda real
 // del usuario.
 const CLP_PER_USD = 950;
+
+// Las tiendas piden que la pantalla de compra enlace a la política de
+// privacidad y a los términos (publicados en el sitio de StayCool).
+const PRIVACY_URL = "https://www.staycool.cl/privacidad";
+const TERMS_URL = "https://www.staycool.cl/terminos";
 
 function formatUsdApprox(clp: number): string {
   return `(~USD ${(clp / CLP_PER_USD).toFixed(2)})`;
@@ -309,6 +314,23 @@ export function PaywallScreen() {
             </Text>
           </Pressable>
         ) : null}
+
+        <Text className="text-xs text-gray-500 dark:text-gray-400 text-center mt-6">
+          {t("paywall.autoRenewNotice")}
+        </Text>
+        <View className="flex-row justify-center mt-2">
+          <Pressable onPress={() => Linking.openURL(PRIVACY_URL)} hitSlop={8}>
+            <Text className="text-xs font-semibold underline" style={{ color: "#002054" }}>
+              {t("paywall.privacy")}
+            </Text>
+          </Pressable>
+          <Text className="text-xs text-gray-400 mx-2">·</Text>
+          <Pressable onPress={() => Linking.openURL(TERMS_URL)} hitSlop={8}>
+            <Text className="text-xs font-semibold underline" style={{ color: "#002054" }}>
+              {t("paywall.terms")}
+            </Text>
+          </Pressable>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
