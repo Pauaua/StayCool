@@ -73,6 +73,7 @@ const PLAN_INFO: {
       "Personalizar tu foto de perfil",
       "Ver tu resumen semanal, mensual y anual",
       "Estadísticas asociadas a tus datos descargables en PDF",
+      "Recordatorios personalizados",
     ],
   },
 ];
