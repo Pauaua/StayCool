@@ -120,7 +120,7 @@ const dict = {
     "paywall.trialActive": "Prueba gratuita de Diva · vence el {date}",
     "paywall.trialEnded": "Tu prueba gratuita de Diva terminó. ¡Suscríbete para seguir siendo Diva!",
     "paywall.changePlan": "Cambiar a este plan",
-    "paywall.offeringsError": "No pudimos cargar los planes desde la tienda. Revisa tu conexión e intenta de nuevo.",
+    "paywall.offeringsError": "No pudimos cargar los planes. Revisa tu conexión o intenta de nuevo en unos minutos.",
     "paywall.retry": "Reintentar",
 
     // Home
@@ -861,7 +861,7 @@ const dict = {
     "paywall.trialActive": "Diva free trial · ends {date}",
     "paywall.trialEnded": "Your Diva free trial has ended. Subscribe to keep being Diva!",
     "paywall.changePlan": "Switch to this plan",
-    "paywall.offeringsError": "We couldn't load the plans from the store. Check your connection and try again.",
+    "paywall.offeringsError": "We couldn't load the plans. Check your connection or try again in a few minutes.",
     "paywall.retry": "Try again",
 
     "home.back": "Home",

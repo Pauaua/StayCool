@@ -144,7 +144,9 @@ export function PaywallScreen() {
     Purchases.getOfferings()
       .then((offerings) => {
         setOffering(offerings.current);
-        if (!offerings.current) setOfferingsError(true);
+        // Una offering "current" sin paquetes (p. ej. productos sin adjuntar
+        // a Play Store en RevenueCat) también deja todo en "Próximamente".
+        if (!offerings.current?.availablePackages.length) setOfferingsError(true);
       })
       .catch((error) => {
         console.warn("RevenueCat getOfferings falló", error);
