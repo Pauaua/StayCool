@@ -69,7 +69,8 @@ export function useUploadAvatarPhoto() {
   const userId = session?.user.id;
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (localImageUri: string) => uploadAvatarPhoto(userId as string, localImageUri),
+    mutationFn: ({ localImageUri, previousPath }: { localImageUri: string; previousPath: string | null }) =>
+      uploadAvatarPhoto(userId as string, localImageUri, previousPath),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["profile", userId] }),
   });
 }

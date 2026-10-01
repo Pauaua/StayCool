@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Alert, FlatList, Image, Modal, Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
 import { format } from "date-fns";
 import { Card } from "@/components/ui/Card";
+import { BackToWelcome } from "@/components/ui/BackToWelcome";
 import { Chip } from "@/components/ui/Chip";
 import { Button } from "@/components/ui/Button";
 import { TextField } from "@/components/ui/TextField";
@@ -170,6 +171,7 @@ export function NotasHomeScreen({ navigation }: Props) {
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50 dark:bg-surface-dark px-5 pt-8">
+      <BackToWelcome />
       <View className="flex-row items-center mb-4">
         <Image
           source={require("../../../../assets/images/notas2.png")}

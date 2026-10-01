@@ -17,9 +17,9 @@ import {
 import { useT, type TranslationKey } from "@/lib/i18n";
 import type { HairstyleType, HairWashLog } from "@/features/pelo/types";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import type { PeloStackParamList } from "@/navigation/types";
+import type { ImagenStackParamList } from "@/navigation/types";
 
-type Props = NativeStackScreenProps<PeloStackParamList, "PeloHome">;
+type Props = NativeStackScreenProps<ImagenStackParamList, "PeloHome">;
 
 const STYLE_TYPES: { value: HairstyleType; key: TranslationKey }[] = [
   { value: "coleta", key: "pelo.style.coleta" },

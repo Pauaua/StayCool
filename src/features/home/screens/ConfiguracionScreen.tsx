@@ -1,11 +1,19 @@
 import React, { useState } from "react";
 import { Alert, Image, Modal, Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
 import { Calendar } from "react-native-calendars";
+import * as ImagePicker from "expo-image-picker";
 import { format } from "date-fns";
 import { Card } from "@/components/ui/Card";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
-import { useDeleteAccount, useProfile, useUpdateProfile } from "@/features/home/hooks/useProfile";
+import {
+  useDeleteAccount,
+  useProfile,
+  useUpdateProfile,
+  useUploadAvatarPhoto,
+} from "@/features/home/hooks/useProfile";
+import { usePremium } from "@/features/premium/hooks/usePremium";
+import { UserAvatar } from "@/features/premium/components/UserAvatar";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useGoToWelcome } from "@/navigation/WelcomeNavigationContext";
 import { useHideRailWhileMounted } from "@/navigation/RailVisibilityContext";
@@ -41,6 +49,8 @@ export function ConfiguracionScreen({ navigation }: Props) {
   const { data: profile } = useProfile();
   const update = useUpdateProfile();
   const deleteAccount = useDeleteAccount();
+  const uploadAvatar = useUploadAvatarPhoto();
+  const { isFull } = usePremium();
   const { signOut } = useAuth();
   const { t, tg } = useT();
   // Si ya hay una fecha guardada, partimos asumiendo que fue la exacta;
@@ -49,6 +59,31 @@ export function ConfiguracionScreen({ navigation }: Props) {
   // guarda (last_period_date) es el mismo en ambos casos.
   const [knowsExactDate, setKnowsExactDate] = useState(true);
   const [showDay1Calendar, setShowDay1Calendar] = useState(false);
+
+  async function handlePickPhoto() {
+    if (!isFull) {
+      Alert.alert(t("settings.upgradeDivaTitle"), t("settings.upgradeDivaMessage"));
+      return;
+    }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      quality: 0.7,
+      allowsEditing: true,
+      aspect: [1, 1],
+    });
+    if (result.canceled || !result.assets[0]) return;
+    try {
+      await uploadAvatar.mutateAsync({
+        localImageUri: result.assets[0].uri,
+        previousPath: profile?.avatar_url ?? null,
+      });
+    } catch (error) {
+      Alert.alert(
+        t("settings.uploadFailedTitle"),
+        error instanceof Error ? error.message : t("settings.tryAgain")
+      );
+    }
+  }
 
   function handlePauseAccount() {
     Alert.alert(t("config.pauseAccount.confirmTitle"), t("config.pauseAccount.confirmMessage"), [
@@ -111,6 +146,27 @@ export function ConfiguracionScreen({ navigation }: Props) {
       </View>
 
       <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
+      <Card className="mb-4" style={{ borderLeftWidth: 4, borderLeftColor: "#ecc6ff" }}>
+        <Text className="text-base font-bold text-surface-dark dark:text-white mb-1">
+          {t("config.photo.title")}
+        </Text>
+        <Text className="text-sm text-gray-500 dark:text-gray-400 mb-3">
+          {t("config.photo.subtitle")}
+        </Text>
+        <View className="items-center">
+          <UserAvatar avatarUrl={profile?.avatar_url ?? null} size={84} />
+          <View className="mt-3 w-full">
+            <Button
+              label={t("settings.changePhoto")}
+              variant="secondary"
+              onPress={handlePickPhoto}
+              loading={uploadAvatar.isPending}
+              icon={!isFull ? require("../../../../assets/images/candado.png") : undefined}
+            />
+          </View>
+        </View>
+      </Card>
+
       <Card style={{ borderLeftWidth: 4, borderLeftColor: "#002054" }}>
         <Text className="text-base font-bold text-surface-dark dark:text-white mb-1">
           {t("config.language.title")}

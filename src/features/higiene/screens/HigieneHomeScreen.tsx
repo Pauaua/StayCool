@@ -24,6 +24,7 @@ import { HygieneChecklistItem } from "@/features/higiene/components/HygieneCheck
 import { AddHygieneItemPicker } from "@/features/higiene/components/AddHygieneItemPicker";
 import { translateHygieneLabel } from "@/features/higiene/labelTranslation";
 import { Card } from "@/components/ui/Card";
+import { BackToWelcome } from "@/components/ui/BackToWelcome";
 import { Button } from "@/components/ui/Button";
 import { useT } from "@/lib/i18n";
 import type { HygieneItem } from "@/features/higiene/types";
@@ -188,6 +189,7 @@ export function HigieneHomeScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50 dark:bg-surface-dark px-5 pt-8">
+      <BackToWelcome />
       <View className="flex-row items-center mb-4">
         <Image
           source={require("../../../../assets/images/higuiene.png")}

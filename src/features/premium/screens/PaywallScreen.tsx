@@ -118,9 +118,21 @@ export function PaywallScreen() {
       await refresh();
       Alert.alert("¡Listo!", "Tu suscripción está activa.");
     } catch (error: any) {
-      if (!error?.userCancelled) {
-        Alert.alert("No se pudo completar la compra", error instanceof Error ? error.message : "Intenta de nuevo.");
+      if (error?.userCancelled) return;
+      // "No se encontró el artículo" de Google Play: el producto que devuelve
+      // RevenueCat no está disponible para esta instalación (producto o plan
+      // base inactivo en Play Console, app instalada por fuera de Play, o
+      // cuenta que no es tester del track). Lo logueamos con el id exacto
+      // para poder compararlo con Play Console / RevenueCat.
+      if (error?.code === Purchases.PURCHASES_ERROR_CODE.PRODUCT_NOT_AVAILABLE_FOR_PURCHASE_ERROR) {
+        console.warn("Producto no disponible en la tienda", pkg.product.identifier, error);
+        Alert.alert(
+          "Este plan todavía no está disponible",
+          "La tienda no encontró este plan. Asegúrate de haber instalado la app desde Google Play / App Store e intenta de nuevo más tarde."
+        );
+        return;
       }
+      Alert.alert("No se pudo completar la compra", error instanceof Error ? error.message : "Intenta de nuevo.");
     } finally {
       setPendingTier(null);
     }

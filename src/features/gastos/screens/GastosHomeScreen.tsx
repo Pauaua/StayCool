@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { FlatList, Image, Pressable, SafeAreaView, Text, View } from "react-native";
 import { format, startOfMonth } from "date-fns";
 import { Card } from "@/components/ui/Card";
+import { BackToWelcome } from "@/components/ui/BackToWelcome";
 import { Chip } from "@/components/ui/Chip";
 import { Button } from "@/components/ui/Button";
 import { TextField } from "@/components/ui/TextField";
@@ -112,6 +113,7 @@ export function GastosHomeScreen({ navigation }: Props) {
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50 dark:bg-surface-dark px-5 pt-4">
+      <BackToWelcome />
       <View className="flex-row items-center mb-4">
         <Image
           source={require("../../../../assets/images/Dineral2.png")}

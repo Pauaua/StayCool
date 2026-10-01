@@ -8,7 +8,6 @@ import type { HomeStackParamList } from "@/navigation/types";
 import { BienestarNavigator } from "@/navigation/BienestarNavigator";
 import { ImagenNavigator } from "@/navigation/ImagenNavigator";
 import { HigieneNavigator } from "@/navigation/HigieneNavigator";
-import { PeloNavigator } from "@/navigation/PeloNavigator";
 import { SocialNavigator } from "@/navigation/SocialNavigator";
 import { GastosNavigator } from "@/navigation/GastosNavigator";
 import { GustosNavigator } from "@/navigation/GustosNavigator";
@@ -47,13 +46,6 @@ function buildModules(
       emoji: "🪥",
       icon: require("../../assets/images/higuiene.png"),
       Component: HigieneNavigator,
-    },
-    {
-      key: "Pelo",
-      label: "Pelo",
-      emoji: "💇",
-      icon: require("../../assets/images/pelito.png"),
-      Component: PeloNavigator,
     },
     {
       key: "Social",
@@ -97,8 +89,8 @@ function buildModules(
 }
 
 // Reemplaza al bottom tab navigator: un rail lateral fijo con todos los
-// módulos (sin necesidad de agruparlos en "Más", porque vertical entran los
-// 10 sin apretar) y el contenido del módulo activo a la derecha. Los módulos
+// módulos (sin necesidad de agruparlos en "Más", porque vertical entran
+// todos sin apretar) y el contenido del módulo activo a la derecha. Los módulos
 // no activos quedan montados con `display: none` en vez de desmontados, así
 // no pierden su estado de navegación interno al cambiar de módulo y volver.
 export function MainShell({

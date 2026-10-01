@@ -7,6 +7,9 @@ import { VestuarioHomeScreen } from "@/features/imagen/screens/VestuarioHomeScre
 import { OutfitDetailScreen } from "@/features/imagen/screens/OutfitDetailScreen";
 import { ZapatosHomeScreen } from "@/features/imagen/screens/ZapatosHomeScreen";
 import { ShoeDetailScreen } from "@/features/imagen/screens/ShoeDetailScreen";
+import { PeloHomeScreen } from "@/features/pelo/screens/PeloHomeScreen";
+import { HairstyleDetailScreen } from "@/features/pelo/screens/HairstyleDetailScreen";
+import { HairProfileScreen } from "@/features/pelo/screens/HairProfileScreen";
 import type { ImagenStackParamList } from "@/navigation/types";
 import { defaultScreenOptions } from "@/navigation/screenOptions";
 
@@ -21,6 +24,21 @@ export function ImagenNavigator() {
           name="CaraSection"
           component={CaraSectionScreen}
           options={{ headerShown: true, title: "Cara" }}
+        />
+        <Stack.Screen
+          name="PeloHome"
+          component={PeloHomeScreen}
+          options={{ headerShown: true, title: "Pelo" }}
+        />
+        <Stack.Screen
+          name="HairstyleDetail"
+          component={HairstyleDetailScreen}
+          options={{ headerShown: true, title: "Peinado" }}
+        />
+        <Stack.Screen
+          name="HairProfile"
+          component={HairProfileScreen}
+          options={{ headerShown: true, title: "Perfil de cabello" }}
         />
         <Stack.Screen
           name="VestuarioHome"

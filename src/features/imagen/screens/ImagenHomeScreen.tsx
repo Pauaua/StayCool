@@ -1,6 +1,7 @@
 import React from "react";
 import { Image, Pressable, SafeAreaView, Text, View } from "react-native";
 import { Card } from "@/components/ui/Card";
+import { BackToWelcome } from "@/components/ui/BackToWelcome";
 import { useT, type TranslationKey } from "@/lib/i18n";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { ImagenStackParamList } from "@/navigation/types";
@@ -21,6 +22,12 @@ const SECTIONS: {
     descKey: "imagen.caraDesc",
   },
   {
+    key: "PeloHome",
+    labelKey: "imagen.pelo",
+    icon: require("../../../../assets/images/pelito.png"),
+    descKey: "imagen.peloDesc",
+  },
+  {
     key: "VestuarioHome",
     labelKey: "imagen.vestuario",
     icon: require("../../../../assets/images/vestidosss.png"),
@@ -38,6 +45,7 @@ export function ImagenHomeScreen({ navigation }: Props) {
   const { t } = useT();
   return (
     <SafeAreaView className="flex-1 bg-gray-50 dark:bg-surface-dark px-5 pt-4">
+      <BackToWelcome />
       <View className="flex-row items-center mb-4">
         <Image
           source={require("../../../../assets/images/aufit.png")}

@@ -13,7 +13,9 @@ interface PremiumGateProps {
 const TIER_RANK = { free: 0, basico: 1, full: 2 } as const;
 
 // Bloquea children si el tier del usuario no alcanza minTier, mostrando un
-// CTA que lleva al paywall (HomeStack > Paywall).
+// CTA que lleva al paywall. Cada stack que use PremiumGate tiene que
+// registrar su propia pantalla "Paywall" (HomeStack y EstadisticasStack), ya
+// que cada módulo vive en un NavigationContainer independiente.
 export function PremiumGate({ minTier, children }: PremiumGateProps) {
   const { tier, isLoading } = usePremium();
   const navigation = useNavigation<any>();

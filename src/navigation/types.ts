@@ -32,9 +32,7 @@ export type ImagenStackParamList = {
   OutfitDetail: { outfitId: string };
   ZapatosHome: undefined;
   ShoeDetail: { shoeId: string };
-};
-
-export type PeloStackParamList = {
+  // Pelo vive dentro de Imagen (Cara, Pelo, Vestuario, Zapatos).
   PeloHome: undefined;
   HairstyleDetail: { hairstyleId: string };
   HairProfile: undefined;
@@ -75,4 +73,8 @@ export type EstadisticasStackParamList = {
   EstadisticasHoy: undefined;
   EstadisticasSemanal: undefined;
   EstadisticasAnual: undefined;
+  // El candado de Estadísticas (PremiumGate) lleva acá a "Ver planes": cada
+  // módulo tiene su propio NavigationContainer, así que el Paywall del Home
+  // no es alcanzable desde este stack.
+  Paywall: undefined;
 };

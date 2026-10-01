@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Alert, FlatList, Image, Modal, Pressable, SafeAreaView, Text, View } from "react-native";
 import { Card } from "@/components/ui/Card";
+import { BackToWelcome } from "@/components/ui/BackToWelcome";
 import { Chip } from "@/components/ui/Chip";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
@@ -168,6 +169,7 @@ export function BienestarHomeScreen() {
         onEndReachedThreshold={0.4}
         ListHeaderComponent={
           <>
+            <BackToWelcome />
             <View className="flex-row items-center mb-4">
               <Image
                 source={require("../../../../assets/images/bienestar(_).png")}

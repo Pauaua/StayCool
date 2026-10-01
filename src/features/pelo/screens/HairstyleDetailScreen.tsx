@@ -9,9 +9,9 @@ import { useDeleteHairstyle, useHairstyleDetail, useUpdateHairstyle } from "@/fe
 import { useT, type TranslationKey } from "@/lib/i18n";
 import type { HairstyleType } from "@/features/pelo/types";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import type { PeloStackParamList } from "@/navigation/types";
+import type { ImagenStackParamList } from "@/navigation/types";
 
-type Props = NativeStackScreenProps<PeloStackParamList, "HairstyleDetail">;
+type Props = NativeStackScreenProps<ImagenStackParamList, "HairstyleDetail">;
 
 const STYLE_TYPE_KEYS: Record<string, TranslationKey> = {
   coleta: "pelo.style.coleta",

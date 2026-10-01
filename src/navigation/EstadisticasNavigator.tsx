@@ -5,6 +5,7 @@ import { EstadisticasHomeScreen } from "@/features/estadisticas/screens/Estadist
 import { EstadisticasHoyScreen } from "@/features/estadisticas/screens/EstadisticasHoyScreen";
 import { EstadisticasSemanalScreen } from "@/features/estadisticas/screens/EstadisticasSemanalScreen";
 import { EstadisticasAnualScreen } from "@/features/estadisticas/screens/EstadisticasAnualScreen";
+import { PaywallScreen } from "@/features/premium/screens/PaywallScreen";
 import type { EstadisticasStackParamList } from "@/navigation/types";
 import { defaultScreenOptions } from "@/navigation/screenOptions";
 
@@ -18,6 +19,11 @@ export function EstadisticasNavigator() {
         <Stack.Screen name="EstadisticasHoy" component={EstadisticasHoyScreen} />
         <Stack.Screen name="EstadisticasSemanal" component={EstadisticasSemanalScreen} />
         <Stack.Screen name="EstadisticasAnual" component={EstadisticasAnualScreen} />
+        <Stack.Screen
+          name="Paywall"
+          component={PaywallScreen}
+          options={{ headerShown: true, title: "StayCoolPlus" }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

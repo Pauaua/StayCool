@@ -26,13 +26,16 @@ export async function claimTrial(): Promise<string> {
   return data as string;
 }
 
-// Avatar fijo (free/básico): foto subida al bucket privado 'avatars' bajo
-// <user_id>/avatar.jpg, mismo patrón que outfits/hairstyles.
-export async function uploadAvatarPhoto(userId: string, localImageUri: string) {
+// Foto de perfil: se sube al bucket privado 'avatars' bajo
+// <user_id>/avatar-<timestamp>.jpg, mismo patrón que outfits/hairstyles.
+// Cada foto nueva usa un nombre distinto: si se pisara siempre el mismo
+// archivo, avatar_url no cambiaría y la pantalla seguiría mostrando la foto
+// anterior (no vuelve a pedir la URL firmada, y la imagen queda en caché).
+export async function uploadAvatarPhoto(userId: string, localImageUri: string, previousPath: string | null) {
   const base64 = await FileSystem.readAsStringAsync(localImageUri, {
     encoding: FileSystem.EncodingType.Base64,
   });
-  const avatarPath = `${userId}/avatar.jpg`;
+  const avatarPath = `${userId}/avatar-${Date.now()}.jpg`;
   const { error: uploadError } = await supabase.storage
     .from("avatars")
     .upload(avatarPath, decode(base64), { upsert: true, contentType: "image/jpeg" });
@@ -40,6 +43,11 @@ export async function uploadAvatarPhoto(userId: string, localImageUri: string) {
 
   const { error } = await supabase.from("profiles").update({ avatar_url: avatarPath }).eq("id", userId);
   if (error) throw error;
+
+  // Limpieza de la foto anterior: si falla no importa, la nueva ya quedó.
+  if (previousPath && previousPath !== avatarPath) {
+    await supabase.storage.from("avatars").remove([previousPath]).catch(() => {});
+  }
 }
 
 export async function getAvatarPhotoUrl(avatarPath: string): Promise<string> {

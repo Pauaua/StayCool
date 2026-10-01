@@ -3,6 +3,7 @@ import { Alert, Image, Modal, Pressable, SafeAreaView, ScrollView, Text, View } 
 import { Calendar, DateData } from "react-native-calendars";
 import { format } from "date-fns";
 import { Card } from "@/components/ui/Card";
+import { BackToWelcome } from "@/components/ui/BackToWelcome";
 import { Button } from "@/components/ui/Button";
 import { useActivitiesInMonth, useDeleteActivity, useUpcomingActivities } from "@/features/social/hooks/useSocial";
 import { useT, type TranslationKey } from "@/lib/i18n";
@@ -244,6 +245,7 @@ export function SocialCalendarioScreen({ navigation }: Props) {
   return (
     <SafeAreaView className="flex-1 bg-gray-50 dark:bg-surface-dark">
       <View className="px-5 pt-4">
+        <BackToWelcome />
         <View className="flex-row items-center mb-3">
           <Image
             source={require("../../../../assets/images/eventos sociales.png")}

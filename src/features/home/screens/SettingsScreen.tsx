@@ -1,11 +1,11 @@
 import React from "react";
-import { Alert, SafeAreaView, ScrollView, Text, View } from "react-native";
-import * as ImagePicker from "expo-image-picker";
+import { SafeAreaView, ScrollView, Text, View } from "react-native";
+import { format } from "date-fns";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { TextField } from "@/components/ui/TextField";
-import { useProfile, useUpdateProfile, useUploadAvatarPhoto } from "@/features/home/hooks/useProfile";
+import { useProfile, useUpdateProfile } from "@/features/home/hooks/useProfile";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { usePremium } from "@/features/premium/hooks/usePremium";
 // Sparkless/MOOney para modificar el avatar: deshabilitado a propósito.
@@ -17,11 +17,28 @@ import type { HomeStackParamList } from "@/navigation/types";
 
 type Props = NativeStackScreenProps<HomeStackParamList, "Settings">;
 
+const PRONOUN_KEY = {
+  masculino: "config.pronoun.masculino",
+  femenino: "config.pronoun.femenino",
+  no_binarie: "config.pronoun.noBinarie",
+  no_se: "config.pronoun.noSe",
+} as const;
+
+function DataRow({ label, value }: { label: string; value: string }) {
+  return (
+    <View className="py-2 border-b border-gray-100 dark:border-gray-700">
+      <Text className="text-xs text-gray-400">{label}</Text>
+      <Text className="text-base text-surface-dark dark:text-white">{value}</Text>
+    </View>
+  );
+}
+
+// Ruedita del Home de la agenda: datos personales del usuario. La foto de
+// perfil se muestra acá pero se cambia en Configuración (panel inicial).
 export function SettingsScreen({ navigation }: Props) {
   const { data: profile, isLoading } = useProfile();
   const update = useUpdateProfile();
-  const uploadAvatar = useUploadAvatarPhoto();
-  const { signOut } = useAuth();
+  const { session, signOut } = useAuth();
   const { tier, isFull } = usePremium();
   // const { data: mooneyBalance } = useMooneyBalance();
   const { t } = useT();
@@ -34,24 +51,8 @@ export function SettingsScreen({ navigation }: Props) {
     );
   }
 
-  async function handlePickPhoto() {
-    if (!isFull) {
-      Alert.alert(t("settings.upgradeDivaTitle"), t("settings.upgradeDivaMessage"));
-      return;
-    }
-    const result = await ImagePicker.launchImageLibraryAsync({ quality: 0.7, allowsEditing: true });
-    if (result.canceled || !result.assets[0]) return;
-    try {
-      await uploadAvatar.mutateAsync(result.assets[0].uri);
-    } catch (error) {
-      Alert.alert(
-        t("settings.uploadFailedTitle"),
-        error instanceof Error ? error.message : t("settings.tryAgain")
-      );
-    }
-  }
-
-  const tierLabel = tier === "full" ? "Full" : tier === "basico" ? "Básico" : "Free";
+  const tierLabel = tier === "full" ? "Diva" : tier === "basico" ? "So Basic!" : "Gratis";
+  const createdAt = session?.user.created_at ? new Date(session.user.created_at) : null;
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50 dark:bg-surface-dark px-5 pt-4">
@@ -69,14 +70,7 @@ export function SettingsScreen({ navigation }: Props) {
             />
           </View>
           <Text className="text-xs text-gray-400 mt-1">{t("settings.plan", { tier: tierLabel })}</Text>
-
-          <View className="mt-3 w-full">
-            <TextField
-              label={t("settings.nameLabel")}
-              defaultValue={profile.display_name ?? ""}
-              onEndEditing={(e) => update.mutate({ display_name: e.nativeEvent.text.trim() })}
-            />
-          </View>
+          <Text className="text-xs text-gray-400 mt-2 text-center">{t("settings.photoHint")}</Text>
 
           {/* Sparkless/MOOney para modificar el avatar: deshabilitado a propósito.
           {isFull ? (
@@ -94,22 +88,30 @@ export function SettingsScreen({ navigation }: Props) {
             </>
           ) : null}
           */}
+        </Card>
 
-          <View className="mt-3 w-full">
-            <Button
-              label={t("settings.changePhoto")}
-              variant="ghost"
-              onPress={handlePickPhoto}
-              icon={!isFull ? require("../../../../assets/images/candado.png") : undefined}
-            />
-          </View>
-
-          {!isFull ? (
-            <View className="mt-3 w-full">
-              <Button label={t("settings.viewPlans")} onPress={() => navigation.navigate("Paywall")} />
-            </View>
+        <Card className="mb-4">
+          <TextField
+            label={t("settings.nameLabel")}
+            defaultValue={profile.display_name ?? ""}
+            onEndEditing={(e) => update.mutate({ display_name: e.nativeEvent.text.trim() })}
+          />
+          <DataRow label={t("settings.email")} value={session?.user.email ?? "—"} />
+          <DataRow label={t("settings.pronoun")} value={t(PRONOUN_KEY[profile.pronoun])} />
+          <DataRow
+            label={t("settings.language")}
+            value={t(profile.language === "en" ? "config.language.en" : "config.language.es")}
+          />
+          {createdAt ? (
+            <DataRow label={t("settings.memberSince")} value={format(createdAt, "dd/MM/yyyy")} />
           ) : null}
         </Card>
+
+        {!isFull ? (
+          <View className="mb-3">
+            <Button label={t("settings.viewPlans")} onPress={() => navigation.navigate("Paywall")} />
+          </View>
+        ) : null}
 
         <Button label={t("settings.signOut")} variant="ghost" onPress={signOut} />
       </ScrollView>

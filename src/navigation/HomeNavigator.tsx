@@ -30,7 +30,7 @@ export function HomeNavigator({
         <Stack.Screen
           name="Settings"
           component={SettingsScreen}
-          options={{ headerShown: true, title: "Ajustes" }}
+          options={{ headerShown: true, title: "Mis datos" }}
         />
         {/* Sparkless/MOOney para modificar el avatar: deshabilitado a propósito.
         <Stack.Screen
