@@ -23,6 +23,7 @@ Realizado con Expo + React Native + TypeScript, NativeWind, React Navigation, Ta
 - [Tests](#tests)
 - [Seguridad de datos](#seguridad-de-datos)
 - [Consideraciones importantes / troubleshooting](#consideraciones-importantes--troubleshooting)
+- [Declaración de uso de IA](#declaración-de-uso-de-ia)
 
 ## Stack
 
@@ -217,3 +218,7 @@ Todas las tablas de usuario tienen RLS activo con política `auth.uid() = user_i
 - Deep links con esquema custom (`agendacool://...`) no funcionan en Expo Go — necesitás un build de desarrollo propio (`eas build --profile development`) para probar recuperación de contraseña o confirmación de email de punta a punta.
 - `premium_tier` y el balance de MOOney no deben modificarse manualmente desde el cliente: están protegidos por triggers/policies y la única fuente de verdad es la Edge Function `revenuecat-webhook` / la lógica server-side correspondiente.
 - Al agregar un módulo nuevo, seguí el patrón de Higiene (`types/` + `services/` + `hooks/` + `screens/`, RLS por usuario, índices por `(user_id, fecha)`) para mantener consistencia.
+
+## Declaración de uso de IA
+
+En el desarrollo de este proyecto se utilizaron herramientas de inteligencia artificial como apoyo cooperativo, no creativo. La concepción del producto, su identidad visual y de marca, el diseño de la experiencia de usuario, la definición de funcionalidades y reglas de negocio, la arquitectura de la aplicación, la infraestructura (Supabase, EAS, RevenueCat y servicios asociados) y el código base fueron creados por el Equipo del proyecto. La IA intervino de manera complementaria y siempre bajo su dirección: asistencia en la implementación de funcionalidades ya especificadas, revisión de código, detección y corrección de errores, redacción de pruebas y documentación técnica, y generación de contenido derivado a partir de lineamientos de tono y ejemplos definidos previamente. Todo aporte de la IA fue revisado, validado y aprobado por el Equipo antes de integrarse al proyecto, el cual conserva la autoría y la responsabilidad sobre el resultado final.
