@@ -14,7 +14,7 @@ Realizado con Expo + React Native + TypeScript, NativeWind, React Navigation, Ta
 - [Correr la app localmente](#correr-la-app-localmente)
 - [Arquitectura](#arquitectura)
 - [Módulos](#módulos)
-- [Suscripciones y Sparkless](#suscripciones-y-Sparkless)
+- [Suscripciones y Sparkless](#suscripciones-y-sparkless)
 - [Idioma y pronombres](#idioma-y-pronombres)
 - [Build y actualizaciones OTA con EAS](#build-y-actualizaciones-ota-con-eas)
 - [Monitoreo y analítica](#monitoreo-y-analítica)
@@ -86,7 +86,7 @@ Todas son claves públicas (publishable key, DSN público, API keys públicas de
    npx supabase functions deploy revenuecat-webhook
    ```
 5. Los buckets `outfits`, `hairstyles` y `avatars` se crean automáticamente en las migraciones (privados, con políticas RLS por carpeta de usuario).
-6. Si vas a trabajar con suscripciones, configurá el webhook de RevenueCat apuntando a la Edge Function `revenuecat-webhook` (ver [Suscripciones y Sparkless](#suscripciones-y-Sparkless)).
+6. Si vas a trabajar con suscripciones, configurá el webhook de RevenueCat apuntando a la Edge Function `revenuecat-webhook` (ver [Suscripciones y Sparkless](#suscripciones-y-sparkless)).
 
 ## Correr la app localmente
 
@@ -108,7 +108,7 @@ Escanea el QR con Expo Go, o corre `npm run ios` / `npm run android` con un simu
   - `0003_seed_default_hygiene_items.sql` — siembra el checklist de higiene por defecto (ducha, cepillado + hilo dental, enjuague bucal, desodorante) para cada usuario nuevo, y retroactivamente para cuentas ya creadas que aún no tengan ítems.
   - `0004_hair_wash_hygiene_item.sql` — agrega "Lavado de pelo" como ítem especial del checklist (`hygiene_items.is_hair_wash`); al marcarlo completado además queda un registro con fecha/hora exacta en `hair_wash_logs`.
   - `0005_hairstyle_photo_and_budget.sql` — foto opcional en peinados (`hairstyle_logs.photo_path` + bucket `hairstyles`) y presupuesto mensual de gastos (`profiles.monthly_budget`).
-  - `0006_moo_ney.sql` — nivel de suscripción (`profiles.premium_tier`, sincronizado desde RevenueCat vía webhook) y sistema de recompensas Sparkless (ver [Suscripciones y Sparkless](#suscripciones-y-Sparkless)).
+  - `0006_moo_ney.sql` — nivel de suscripción (`profiles.premium_tier`, sincronizado desde RevenueCat vía webhook) y sistema de recompensas Sparkless (ver [Suscripciones y Sparkless](#suscripciones-y-sparkless)).
   - `0007_avatars_storage.sql` — bucket `avatars` para las piezas/skins del avatar de Sparkless.
   - `0008_imagen_pelo_restructure.sql` — elimina el módulo independiente **Cara** y fusiona su pantalla dentro de **Imagen** (junto con Vestuario y Zapatos); agrega el perfil de Pelo.
 - `supabase/functions/` — Edge Functions para lógica sensible:
@@ -138,7 +138,7 @@ El módulo **Higiene** (`src/features/higiene`) es el patrón de referencia: reg
 - Las suscripciones (planes **Básico** y **Full**) se gestionan con **RevenueCat** (`react-native-purchases`). La verdad sobre el tier del usuario vive en RevenueCat; `profiles.premium_tier` es una copia de lectura rápida en Supabase, actualizada únicamente por la Edge Function `revenuecat-webhook` cuando RevenueCat notifica un cambio de entitlement.
 - Un trigger de Postgres (`guard_premium_tier`, en `0006_moo_ney.sql`) revierte silenciosamente cualquier intento del cliente de escribir `premium_tier` directamente — solo la service role (usada por la Edge Function) puede moverlo.
 - **Sparkless** es una "moneda" de juego (recompensa del plan Full) para desbloquear y comprar piezas de un avatar personalizable (cara, pelo, tono de piel, accesorios) en `AvatarShopScreen`. Es **completamente independiente del dinero real** que el usuario registra en el módulo Gastos — nunca se mezcla con `expense_quick_logs` / `expense_detailed_logs` en ningún cálculo.
-- Personalizar la foto/avatar de perfil (`SettingsScreen`) también es exclusivo del plan So Basic y Full.
+- Personalizar la foto/avatar de perfil (`SettingsScreen`) también es exclusivo del plan Full.
 
 ## Idioma y pronombres
 
@@ -208,7 +208,7 @@ npm run typecheck  # tsc --noEmit
 
 ## Seguridad de datos
 
-Todas las tablas de usuario tienen RLS activo con política `auth.uid() = user_id` (o `= id` en `profiles`). No hay ninguna tabla de datos personales sin RLS. La tabla `function_rate_limits` está bloqueada para el cliente (`using (false)`) y solo la tocan las Edge Functions con la service role key. El tier de suscripción (`profiles.premium_tier`) solo puede escribirlo la service role (ver [Suscripciones y Sparkless](#suscripciones-y-Sparkless)), nunca el cliente.
+Todas las tablas de usuario tienen RLS activo con política `auth.uid() = user_id` (o `= id` en `profiles`). No hay ninguna tabla de datos personales sin RLS. La tabla `function_rate_limits` está bloqueada para el cliente (`using (false)`) y solo la tocan las Edge Functions con la service role key. El tier de suscripción (`profiles.premium_tier`) solo puede escribirlo la service role (ver [Suscripciones y Sparkless](#suscripciones-y-sparkless)), nunca el cliente.
 
 ## Consideraciones importantes / troubleshooting
 
