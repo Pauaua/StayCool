@@ -1,6 +1,6 @@
 # Stay Cool - Agenda
 
-Agenda integral para personas de todas las edades: permite un registro personal no solo sobre tu bienestar asociado a la salud, sino también de tu imagen, actividades sociales, higiene y gastos, todo para que te mantengas Cool. Incluye suscripciones premium (Agenda Cool+, planes Básico/Full) vía RevenueCat, un sistema de recompensas de juego (**MOOney**) para personalizar un avatar, y **Mi Resumen**, que genera un PDF con el resumen de tu actividad brindando estadísticas útiles en relación a tu información.
+Agenda integral para personas de todas las edades: permite un registro personal no solo sobre tu bienestar asociado a la salud, sino también de tu imagen, actividades sociales, higiene y gastos, todo para que te mantengas Cool. Incluye suscripciones premium (Agenda Cool+, planes Básico/Full) vía RevenueCat, un sistema de recompensas de juego (**Sparkless**) para personalizar un avatar, y **Mi Resumen**, que genera un PDF con el resumen de tu actividad brindando estadísticas útiles en relación a tu información.
 
 Realizado con Expo + React Native + TypeScript, NativeWind, React Navigation, TanStack Query y Supabase (Auth + Postgres + Storage + Edge Functions).
 
@@ -14,7 +14,7 @@ Realizado con Expo + React Native + TypeScript, NativeWind, React Navigation, Ta
 - [Correr la app localmente](#correr-la-app-localmente)
 - [Arquitectura](#arquitectura)
 - [Módulos](#módulos)
-- [Suscripciones y MOOney](#suscripciones-y-mooney)
+- [Suscripciones y Sparkless](#suscripciones-y-Sparkless)
 - [Idioma y pronombres](#idioma-y-pronombres)
 - [Build y actualizaciones OTA con EAS](#build-y-actualizaciones-ota-con-eas)
 - [Monitoreo y analítica](#monitoreo-y-analítica)
@@ -86,7 +86,7 @@ Todas son claves públicas (publishable key, DSN público, API keys públicas de
    npx supabase functions deploy revenuecat-webhook
    ```
 5. Los buckets `outfits`, `hairstyles` y `avatars` se crean automáticamente en las migraciones (privados, con políticas RLS por carpeta de usuario).
-6. Si vas a trabajar con suscripciones, configurá el webhook de RevenueCat apuntando a la Edge Function `revenuecat-webhook` (ver [Suscripciones y MOOney](#suscripciones-y-mooney)).
+6. Si vas a trabajar con suscripciones, configurá el webhook de RevenueCat apuntando a la Edge Function `revenuecat-webhook` (ver [Suscripciones y Sparkless](#suscripciones-y-Sparkless)).
 
 ## Correr la app localmente
 
@@ -108,8 +108,8 @@ Escanea el QR con Expo Go, o corre `npm run ios` / `npm run android` con un simu
   - `0003_seed_default_hygiene_items.sql` — siembra el checklist de higiene por defecto (ducha, cepillado + hilo dental, enjuague bucal, desodorante) para cada usuario nuevo, y retroactivamente para cuentas ya creadas que aún no tengan ítems.
   - `0004_hair_wash_hygiene_item.sql` — agrega "Lavado de pelo" como ítem especial del checklist (`hygiene_items.is_hair_wash`); al marcarlo completado además queda un registro con fecha/hora exacta en `hair_wash_logs`.
   - `0005_hairstyle_photo_and_budget.sql` — foto opcional en peinados (`hairstyle_logs.photo_path` + bucket `hairstyles`) y presupuesto mensual de gastos (`profiles.monthly_budget`).
-  - `0006_moo_ney.sql` — nivel de suscripción (`profiles.premium_tier`, sincronizado desde RevenueCat vía webhook) y sistema de recompensas MOOney (ver [Suscripciones y MOOney](#suscripciones-y-mooney)).
-  - `0007_avatars_storage.sql` — bucket `avatars` para las piezas/skins del avatar de MOOney.
+  - `0006_moo_ney.sql` — nivel de suscripción (`profiles.premium_tier`, sincronizado desde RevenueCat vía webhook) y sistema de recompensas Sparkless (ver [Suscripciones y Sparkless](#suscripciones-y-Sparkless)).
+  - `0007_avatars_storage.sql` — bucket `avatars` para las piezas/skins del avatar de Sparkless.
   - `0008_imagen_pelo_restructure.sql` — elimina el módulo independiente **Cara** y fusiona su pantalla dentro de **Imagen** (junto con Vestuario y Zapatos); agrega el perfil de Pelo.
 - `supabase/functions/` — Edge Functions para lógica sensible:
   - `gastos-resumen` — calcula el total/desglose de gastos en el servidor.
@@ -129,16 +129,16 @@ El módulo **Higiene** (`src/features/higiene`) es el patrón de referencia: reg
 - **Gastos** — dos formularios (quick/detailed), presupuesto mensual, resumen calculado en Edge Function.
 - **Gustos** — dos formularios: `taste_quick_logs` (nombre + descripción + fecha/hora, para cosas random) y `taste_detailed_logs` (música, series, películas, libros). Los campos varían mucho según la categoría (bandas/instrumentos/ritmos en música, autor/saga en libros, director/elenco en series y películas), así que en vez de tener una tabla por categoría, `taste_detailed_logs` guarda `category`, `name`, `genre` y `notes` como columnas y el resto en una columna `details jsonb` — evita tener que migrar el esquema cada vez que se agregue un campo específico de una categoría nueva.
 - **Notas** — registro de ideas, dos niveles: `note_quick_logs` (nombre + descripción + cómo te sentiste) y `note_detailed_logs` (nombre, dónde estabas, la idea, sentires, pensamientos).
-- **Premium** — pantalla de suscripción (Agenda Cool+, planes Básico/Full) y la tienda de avatar (`AvatarShopScreen`) que gasta MOOney.
+- **Premium** — pantalla de suscripción (Agenda Cool+, planes Básico/Full) y la tienda de avatar (`AvatarShopScreen`) que gasta Sparkless.
 - **Resumen** ("Mi Resumen") — genera un PDF (`pdfService.ts`, localizado según el idioma del perfil) con el resumen de actividad del usuario y permite compartirlo (`shareService.ts`), usando datos armados por la Edge Function `resumen`. Semanal es gratis a partir del plan Básico, mensual (con compartir) también Básico, y anual es exclusivo del plan Full.
 - **Estadísticas** — hoy/semanal/anual con detalle día por día, exclusivo del plan Full (`PremiumGate` en `EstadisticasHomeScreen`).
 
-## Suscripciones y MOOney
+## Suscripciones y Sparkless
 
 - Las suscripciones (planes **Básico** y **Full**) se gestionan con **RevenueCat** (`react-native-purchases`). La verdad sobre el tier del usuario vive en RevenueCat; `profiles.premium_tier` es una copia de lectura rápida en Supabase, actualizada únicamente por la Edge Function `revenuecat-webhook` cuando RevenueCat notifica un cambio de entitlement.
 - Un trigger de Postgres (`guard_premium_tier`, en `0006_moo_ney.sql`) revierte silenciosamente cualquier intento del cliente de escribir `premium_tier` directamente — solo la service role (usada por la Edge Function) puede moverlo.
-- **MOOney** es una moneda de juego (recompensa del plan Full) para desbloquear y comprar piezas de un avatar personalizable (cara, pelo, tono de piel, accesorios) en `AvatarShopScreen`. Es **completamente independiente del dinero real** que el usuario registra en el módulo Gastos — nunca se mezcla con `expense_quick_logs` / `expense_detailed_logs` en ningún cálculo.
-- Personalizar la foto/avatar de perfil (`SettingsScreen`) también es exclusivo del plan Full.
+- **Sparkless** es una "moneda" de juego (recompensa del plan Full) para desbloquear y comprar piezas de un avatar personalizable (cara, pelo, tono de piel, accesorios) en `AvatarShopScreen`. Es **completamente independiente del dinero real** que el usuario registra en el módulo Gastos — nunca se mezcla con `expense_quick_logs` / `expense_detailed_logs` en ningún cálculo.
+- Personalizar la foto/avatar de perfil (`SettingsScreen`) también es exclusivo del plan So Basic y Full.
 
 ## Idioma y pronombres
 
@@ -208,7 +208,7 @@ npm run typecheck  # tsc --noEmit
 
 ## Seguridad de datos
 
-Todas las tablas de usuario tienen RLS activo con política `auth.uid() = user_id` (o `= id` en `profiles`). No hay ninguna tabla de datos personales sin RLS. La tabla `function_rate_limits` está bloqueada para el cliente (`using (false)`) y solo la tocan las Edge Functions con la service role key. El tier de suscripción (`profiles.premium_tier`) solo puede escribirlo la service role (ver [Suscripciones y MOOney](#suscripciones-y-mooney)), nunca el cliente.
+Todas las tablas de usuario tienen RLS activo con política `auth.uid() = user_id` (o `= id` en `profiles`). No hay ninguna tabla de datos personales sin RLS. La tabla `function_rate_limits` está bloqueada para el cliente (`using (false)`) y solo la tocan las Edge Functions con la service role key. El tier de suscripción (`profiles.premium_tier`) solo puede escribirlo la service role (ver [Suscripciones y Sparkless](#suscripciones-y-Sparkless)), nunca el cliente.
 
 ## Consideraciones importantes / troubleshooting
 
@@ -216,7 +216,7 @@ Todas las tablas de usuario tienen RLS activo con política `auth.uid() = user_i
 - Cambios en `.env` requieren reiniciar `expo start` (no alcanza con recargar la app), porque las variables se leen en `app.config.js`, que corre en Node al levantar el bundler.
 - Las migraciones de `supabase/migrations/` deben aplicarse **en orden numérico**; saltarse una puede romper migraciones posteriores que dependen de columnas/tablas previas.
 - Deep links con esquema custom (`agendacool://...`) no funcionan en Expo Go — necesitás un build de desarrollo propio (`eas build --profile development`) para probar recuperación de contraseña o confirmación de email de punta a punta.
-- `premium_tier` y el balance de MOOney no deben modificarse manualmente desde el cliente: están protegidos por triggers/policies y la única fuente de verdad es la Edge Function `revenuecat-webhook` / la lógica server-side correspondiente.
+- `premium_tier` y el balance de Sparkless no deben modificarse manualmente desde el cliente: están protegidos por triggers/policies y la única fuente de verdad es la Edge Function `revenuecat-webhook` / la lógica server-side correspondiente.
 - Al agregar un módulo nuevo, seguí el patrón de Higiene (`types/` + `services/` + `hooks/` + `screens/`, RLS por usuario, índices por `(user_id, fecha)`) para mantener consistencia.
 
 ## Declaración de uso de IA
