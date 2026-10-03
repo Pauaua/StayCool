@@ -45,7 +45,8 @@ const PLAN_INFO: {
   name: string;
   icon?: number;
   fallbackPrice: string;
-  features: string[];
+  // Un beneficio puede llevar su propia imagen en vez de la viñeta.
+  features: (string | { text: string; icon: number })[];
 }[] = [
   {
     tier: "free",
@@ -78,7 +79,7 @@ const PLAN_INFO: {
       "Personalizar tu foto de perfil",
       "Ver tu resumen semanal, mensual y anual",
       "Estadísticas asociadas a tus datos descargables en PDF",
-      "Notificaciones personalizadas a tu gusto",
+      { text: "Recordatorios con actitud", icon: require("../../../../assets/images/uñotas.png") },
     ],
   },
 ];
@@ -343,11 +344,18 @@ export function PaywallScreen() {
                   : plan.fallbackPrice}
               </Text>
 
-              {plan.features.map((feature) => (
-                <Text key={feature} className="text-sm text-surface-dark dark:text-white mb-1">
-                  • {feature}
-                </Text>
-              ))}
+              {plan.features.map((feature) =>
+                typeof feature === "string" ? (
+                  <Text key={feature} className="text-sm text-surface-dark dark:text-white mb-1">
+                    • {feature}
+                  </Text>
+                ) : (
+                  <View key={feature.text} className="flex-row items-center mb-1">
+                    <Image source={feature.icon} style={{ width: 18, height: 18, marginRight: 4 }} resizeMode="contain" />
+                    <Text className="text-sm text-surface-dark dark:text-white">{feature.text}</Text>
+                  </View>
+                )
+              )}
 
               {plan.tier === "free" ? null : plan.tier === "full" && isCurrentPlan ? (
                 <View

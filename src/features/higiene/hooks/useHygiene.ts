@@ -11,6 +11,7 @@ import {
   toggleHygieneLog,
 } from "@/features/higiene/services/hygieneService";
 import { analytics } from "@/analytics/posthog";
+import { notifyDivaDataChanged } from "@/notifications/diva/events";
 
 const todayIso = () => new Date().toISOString().slice(0, 10);
 
@@ -51,6 +52,8 @@ export function useToggleHygieneLog(date: string = todayIso()) {
     }) => toggleHygieneLog(userId as string, itemId, date, completed, isHairWash),
     onSuccess: (_data, variables) => {
       analytics.track("hygiene_item_toggled", { completed: variables.completed });
+      // Registrar un hábito cancela/recalcula sus Recordatorios Diva al tiro.
+      notifyDivaDataChanged();
       queryClient.invalidateQueries({ queryKey: ["hygiene", "logs", userId, date] });
       queryClient.invalidateQueries({ queryKey: ["hygiene", "history", userId] });
       if (variables.isHairWash) {
@@ -67,7 +70,10 @@ export function useCreateHygieneItem() {
   return useMutation({
     mutationFn: ({ label, icon }: { label: string; icon?: string }) =>
       createHygieneItem(userId as string, label, icon),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["hygiene", "items", userId] }),
+    onSuccess: () => {
+      notifyDivaDataChanged();
+      return queryClient.invalidateQueries({ queryKey: ["hygiene", "items", userId] });
+    },
   });
 }
 
@@ -77,7 +83,10 @@ export function useDeactivateHygieneItem() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (itemId: string) => deactivateHygieneItem(itemId),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["hygiene", "items", userId] }),
+    onSuccess: () => {
+      notifyDivaDataChanged();
+      return queryClient.invalidateQueries({ queryKey: ["hygiene", "items", userId] });
+    },
   });
 }
 
@@ -101,6 +110,7 @@ export function useDeleteHygieneDay() {
     mutationFn: (date: string) => deleteHygieneDay(userId as string, date),
     onSuccess: (_data, date) => {
       analytics.track("hygiene_day_deleted");
+      notifyDivaDataChanged();
       queryClient.invalidateQueries({ queryKey: ["hygiene", "history", userId] });
       queryClient.invalidateQueries({ queryKey: ["hygiene", "logs", userId, date] });
       queryClient.invalidateQueries({ queryKey: ["hygiene", "log-details", userId, date] });

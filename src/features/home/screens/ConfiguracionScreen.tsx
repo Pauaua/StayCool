@@ -14,6 +14,7 @@ import {
 } from "@/features/home/hooks/useProfile";
 import { usePremium } from "@/features/premium/hooks/usePremium";
 import { UserAvatar } from "@/features/premium/components/UserAvatar";
+import { DivaRemindersSettings } from "@/features/premium/components/DivaRemindersSettings";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useGoToWelcome } from "@/navigation/WelcomeNavigationContext";
 import { useHideRailWhileMounted } from "@/navigation/RailVisibilityContext";
@@ -166,6 +167,8 @@ export function ConfiguracionScreen({ navigation }: Props) {
           </View>
         </View>
       </Card>
+
+      <DivaRemindersSettings />
 
       <Card style={{ borderLeftWidth: 4, borderLeftColor: "#002054" }}>
         <Text className="text-base font-bold text-surface-dark dark:text-white mb-1">

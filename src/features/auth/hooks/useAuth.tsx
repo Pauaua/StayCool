@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabase";
 import { parseAuthDeepLinkParams } from "@/lib/parseAuthDeepLink";
 import { analytics } from "@/analytics/posthog";
 import { identifyRevenueCatUser, resetRevenueCatUser } from "@/lib/revenuecat";
+import { cancelDivaRemindersQueued } from "@/notifications/diva/scheduler";
 
 interface AuthContextValue {
   session: Session | null;
@@ -62,6 +63,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // the current user is anonymous" en cada arranque de la app.
         analytics.reset();
         resetRevenueCatUser();
+        // Los Recordatorios Diva son de esta cuenta: no deben seguir
+        // llegando en este teléfono después de cerrar sesión.
+        cancelDivaRemindersQueued();
       }
     });
 

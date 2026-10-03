@@ -123,6 +123,21 @@ const dict = {
     "paywall.offeringsError": "No pudimos cargar los planes. Revisa tu conexión o intenta de nuevo en unos minutos.",
     "paywall.retry": "Reintentar",
 
+    // Recordatorios Diva
+    "divaReminders.introTitle": "Recordatorios con actitud 💅",
+    "divaReminders.introMessage":
+      "Como Diva, te mandamos notificaciones y recordatorios con humor y cariño para que no se te pasen tus hábitos de autocuidado, más un resumen de tu semana de Bienestar. Máximo dos al día y nunca de noche.",
+    "divaReminders.introCta": "Activar recordatorios",
+    "divaReminders.introLater": "Ahora no",
+    "divaReminders.permissionDeniedTitle": "Notificaciones desactivadas",
+    "divaReminders.permissionDeniedMessage":
+      "Para recibir los Recordatorios Diva, permite las notificaciones de la app en los ajustes de tu teléfono y vuelve a activarlos en Configuración.",
+    "divaReminders.settingsTitle": "Recordatorios Diva",
+    "divaReminders.settingsSubtitle":
+      "Notificaciones con actitud sobre tus hábitos de autocuidado y tu semana de Bienestar.",
+    "divaReminders.devTest": "Probar notificaciones Diva (dev)",
+    "divaReminders.devTestScheduled": "Llegan en 10 segundos, una de cada tipo.",
+
     // Home
     "home.back": "Panel inicial",
     "home.greeting": "Hola{name}",
@@ -863,6 +878,19 @@ const dict = {
     "paywall.changePlan": "Switch to this plan",
     "paywall.offeringsError": "We couldn't load the plans. Check your connection or try again in a few minutes.",
     "paywall.retry": "Try again",
+
+    "divaReminders.introTitle": "Reminders with attitude 💅",
+    "divaReminders.introMessage":
+      "As a Diva, you'll get notifications and reminders with humor and love so you don't miss your self-care habits, plus a weekly Wellness recap. Two a day at most, never at night.",
+    "divaReminders.introCta": "Turn on reminders",
+    "divaReminders.introLater": "Not now",
+    "divaReminders.permissionDeniedTitle": "Notifications are off",
+    "divaReminders.permissionDeniedMessage":
+      "To get Diva Reminders, allow notifications for the app in your phone settings and turn them on again in Settings.",
+    "divaReminders.settingsTitle": "Diva Reminders",
+    "divaReminders.settingsSubtitle": "Notifications with attitude about your self-care habits and your Wellness week.",
+    "divaReminders.devTest": "Test Diva notifications (dev)",
+    "divaReminders.devTestScheduled": "Arriving in 10 seconds, one of each type.",
 
     "home.back": "Home",
     "home.greeting": "Hi{name}",

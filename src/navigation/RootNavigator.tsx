@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { Animated, ActivityIndicator, View } from "react-native";
 import { useAuth } from "@/features/auth/hooks/useAuth";
@@ -11,6 +11,8 @@ import { WelcomeNavigationProvider } from "@/navigation/WelcomeNavigationContext
 import { RailVisibilityProvider } from "@/navigation/RailVisibilityContext";
 import { TrialEndedModal } from "@/features/premium/components/TrialEndedModal";
 import { TesterPromoModal } from "@/features/premium/components/TesterPromoModal";
+import { DivaRemindersIntro } from "@/features/premium/components/DivaRemindersIntro";
+import { useNotificationTapRouting } from "@/notifications/diva/useDivaReminders";
 
 type PostLoginStage = "welcome" | "app";
 
@@ -45,6 +47,11 @@ export function RootNavigator() {
     setStage("app");
   }
 
+  // Tocar una notificación con módulo de destino abre la agenda directo
+  // (MainShell se encarga de elegir el módulo).
+  const openAgendaFromNotification = useCallback(() => setStage("app"), []);
+  useNotificationTapRouting(openAgendaFromNotification);
+
   if (isLoading) {
     return (
       <View className="flex-1 items-center justify-center bg-surface-dark">
@@ -76,6 +83,7 @@ export function RootNavigator() {
           </WelcomeNavigationProvider>
           <TrialEndedModal onSubscribe={openPaywall} />
           <TesterPromoModal />
+          <DivaRemindersIntro />
         </>
       );
     }
@@ -101,6 +109,7 @@ export function RootNavigator() {
       </Animated.View>
       <TrialEndedModal onSubscribe={openPaywall} />
       <TesterPromoModal />
+      <DivaRemindersIntro />
       </>
     );
   }

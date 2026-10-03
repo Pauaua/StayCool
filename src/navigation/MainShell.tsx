@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Animated, Easing, View } from "react-native";
 import { SideRail, RailItem } from "@/navigation/SideRail";
 import { HomeNavigator } from "@/navigation/HomeNavigator";
@@ -13,6 +13,8 @@ import { GastosNavigator } from "@/navigation/GastosNavigator";
 import { GustosNavigator } from "@/navigation/GustosNavigator";
 import { NotasNavigator } from "@/navigation/NotasNavigator";
 import { EstadisticasNavigator } from "@/navigation/EstadisticasNavigator";
+import { useDivaReminders } from "@/notifications/diva/useDivaReminders";
+import { consumePendingModule, onOpenModuleRequest } from "@/notifications/diva/events";
 
 function buildModules(
   initialHomeRoute: keyof HomeStackParamList,
@@ -107,6 +109,8 @@ export function MainShell({
   // hacia arriba (mismo timing que el resto de las entradas de la app).
   const enter = useRef(new Animated.Value(1)).current;
 
+  useDivaReminders();
+
   function handleSelect(key: string) {
     if (key === activeKey) return;
     setActiveKey(key);
@@ -118,6 +122,23 @@ export function MainShell({
       useNativeDriver: true,
     }).start();
   }
+
+  // Al tocar una notificación que apunta a un módulo (ej. Recordatorios Diva
+  // -> Cuidado Personal), se abre ese módulo. La ref evita re-suscribirse en
+  // cada render por el cierre de handleSelect.
+  const handleSelectRef = useRef(handleSelect);
+  handleSelectRef.current = handleSelect;
+  useEffect(() => {
+    const open = (key: string) => {
+      if (modules.some((m) => m.key === key)) handleSelectRef.current(key);
+    };
+    const pending = consumePendingModule();
+    if (pending) open(pending);
+    return onOpenModuleRequest((key) => {
+      consumePendingModule();
+      open(key);
+    });
+  }, [modules]);
 
   return (
     <View className="flex-1 flex-row bg-white dark:bg-surface-dark">
