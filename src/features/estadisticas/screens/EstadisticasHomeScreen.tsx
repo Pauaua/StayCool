@@ -28,6 +28,13 @@ const SECTIONS: {
     descKey: "estadisticas.weeklyDesc",
   },
   {
+    key: "EstadisticasMensual",
+    labelKey: "estadisticas.monthly",
+    // Ícono provisorio hasta definir los estilos de Estadísticas.
+    icon: require("../../../../assets/images/semanal.png"),
+    descKey: "estadisticas.monthlyDesc",
+  },
+  {
     key: "EstadisticasAnual",
     labelKey: "estadisticas.yearly",
     icon: require("../../../../assets/images/anual.png"),

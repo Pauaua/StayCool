@@ -72,6 +72,7 @@ export type EstadisticasStackParamList = {
   EstadisticasHome: undefined;
   EstadisticasHoy: undefined;
   EstadisticasSemanal: undefined;
+  EstadisticasMensual: undefined;
   EstadisticasAnual: undefined;
   // El candado de Estadísticas (PremiumGate) lleva acá a "Ver planes": cada
   // módulo tiene su propio NavigationContainer, así que el Paywall del Home

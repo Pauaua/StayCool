@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { EstadisticasHomeScreen } from "@/features/estadisticas/screens/EstadisticasHomeScreen";
 import { EstadisticasHoyScreen } from "@/features/estadisticas/screens/EstadisticasHoyScreen";
 import { EstadisticasSemanalScreen } from "@/features/estadisticas/screens/EstadisticasSemanalScreen";
+import { EstadisticasMensualScreen } from "@/features/estadisticas/screens/EstadisticasMensualScreen";
 import { EstadisticasAnualScreen } from "@/features/estadisticas/screens/EstadisticasAnualScreen";
 import { PaywallScreen } from "@/features/premium/screens/PaywallScreen";
 import type { EstadisticasStackParamList } from "@/navigation/types";
@@ -18,6 +19,7 @@ export function EstadisticasNavigator() {
         <Stack.Screen name="EstadisticasHome" component={EstadisticasHomeScreen} />
         <Stack.Screen name="EstadisticasHoy" component={EstadisticasHoyScreen} />
         <Stack.Screen name="EstadisticasSemanal" component={EstadisticasSemanalScreen} />
+        <Stack.Screen name="EstadisticasMensual" component={EstadisticasMensualScreen} />
         <Stack.Screen name="EstadisticasAnual" component={EstadisticasAnualScreen} />
         <Stack.Screen
           name="Paywall"
