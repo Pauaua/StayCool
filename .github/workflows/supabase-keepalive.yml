@@ -1,0 +1,23 @@
+# Evita que Supabase pause el proyecto del plan gratis (se pausa tras 7 días
+# sin actividad en la base de datos). Cada 3 días hace una consulta liviana a
+# `profiles` vía la API REST: por RLS devuelve [] pero cuenta como actividad.
+# Si la consulta falla, el job falla y GitHub manda un email de aviso.
+name: Supabase keep-alive
+
+on:
+  schedule:
+    - cron: "0 12 */3 * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Consultar la base de datos
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          curl -sSf --retry 3 --retry-delay 10 \
+            "$SUPABASE_URL/rest/v1/profiles?select=id&limit=1" \
+            -H "apikey: $SUPABASE_ANON_KEY"
