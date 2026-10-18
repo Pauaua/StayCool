@@ -19,7 +19,7 @@ export function OnboardingScreen({ navigation }: Props) {
   const heroWidth = width - 48;
 
   return (
-    <ScreenBackground color={sectionColors.Auth}>
+    <ScreenBackground color={sectionColors.Onboarding}>
       <SafeAreaView className="flex-1 px-6 py-12">
         <Reveal className="mt-16" offset={-16} duration={500}>
           <View className="flex-row items-center mb-3">
@@ -48,11 +48,12 @@ export function OnboardingScreen({ navigation }: Props) {
         </Reveal>
 
         <Reveal delay={350} offset={26}>
-          <Button label="Crear cuenta" onPress={() => navigation.navigate("SignUp")} />
+          <Button label="Crear cuenta" variant="white" fullWidth onPress={() => navigation.navigate("SignUp")} />
           <View className="h-3" />
           <Button
             label="Ya tengo cuenta"
-            variant="outline"
+            variant="outlineWhite"
+            fullWidth
             onPress={() => navigation.navigate("SignIn")}
           />
         </Reveal>

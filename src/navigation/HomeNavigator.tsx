@@ -11,6 +11,7 @@ import { ConfiguracionScreen } from "@/features/home/screens/ConfiguracionScreen
 import { LegalScreen } from "@/features/home/screens/LegalScreen";
 import type { HomeStackParamList } from "@/navigation/types";
 import { sectionScreenOptions } from "@/navigation/screenOptions";
+import { useModuleNavigationRef } from "@/navigation/moduleNavigation";
 
 const Stack = createNativeStackNavigator<HomeStackParamList>();
 
@@ -23,8 +24,9 @@ export function HomeNavigator({
 }: {
   initialRouteName?: keyof HomeStackParamList;
 }) {
+  const navigationRef = useModuleNavigationRef("Home");
   return (
-    <NavigationContainer independent>
+    <NavigationContainer independent ref={navigationRef}>
       <Stack.Navigator screenOptions={sectionScreenOptions("Home")} initialRouteName={initialRouteName}>
         <Stack.Screen name="HomeDashboard" component={HomeScreen} />
         <Stack.Screen

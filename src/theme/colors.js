@@ -25,7 +25,7 @@ const colors = {
 
 // Fondo de cada sección de la app. Clave = key del módulo en MainShell.
 const sectionColors = {
-  Home: palette.huesito,
+  Home: palette.rosado,
   Bienestar: palette.cian,
   Imagen: palette.rosado,
   Higiene: palette.cian,
@@ -35,8 +35,9 @@ const sectionColors = {
   Notas: palette.huesito,
   Estadisticas: palette.rosado,
   // Pantallas fuera de MainShell (auth, bienvenida).
+  Onboarding: palette.morado,
   Auth: palette.rosado,
-  Welcome: palette.amarillo,
+  Welcome: palette.rosado,
 };
 
 module.exports = { colors, sectionColors };

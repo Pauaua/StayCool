@@ -11,6 +11,9 @@ export interface BottomIconBarItem {
   onPress?: (e: GestureResponderEvent) => void;
   // Marca la pantalla en la que ya se está (círculo relleno morado).
   active?: boolean;
+  // El ícono ocupa todo el círculo (ej. el corazón del logo, que es una
+  // ilustración cuadrada con fondo propio).
+  fill?: boolean;
 }
 
 const CIRCLE_SIZE = 56;
@@ -41,10 +44,21 @@ export function BottomIconBar({ items }: { items: BottomIconBarItem[] }) {
               borderWidth: 1.5,
               borderColor: colors.ink,
               backgroundColor: item.active ? colors.morado : colors.white,
+              overflow: "hidden",
+              // Activo + ícono a todo el círculo: el resaltado va en el borde.
+              ...(item.active && item.fill ? { borderWidth: 3, borderColor: colors.morado } : null),
             }}
             className="items-center justify-center"
           >
-            <Image source={item.icon} style={{ width: 38, height: 38 }} resizeMode="contain" />
+            {item.fill ? (
+              <Image
+                source={item.icon}
+                style={{ width: CIRCLE_SIZE - 3, height: CIRCLE_SIZE - 3, borderRadius: (CIRCLE_SIZE - 3) / 2 }}
+                resizeMode="cover"
+              />
+            ) : (
+              <Image source={item.icon} style={{ width: 38, height: 38 }} resizeMode="contain" />
+            )}
           </View>
           <Text className="mt-1 text-xs font-semibold text-ink">{item.label}</Text>
         </PressableScale>

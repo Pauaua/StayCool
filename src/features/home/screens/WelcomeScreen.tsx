@@ -127,16 +127,13 @@ export function WelcomeScreen({
   return (
     <ScreenBackground color={sectionColors.Welcome}>
       <View className="flex-1 items-center px-6 pt-16">
-        <Reveal className="w-full max-w-sm items-center" offset={-18} duration={480}>
-          <Heading className="text-center" style={{ fontSize: 40, lineHeight: 46 }}>
-            {displayName ? t("welcome.greetingWithName", { name: displayName }) : tg("welcome.greeting")}
+        <Reveal className="w-full" offset={-18} duration={480}>
+          <Heading style={{ fontSize: 40, lineHeight: 46 }}>
+            {displayName ? t("welcome.greetingWithName", { name: displayName }) : t("welcome.greetingNoName")}
           </Heading>
-          <Text className="mt-1 text-base text-center text-ink">{t("welcome.subtitle")}</Text>
-
-          <View className="mt-8 items-center">
-            <Heading style={{ fontSize: 48 }}>{formatTime(now)}</Heading>
-            <Text className="mt-1 text-base capitalize text-ink">{formatDate(now, lang)}</Text>
-          </View>
+          <Text className="mt-1 text-sm capitalize text-ink/70">
+            {formatTime(now)} · {formatDate(now, lang)}
+          </Text>
         </Reveal>
 
         {/* El personaje (y el regalo, si está pendiente) ocupan todo el espacio
@@ -155,36 +152,29 @@ export function WelcomeScreen({
           <TrialGiftBox size={giftSize} onVisibleChange={setGiftPending} />
         </View>
 
-        <View className="mt-4 mb-2 w-full items-center" style={{ gap: 12 }}>
-          <Reveal className="w-full" delay={200} offset={26}>
-            <Button
-              fullWidth
-              variant="filled"
-              label={t("welcome.viewResumen")}
-              onPress={withBurst(onOpenResumen)}
-              icon={require("../../../../assets/images/estadisticas.png")}
-            />
-          </Reveal>
-          <Reveal className="w-full" delay={280} offset={26}>
-            <Button
-              fullWidth
-              variant="primary"
-              font="display"
-              label={t("welcome.goPremium")}
-              onPress={withBurst(onOpenPaywall)}
-              icon={require("../../../../assets/images/brillitos.png")}
-            />
-          </Reveal>
-          <Reveal className="w-full" delay={360} offset={26}>
-            <Button
-              fullWidth
-              variant="outline"
-              label={t("welcome.settings")}
-              onPress={withBurst(onOpenConfiguracion)}
-              icon={require("../../../../assets/images/tuerca.png")}
-            />
-          </Reveal>
-        </View>
+        <Text className="mt-2 text-base text-center text-ink">{t("welcome.subtitle")}</Text>
+
+        {/* Grilla 2x2 de botones del mismo tamaño, outline blanco (manual). */}
+        <Reveal className="w-full mt-4 mb-2" delay={200} offset={26} style={{ gap: 12 }}>
+          {[
+            [
+              { label: t("welcome.openAgenda"), action: onOpenAgenda },
+              { label: t("welcome.goPremium"), action: onOpenPaywall },
+            ],
+            [
+              { label: t("welcome.viewResumen"), action: onOpenResumen },
+              { label: t("welcome.settings"), action: onOpenConfiguracion },
+            ],
+          ].map((row, i) => (
+            <View key={i} className="flex-row" style={{ gap: 12 }}>
+              {row.map((item) => (
+                <View key={item.label} className="flex-1">
+                  <Button fullWidth variant="outlineWhite" label={item.label} onPress={withBurst(item.action)} />
+                </View>
+              ))}
+            </View>
+          ))}
+        </Reveal>
       </View>
 
       <BottomIconBar

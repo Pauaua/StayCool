@@ -15,7 +15,7 @@ const TRAVEL = TRACK_WIDTH - PADDING * 2 - THUMB;
 
 // Toggle ancho con sol/luna en vez del típico pulgar circular. El pulgar se
 // desliza girando, el fondo cambia de color y el sol y la luna se funden uno
-// en el otro. Usa el moradito de la paleta como color de "activado".
+// en el otro. Usa el morado de la paleta como color de "activado".
 export function StarToggle({ value, onValueChange }: StarToggleProps) {
   const anim = useRef(new Animated.Value(value ? 1 : 0)).current;
   const scheme = useColorScheme();
@@ -33,7 +33,7 @@ export function StarToggle({ value, onValueChange }: StarToggleProps) {
 
   const backgroundColor = anim.interpolate({
     inputRange: [0, 1],
-    outputRange: [scheme === "dark" ? "#374151" : "#e5e7eb", colors.rosado],
+    outputRange: [scheme === "dark" ? "#374151" : "#e5e7eb", colors.morado],
   });
   const translateX = anim.interpolate({ inputRange: [0, 1], outputRange: [0, TRAVEL] });
   const rotate = anim.interpolate({ inputRange: [0, 1], outputRange: ["0deg", "360deg"] });

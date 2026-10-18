@@ -12,12 +12,14 @@ import { HairstyleDetailScreen } from "@/features/pelo/screens/HairstyleDetailSc
 import { HairProfileScreen } from "@/features/pelo/screens/HairProfileScreen";
 import type { ImagenStackParamList } from "@/navigation/types";
 import { sectionScreenOptions } from "@/navigation/screenOptions";
+import { useModuleNavigationRef } from "@/navigation/moduleNavigation";
 
 const Stack = createNativeStackNavigator<ImagenStackParamList>();
 
 export function ImagenNavigator() {
+  const navigationRef = useModuleNavigationRef("Imagen");
   return (
-    <NavigationContainer independent>
+    <NavigationContainer independent ref={navigationRef}>
       <Stack.Navigator screenOptions={sectionScreenOptions("Imagen")}>
         <Stack.Screen name="ImagenHome" component={ImagenHomeScreen} />
         <Stack.Screen

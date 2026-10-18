@@ -1,8 +1,10 @@
 import React from "react";
-import { Image, Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
-import { Heading } from "@/components/ui/Heading";
+import { Alert, Image, Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
 import { format } from "date-fns";
 import { Card } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
+import { Heading } from "@/components/ui/Heading";
+import { BottomIconBar } from "@/components/ui/BottomIconBar";
 import { useDashboardSummary } from "@/features/home/hooks/useDashboard";
 import { useSyncReminders } from "@/features/home/hooks/useProfile";
 import { useAuth } from "@/features/auth/hooks/useAuth";
@@ -10,16 +12,19 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 // import { useSyncMooney } from "@/features/premium/hooks/useMooney";
 import { useGoToWelcome } from "@/navigation/WelcomeNavigationContext";
 import { ReminderSettings } from "@/features/home/components/ReminderSettings";
+import { WeekStrip } from "@/features/home/components/WeekStrip";
+import { requestOpenModule } from "@/notifications/diva/events";
 import { useT } from "@/lib/i18n";
+import { colors } from "@/theme";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { HomeStackParamList } from "@/navigation/types";
 
 type Props = NativeStackScreenProps<HomeStackParamList, "HomeDashboard">;
 
 export function HomeScreen({ navigation }: Props) {
-  const { session } = useAuth();
+  const { session, signOut } = useAuth();
   const goToWelcome = useGoToWelcome();
-  const { t } = useT();
+  const { t, tg } = useT();
   const { data, isLoading } = useDashboardSummary();
   useSyncReminders();
   // const { isFull } = usePremium();
@@ -35,65 +40,93 @@ export function HomeScreen({ navigation }: Props) {
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [isFull]);
 
+  function handleSignOut() {
+    Alert.alert(t("common.confirmSignOutTitle"), tg("common.confirmSignOutMessage"), [
+      { text: t("common.cancel"), style: "cancel" },
+      { text: t("common.signOut"), style: "destructive", onPress: signOut },
+    ]);
+  }
+
   return (
     <SafeAreaView className="flex-1">
-      <ScrollView className="px-5 pt-6" contentContainerStyle={{ paddingBottom: 40 }}>
-        <Pressable onPress={goToWelcome} className="flex-row items-center mb-2" hitSlop={8}>
-          <Text className="text-xl text-ink">‹</Text>
-          <Text className="text-sm text-ink ml-1">{t("home.back")}</Text>
-        </Pressable>
-
-        <View className="flex-row justify-between items-center mb-1">
-          <Heading className="text-3xl">
+      <ScrollView className="flex-1 px-5 pt-6" contentContainerStyle={{ paddingBottom: 24 }}>
+        <View className="flex-row justify-between items-center mb-4">
+          <Heading className="flex-1 pr-3" style={{ fontSize: 30, lineHeight: 36 }}>
             {t("home.greeting", { name: name ? `, ${name}` : "" })}
           </Heading>
-          <View className="flex-row items-center">
+          <Pressable
+            onPress={() => navigation.navigate("Settings")}
+            hitSlop={8}
+            style={{
+              width: 48,
+              height: 48,
+              borderRadius: 24,
+              borderWidth: 1.5,
+              borderColor: colors.ink,
+              backgroundColor: colors.white,
+            }}
+            className="items-center justify-center"
+          >
             <Image
-              source={require("../../../../assets/images/brillitos.png")}
-              style={{ width: 24, height: 24, marginRight: 12 }}
+              source={require("../../../../assets/images/tuerca.png")}
+              style={{ width: 34, height: 34 }}
               resizeMode="contain"
             />
-            <Pressable onPress={() => navigation.navigate("Settings")}>
-              <Image
-                source={require("../../../../assets/images/tuerca.png")}
-                style={{ width: 48, height: 48 }}
-                resizeMode="contain"
-              />
-            </Pressable>
-          </View>
+          </Pressable>
         </View>
-        <Text className="text-gray-500 mb-6">{format(new Date(), "EEEE dd MMMM")}</Text>
+
+        <WeekStrip />
+
+        <Heading className="mt-6 mb-3" style={{ fontSize: 22 }}>
+          {t("home.reminders")}
+        </Heading>
 
         {isLoading ? (
-          <Text className="text-gray-400">{t("home.loadingDay")}</Text>
+          <Text className="text-ink/60">{t("home.loadingDay")}</Text>
         ) : (
-          <View className="gap-3">
-            <Card delay={60}>
-              <Text className="text-sm text-gray-500">{t("home.hygieneToday")}</Text>
-              <Text className="text-xl font-semibold text-surface-dark dark:text-white">
-                {data?.pendingHygieneItems === 0
-                  ? t("home.hygieneAllDone")
-                  : t("home.hygienePending", {
-                      pending: String(data?.pendingHygieneItems),
-                      total: String(data?.totalHygieneItems),
-                    })}
-              </Text>
-            </Card>
+          <View style={{ gap: 12 }}>
+            <View className="flex-row" style={{ gap: 12 }}>
+              <Card delay={60} className="flex-1 justify-between">
+                <View>
+                  <Text className="text-sm font-semibold text-ink">{t("home.hygieneToday")}</Text>
+                  <Text className="mt-1 text-base text-ink">
+                    {data?.pendingHygieneItems === 0
+                      ? t("home.hygieneAllDone")
+                      : t("home.hygienePending", {
+                          pending: String(data?.pendingHygieneItems),
+                          total: String(data?.totalHygieneItems),
+                        })}
+                  </Text>
+                </View>
+                <View className="mt-3">
+                  <Button size="sm" label={t("home.review")} onPress={() => requestOpenModule("Higiene")} />
+                </View>
+              </Card>
 
-            <Card delay={140}>
-              <Text className="text-sm text-gray-500">{t("home.nextActivity")}</Text>
-              <Text className="text-xl font-semibold text-surface-dark dark:text-white">
-                {data?.nextActivity
-                  ? `${data.nextActivity.title ?? t("home.nextActivityUntitled")} · ${format(
-                      new Date(data.nextActivity.scheduled_at),
-                      "dd MMM HH:mm"
-                    )}`
-                  : t("home.nextActivityNone")}
-              </Text>
-            </Card>
+              <Card delay={140} className="flex-1 justify-between">
+                <View>
+                  <Text className="text-sm font-semibold text-ink">{t("home.nextActivity")}</Text>
+                  {data?.nextActivity ? (
+                    <>
+                      <Text className="mt-1 text-base font-semibold text-ink">
+                        {format(new Date(data.nextActivity.scheduled_at), "dd MMM · HH:mm")}
+                      </Text>
+                      <Text className="text-sm text-ink/80" numberOfLines={2}>
+                        {data.nextActivity.title ?? t("home.nextActivityUntitled")}
+                      </Text>
+                    </>
+                  ) : (
+                    <Text className="mt-1 text-base text-ink">{t("home.nextActivityNone")}</Text>
+                  )}
+                </View>
+                <View className="mt-3">
+                  <Button size="sm" label={t("home.seeMore")} onPress={() => requestOpenModule("Social")} />
+                </View>
+              </Card>
+            </View>
 
             <Card delay={220}>
-              <Text className="text-sm text-gray-500">{t("home.expenseToday")}</Text>
+              <Text className="text-sm font-semibold text-ink">{t("home.expenseToday")}</Text>
               <Text className="text-xl font-semibold text-ink">
                 ${data?.todayExpenseTotal.toFixed(2) ?? "0.00"}
               </Text>
@@ -109,6 +142,31 @@ export function HomeScreen({ navigation }: Props) {
 
         <ReminderSettings />
       </ScrollView>
+
+      <BottomIconBar
+        items={[
+          {
+            key: "signOut",
+            label: t("common.signOut"),
+            icon: require("../../../../assets/images/log out.png"),
+            onPress: handleSignOut,
+          },
+          {
+            key: "home",
+            label: t("welcome.navHome"),
+            icon: require("../../../../assets/images/home.png"),
+            onPress: goToWelcome,
+          },
+          {
+            key: "agenda",
+            label: t("welcome.navAgenda"),
+            icon: require("../../../../assets/images/Logo.png"),
+            onPress: () => requestOpenModule("Agenda"),
+            active: true,
+            fill: true,
+          },
+        ]}
+      />
     </SafeAreaView>
   );
 }

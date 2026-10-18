@@ -12,7 +12,11 @@ interface ButtonProps {
   // - filled: relleno blanco.
   // - outline: fondo transparente con borde (oscuro, porque los fondos de la
   //   app son claros y un borde blanco no se vería).
-  variant?: "primary" | "filled" | "outline";
+  // Sobre fondos de color sólido (pantallas de inicio y bienvenida), tal cual
+  // el manual:
+  // - white: relleno blanco sin borde, texto oscuro.
+  // - outlineWhite: borde blanco, fondo transparente, texto blanco.
+  variant?: "primary" | "filled" | "outline" | "white" | "outlineWhite";
   size?: "md" | "sm";
   loading?: boolean;
   disabled?: boolean;
@@ -28,6 +32,8 @@ const variantStyles: Record<NonNullable<ButtonProps["variant"]>, string> = {
   primary: "bg-morado border border-ink active:opacity-80",
   filled: "bg-white border border-ink active:opacity-80",
   outline: "bg-transparent border border-ink active:bg-white/40",
+  white: "bg-white border border-white active:opacity-80",
+  outlineWhite: "bg-transparent border-2 border-white active:bg-white/20",
 };
 
 export function Button({
@@ -57,7 +63,7 @@ export function Button({
       } ${variantStyles[variant]} ${disabled ? "opacity-50" : ""}`}
     >
       {loading ? (
-        <ActivityIndicator color={colors.ink} />
+        <ActivityIndicator color={variant === "outlineWhite" ? colors.white : colors.ink} />
       ) : (
         <View className="flex-row items-center justify-center">
           {icon ? (
@@ -67,7 +73,7 @@ export function Button({
             numberOfLines={1}
             adjustsFontSizeToFit
             minimumFontScale={0.5}
-            className={`${font === "display" ? "font-display" : "font-semibold"} text-center text-ink ${
+            className={`${font === "display" ? "font-display" : "font-semibold"} text-center ${variant === "outlineWhite" ? "text-white" : "text-ink"} ${
               font === "display" ? (size === "sm" ? "text-lg" : "text-2xl") : size === "sm" ? "text-sm" : "text-base"
             }`}
             style={font === "display" ? { textTransform: "uppercase" } : undefined}

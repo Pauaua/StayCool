@@ -16,6 +16,12 @@ import { EstadisticasNavigator } from "@/navigation/EstadisticasNavigator";
 import { useDivaReminders } from "@/notifications/diva/useDivaReminders";
 import { consumePendingModule, onOpenModuleRequest } from "@/notifications/diva/events";
 import { sectionColors, type SectionKey } from "@/theme";
+import { AgendaMenuScreen } from "@/features/home/screens/AgendaMenuScreen";
+import { navigateInModule } from "@/navigation/moduleNavigation";
+
+// Menú de accesos directos (manual de marca). No es un módulo del rail: se
+// abre desde Home y es la única pantalla sin rail lateral.
+const AGENDA_KEY = "Agenda";
 
 function buildModules(
   initialHomeRoute: keyof HomeStackParamList,
@@ -112,6 +118,14 @@ export function MainShell({
 
   useDivaReminders();
 
+  // Abre un módulo (y opcionalmente una pantalla dentro de su stack, ej.
+  // Imagen → Vestuario). Los módulos están siempre montados, así que su
+  // navigator ya está listo para recibir la ruta.
+  function handleOpen(key: string, route?: string) {
+    if (route) navigateInModule(key, route);
+    handleSelect(key);
+  }
+
   function handleSelect(key: string) {
     if (key === activeKey) return;
     setActiveKey(key);
@@ -131,7 +145,7 @@ export function MainShell({
   handleSelectRef.current = handleSelect;
   useEffect(() => {
     const open = (key: string) => {
-      if (modules.some((m) => m.key === key)) handleSelectRef.current(key);
+      if (key === AGENDA_KEY || modules.some((m) => m.key === key)) handleSelectRef.current(key);
     };
     const pending = consumePendingModule();
     if (pending) open(pending);
@@ -146,7 +160,9 @@ export function MainShell({
       className="flex-1 flex-row"
       style={{ backgroundColor: sectionColors[activeKey as SectionKey] }}
     >
-      {railHidden ? null : <SideRail items={modules} activeKey={activeKey} onSelect={handleSelect} />}
+      {railHidden || activeKey === AGENDA_KEY ? null : (
+        <SideRail items={modules} activeKey={activeKey} onSelect={handleSelect} />
+      )}
       <Animated.View
         className="flex-1"
         style={{
@@ -154,6 +170,7 @@ export function MainShell({
           transform: [{ translateY: enter.interpolate({ inputRange: [0, 1], outputRange: [16, 0] }) }],
         }}
       >
+        {activeKey === AGENDA_KEY ? <AgendaMenuScreen onOpen={handleOpen} /> : null}
         {modules.map(({ key, Component }) => (
           <View key={key} style={{ flex: 1, display: activeKey === key ? "flex" : "none" }}>
             <Component />
