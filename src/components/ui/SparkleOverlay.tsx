@@ -1,9 +1,10 @@
 import React, { useEffect, useRef } from "react";
 import { Animated, Dimensions, StyleSheet } from "react-native";
+import { colors } from "@/theme";
 
 const { width, height } = Dimensions.get("window");
 const SPARKLE_COUNT = 16;
-const COLORS = ["#ffffff", "#ecc6ff", "#d9ebff", "#ebfff7", "#fef1ba"];
+const COLORS = ["#ffffff", colors.rosado, colors.amarillo, colors.cian, colors.amarillo];
 
 function randomBetween(min: number, max: number) {
   return Math.random() * (max - min) + min;

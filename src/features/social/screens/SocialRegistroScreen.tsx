@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Alert, Modal, Pressable, Switch, Text, View } from "react-native";
+import { colors } from "@/theme";
+import { Heading } from "@/components/ui/Heading";
 import { Calendar, DateData } from "react-native-calendars";
 import { format, isBefore } from "date-fns";
 import { TextField } from "@/components/ui/TextField";
@@ -56,15 +58,15 @@ function DatePickerModal({
         <Card className="w-full">
           <Calendar
             current={selectedDate}
-            markedDates={{ [selectedDate]: { selected: true, selectedColor: "#002054" } }}
+            markedDates={{ [selectedDate]: { selected: true, selectedColor: colors.ink } }}
             onDayPress={(day: DateData) => {
               onSelect(day.dateString);
               onClose();
             }}
-            theme={{ selectedDayBackgroundColor: "#002054", todayTextColor: "#002054" }}
+            theme={{ selectedDayBackgroundColor: colors.ink, todayTextColor: colors.ink }}
           />
           <View className="mt-2">
-            <Button label={t("social.close")} variant="ghost" onPress={onClose} />
+            <Button label={t("social.close")} variant="outline" onPress={onClose} />
           </View>
         </Card>
       </View>
@@ -163,9 +165,9 @@ export function SocialRegistroScreen({ navigation, route }: Props) {
 
   return (
     <FormScreen>
-      <Text className="text-2xl font-bold text-surface-dark dark:text-white mb-4">
+      <Heading className="text-2xl mb-4">
         {isEditing ? t("social.editActivity") : t("social.registerActivity")}
-      </Text>
+      </Heading>
 
       <View className="flex-row gap-3">
         <View className="flex-1">

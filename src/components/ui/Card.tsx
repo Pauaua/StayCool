@@ -10,10 +10,12 @@ interface CardProps extends ViewProps {
   animated?: boolean;
 }
 
+// Tarjeta de contenido del manual de marca: blanca, esquinas redondeadas,
+// sobre el fondo pastel de la sección.
 export function Card({ children, className = "", delay, animated, ...rest }: CardProps) {
   return (
     <Reveal
-      className={`bg-surface-cardLight dark:bg-surface-cardDark rounded-card p-4 shadow-sm ${className}`}
+      className={`bg-white dark:bg-surface-cardDark rounded-card p-4 shadow-sm ${className}`}
       delay={delay}
       animated={animated}
       {...rest}

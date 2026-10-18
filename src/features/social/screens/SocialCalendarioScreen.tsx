@@ -1,5 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { Alert, Image, Modal, Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
+import { colors } from "@/theme";
+import { Heading } from "@/components/ui/Heading";
 import { Calendar, DateData } from "react-native-calendars";
 import { format } from "date-fns";
 import { Card } from "@/components/ui/Card";
@@ -67,7 +69,7 @@ function UpcomingActivityCard({ activity, onPress }: { activity: SocialActivity;
           <Text className="text-sm font-bold text-surface-dark dark:text-white capitalize">
             {format(new Date(activity.scheduled_at), "dd MMMM")}
           </Text>
-          <Text className="text-sm font-semibold text-brand-500">
+          <Text className="text-sm font-semibold text-ink">
             {format(new Date(activity.scheduled_at), "HH:mm")}
           </Text>
         </View>
@@ -134,7 +136,7 @@ function ActivityDetailModal({
                 </Text>
               ) : null}
               {activity.feeling ? (
-                <Text className="text-base text-brand-500 mb-1.5 capitalize">
+                <Text className="text-base text-ink mb-1.5 capitalize">
                   {FEELING_EMOJI[activity.feeling]} {t(FEELING_KEY[activity.feeling] ?? "social.feeling.neutral")}
                 </Text>
               ) : null}
@@ -150,14 +152,14 @@ function ActivityDetailModal({
             <View className="flex-1">
               <Button
                 label={deleteActivity.isPending ? t("social.deleting") : t("social.delete")}
-                variant="ghost"
+                variant="outline"
                 size="sm"
                 onPress={handleDelete}
                 loading={deleteActivity.isPending}
               />
             </View>
             <View className="flex-1">
-              <Button label={t("social.close")} variant="secondary" size="sm" onPress={onClose} />
+              <Button label={t("social.close")} variant="filled" size="sm" onPress={onClose} />
             </View>
           </View>
         </Card>
@@ -197,10 +199,10 @@ export function SocialCalendarioScreen({ navigation }: Props) {
       marks[dateKey] = {
         customStyles: {
           container: {
-            backgroundColor: isFuture ? "#d9ebff" : "#ecc6ff",
+            backgroundColor: isFuture ? colors.amarillo : colors.rosado,
             borderRadius: 16,
           },
-          text: { color: "#002054" },
+          text: { color: colors.ink },
         },
       };
     }
@@ -208,8 +210,8 @@ export function SocialCalendarioScreen({ navigation }: Props) {
     // Hoy siempre va moradito, tenga actividad o no.
     marks[today] = {
       customStyles: {
-        container: { backgroundColor: "#ecc6ff", borderRadius: 16 },
-        text: { color: "#002054", fontWeight: "700" },
+        container: { backgroundColor: colors.rosado, borderRadius: 16 },
+        text: { color: colors.ink, fontWeight: "700" },
       },
     };
 
@@ -219,10 +221,10 @@ export function SocialCalendarioScreen({ navigation }: Props) {
         container: {
           ...(marks[selectedDate]?.customStyles?.container ?? {}),
           borderWidth: 2,
-          borderColor: "#002054",
+          borderColor: colors.ink,
           borderRadius: 16,
         },
-        text: marks[selectedDate]?.customStyles?.text ?? { color: "#002054" },
+        text: marks[selectedDate]?.customStyles?.text ?? { color: colors.ink },
       },
     };
 
@@ -243,7 +245,7 @@ export function SocialCalendarioScreen({ navigation }: Props) {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-surface-dark">
+    <SafeAreaView className="flex-1">
       <View className="px-5 pt-4">
         <BackToWelcome />
         <View className="flex-row items-center mb-3">
@@ -252,9 +254,9 @@ export function SocialCalendarioScreen({ navigation }: Props) {
             style={{ width: 56, height: 56, marginRight: 8 }}
             resizeMode="contain"
           />
-          <Text className="text-2xl font-bold text-surface-dark dark:text-white">
+          <Heading className="text-2xl">
             {t("social.title")}
-          </Text>
+          </Heading>
         </View>
       </View>
 
@@ -265,7 +267,7 @@ export function SocialCalendarioScreen({ navigation }: Props) {
         markingType="custom"
         markedDates={markedDates}
         theme={{
-          arrowColor: "#002054",
+          arrowColor: colors.ink,
         }}
       />
 
@@ -277,7 +279,7 @@ export function SocialCalendarioScreen({ navigation }: Props) {
           <Pressable
             onPress={() => navigation.navigate("SocialRegistro", { initialDate: selectedDate })}
           >
-            <Text className="text-brand-500 font-semibold">{t("social.add")}</Text>
+            <Text className="text-ink font-semibold">{t("social.add")}</Text>
           </Pressable>
         </View>
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { Animated, Text } from "react-native";
+import { Animated, Image, ImageSourcePropType, Text } from "react-native";
 import { PressableScale } from "@/components/ui/PressableScale";
 
 interface ChipProps {
@@ -7,9 +7,12 @@ interface ChipProps {
   selected?: boolean;
   onPress?: () => void;
   icon?: string;
+  // Ilustración en vez de emoji (ej. caritas de ánimo). Sin label, el chip
+  // queda solo con la imagen.
+  image?: ImageSourcePropType;
 }
 
-export function Chip({ label, selected, onPress, icon }: ChipProps) {
+export function Chip({ label, selected, onPress, icon, image }: ChipProps) {
   // Al quedar seleccionado, el chip "pega un saltito" y se asienta.
   const pop = useRef(new Animated.Value(1)).current;
   const firstRender = useRef(true);
@@ -31,15 +34,19 @@ export function Chip({ label, selected, onPress, icon }: ChipProps) {
       <Animated.View
         className={`px-4 py-2 rounded-full border ${
           selected
-            ? "bg-brand-500 border-brand-500"
+            ? "bg-morado border-ink"
             : "bg-transparent border-gray-300 dark:border-gray-600"
         }`}
         style={{ transform: [{ scale: pop }] }}
       >
-        <Text className={selected ? "text-white font-semibold" : "text-surface-dark dark:text-white"}>
-          {icon ? `${icon} ` : ""}
-          {label}
-        </Text>
+        {image ? (
+          <Image source={image} style={{ width: 32, height: 32 }} resizeMode="contain" />
+        ) : (
+          <Text className={selected ? "text-ink font-semibold" : "text-surface-dark dark:text-white"}>
+            {icon ? `${icon} ` : ""}
+            {label}
+          </Text>
+        )}
       </Animated.View>
     </PressableScale>
   );

@@ -1,5 +1,6 @@
 import React from "react";
 import { SafeAreaView, ScrollView, Text, View } from "react-native";
+import { Heading } from "@/components/ui/Heading";
 import { format } from "date-fns";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Card } from "@/components/ui/Card";
@@ -45,7 +46,7 @@ export function SettingsScreen({ navigation }: Props) {
 
   if (isLoading || !profile) {
     return (
-      <SafeAreaView className="flex-1 bg-gray-50 dark:bg-surface-dark items-center justify-center">
+      <SafeAreaView className="flex-1 items-center justify-center">
         <Text className="text-gray-400">{t("settings.loading")}</Text>
       </SafeAreaView>
     );
@@ -55,11 +56,11 @@ export function SettingsScreen({ navigation }: Props) {
   const createdAt = session?.user.created_at ? new Date(session.user.created_at) : null;
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-surface-dark px-5 pt-4">
+    <SafeAreaView className="flex-1 px-5 pt-4">
       <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
-        <Text className="text-2xl font-bold text-surface-dark dark:text-white mb-4">
+        <Heading className="text-2xl mb-4">
           {t("settings.title")}
-        </Text>
+        </Heading>
 
         <Card className="mb-4 items-center">
           <UserAvatar avatarUrl={profile.avatar_url} size={84} />
@@ -75,13 +76,13 @@ export function SettingsScreen({ navigation }: Props) {
           {/* Sparkless/MOOney para modificar el avatar: deshabilitado a propósito.
           {isFull ? (
             <>
-              <Text className="text-sm font-semibold text-brand-500 mt-2">
+              <Text className="text-sm font-semibold text-ink mt-2">
                 🪙 {mooneyBalance ?? 0} Sparkless
               </Text>
               <View className="mt-3 w-full">
                 <Button
                   label={t("settings.customizeAvatar")}
-                  variant="secondary"
+                  variant="filled"
                   onPress={() => navigation.navigate("AvatarShop")}
                 />
               </View>
@@ -113,7 +114,7 @@ export function SettingsScreen({ navigation }: Props) {
           </View>
         ) : null}
 
-        <Button label={t("settings.signOut")} variant="ghost" onPress={signOut} />
+        <Button label={t("settings.signOut")} variant="outline" onPress={signOut} />
       </ScrollView>
     </SafeAreaView>
   );

@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useRef } from "react";
 import { Animated, Easing, Image, StyleSheet } from "react-native";
+import { colors } from "@/theme";
 
 const COUNT = 7;
 const DURATION = 620;
-const TINTS = ["#ffffff", "#ecc6ff", "#fef1ba", "#d9ebff", "#ffffff", "#ecc6ff", "#fef1ba"];
+const TINTS = ["#ffffff", colors.rosado, colors.amarillo, colors.amarillo, "#ffffff", colors.rosado, colors.amarillo];
 
 function randomBetween(min: number, max: number) {
   return Math.random() * (max - min) + min;

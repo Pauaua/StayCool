@@ -15,7 +15,7 @@ export function TextField({ label, error, secureTextEntry, ...rest }: TextFieldP
     <View className="mb-4">
       <Text
         className={`text-sm font-semibold mb-1.5 ${
-          isFocused ? "text-brand-500 dark:text-pastel-purple" : "text-surface-dark dark:text-white"
+          isFocused ? "text-ink dark:text-rosado" : "text-surface-dark dark:text-white"
         }`}
       >
         {label}
@@ -24,7 +24,7 @@ export function TextField({ label, error, secureTextEntry, ...rest }: TextFieldP
         <TextInput
           placeholderTextColor="#9ca3af"
           className={`bg-white dark:bg-surface-cardDark border rounded-card px-4 py-3 text-base text-surface-dark dark:text-white ${
-            isFocused ? "border-brand-500 dark:border-pastel-purple" : "border-gray-200 dark:border-gray-700"
+            isFocused ? "border-ink dark:border-rosado" : "border-gray-200 dark:border-gray-700"
           } ${isPassword ? "pr-12" : ""}`}
           secureTextEntry={isPassword && !isVisible}
           {...rest}

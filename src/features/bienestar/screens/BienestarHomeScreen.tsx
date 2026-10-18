@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Alert, FlatList, Image, Modal, Pressable, SafeAreaView, Text, View } from "react-native";
+import { Alert, FlatList, Image, Modal, Pressable, SafeAreaView, Text, View, ImageSourcePropType } from "react-native";
+import { Heading } from "@/components/ui/Heading";
 import { Card } from "@/components/ui/Card";
 import { BackToWelcome } from "@/components/ui/BackToWelcome";
 import { Chip } from "@/components/ui/Chip";
@@ -24,16 +25,18 @@ import { useT, type TranslationKey } from "@/lib/i18n";
 import type { ExerciseLog, Meal, MealCategory, Mood, MoodLog } from "@/features/bienestar/types";
 
 const CATEGORIES: MealCategory[] = ["desayuno", "almuerzo", "cena", "snack"];
-const MOODS: { mood: Mood; emoji: string }[] = [
-  { mood: "genial", emoji: "🤩" },
-  { mood: "bien", emoji: "🙂" },
-  { mood: "neutral", emoji: "😐" },
-  { mood: "mal", emoji: "😞" },
-  { mood: "agotado", emoji: "🥱" },
+// Caritas dibujadas del manual de marca.
+const MOODS: { mood: Mood; image: ImageSourcePropType }[] = [
+  { mood: "genial", image: require("../../../../assets/images/Excitado ctm.png") },
+  { mood: "bien", image: require("../../../../assets/images/feliz piola.png") },
+  { mood: "neutral", image: require("../../../../assets/images/Neutro.png") },
+  { mood: "mal", image: require("../../../../assets/images/Triste.png") },
+  { mood: "agotado", image: require("../../../../assets/images/Enojao.png") },
 ];
-const MOOD_EMOJI: Record<Mood, string> = Object.fromEntries(
-  MOODS.map((m) => [m.mood, m.emoji])
-) as Record<Mood, string>;
+const MOOD_IMAGE = Object.fromEntries(MOODS.map((m) => [m.mood, m.image])) as Record<
+  Mood,
+  ImageSourcePropType
+>;
 const MOOD_KEY: Record<Mood, TranslationKey> = {
   genial: "bienestar.mood.genial",
   bien: "bienestar.mood.bien",
@@ -63,9 +66,12 @@ function MoodRow({ log, onEdit }: { log: MoodLog; onEdit: (log: MoodLog) => void
   return (
     <Card className="mb-2">
       <Pressable onPress={() => setExpanded((v) => !v)} className="flex-row justify-between items-center">
-        <Text className="text-surface-dark dark:text-white font-semibold flex-1 pr-2">
-          {MOOD_EMOJI[log.mood]} {t(MOOD_KEY[log.mood])} · {log.mood_date}
-        </Text>
+        <View className="flex-row items-center flex-1 pr-2">
+          <Image source={MOOD_IMAGE[log.mood]} style={{ width: 22, height: 22, marginRight: 6 }} resizeMode="contain" />
+          <Text className="text-surface-dark dark:text-white font-semibold flex-1">
+            {t(MOOD_KEY[log.mood])} · {log.mood_date}
+          </Text>
+        </View>
         <Text className="text-gray-400">{expanded ? "▲" : "▼"}</Text>
       </Pressable>
       {expanded ? (
@@ -73,7 +79,7 @@ function MoodRow({ log, onEdit }: { log: MoodLog; onEdit: (log: MoodLog) => void
           <Text className="text-sm text-gray-500 mb-3">{log.note || t("bienestar.noDescription")}</Text>
           <View className="flex-row gap-4">
             <Pressable onPress={() => onEdit(log)}>
-              <Text className="text-sm text-brand-500 font-semibold">{t("bienestar.edit")}</Text>
+              <Text className="text-sm text-ink font-semibold">{t("bienestar.edit")}</Text>
             </Pressable>
             <Pressable onPress={handleDelete} disabled={deleteMood.isPending}>
               <Text className="text-sm text-accent-coral font-semibold">
@@ -158,7 +164,7 @@ export function BienestarHomeScreen() {
   const [exerciseWeight, setExerciseWeight] = useState("");
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-surface-dark px-5 pt-4">
+    <SafeAreaView className="flex-1 px-5 pt-4">
       <FlatList
         style={{ flex: 1 }}
         contentContainerStyle={{ paddingBottom: 40 }}
@@ -176,9 +182,9 @@ export function BienestarHomeScreen() {
                 style={{ width: 56, height: 56, marginRight: 8 }}
                 resizeMode="contain"
               />
-              <Text className="text-2xl font-bold text-surface-dark dark:text-white">
+              <Heading className="text-2xl">
                 {t("bienestar.title")}
-              </Text>
+              </Heading>
             </View>
 
             <Card className="mb-4">
@@ -189,7 +195,7 @@ export function BienestarHomeScreen() {
                 {MOODS.map((m) => (
                   <Chip
                     key={m.mood}
-                    icon={m.emoji}
+                    image={m.image}
                     label=""
                     onPress={() => {
                       setMoodNote("");
@@ -263,7 +269,7 @@ export function BienestarHomeScreen() {
               />
               <Button
                 label={t("bienestar.save")}
-                variant="secondary"
+                variant="filled"
                 onPress={() => {
                   if (!exerciseType.trim()) return;
                   logExercise.mutate({
@@ -281,9 +287,9 @@ export function BienestarHomeScreen() {
               />
             </Card>
 
-            <Text className="text-2xl font-bold text-surface-dark dark:text-white mb-3">
+            <Heading className="text-2xl mb-3">
               {t("bienestar.records")}
-            </Text>
+            </Heading>
 
             <Text className="text-lg font-semibold text-surface-dark dark:text-white mb-2">
               {t("bienestar.moods")}
@@ -314,7 +320,7 @@ export function BienestarHomeScreen() {
             </Text>
             <View className="flex-row gap-4 mt-2 pt-2 border-t border-gray-100 dark:border-gray-700">
               <Pressable onPress={() => openEditMeal(item)}>
-                <Text className="text-xs text-brand-500 font-semibold">{t("bienestar.edit")}</Text>
+                <Text className="text-xs text-ink font-semibold">{t("bienestar.edit")}</Text>
               </Pressable>
               <Pressable onPress={() => handleDeleteMeal(item.id)}>
                 <Text className="text-xs text-accent-coral font-semibold">{t("bienestar.delete")}</Text>
@@ -348,7 +354,7 @@ export function BienestarHomeScreen() {
                     </Text>
                     <View className="flex-row gap-4 mt-2 pt-2 border-t border-gray-100 dark:border-gray-700">
                       <Pressable onPress={() => openEditExercise(log)}>
-                        <Text className="text-xs text-brand-500 font-semibold">{t("bienestar.edit")}</Text>
+                        <Text className="text-xs text-ink font-semibold">{t("bienestar.edit")}</Text>
                       </Pressable>
                       <Pressable onPress={() => handleDeleteExercise(log.id)}>
                         <Text className="text-xs text-accent-coral font-semibold">{t("bienestar.delete")}</Text>
@@ -389,7 +395,7 @@ export function BienestarHomeScreen() {
                 />
               </View>
               <View className="flex-1">
-                <Button label={t("bienestar.cancel")} variant="ghost" onPress={() => setMoodModal(null)} />
+                <Button label={t("bienestar.cancel")} variant="outline" onPress={() => setMoodModal(null)} />
               </View>
             </View>
           </Card>
@@ -446,7 +452,7 @@ export function BienestarHomeScreen() {
                 />
               </View>
               <View className="flex-1">
-                <Button label={t("bienestar.cancel")} variant="ghost" onPress={() => setEditingMeal(null)} />
+                <Button label={t("bienestar.cancel")} variant="outline" onPress={() => setEditingMeal(null)} />
               </View>
             </View>
           </Card>
@@ -512,7 +518,7 @@ export function BienestarHomeScreen() {
                 />
               </View>
               <View className="flex-1">
-                <Button label={t("bienestar.cancel")} variant="ghost" onPress={() => setEditingExercise(null)} />
+                <Button label={t("bienestar.cancel")} variant="outline" onPress={() => setEditingExercise(null)} />
               </View>
             </View>
           </Card>
@@ -534,7 +540,7 @@ export function BienestarHomeScreen() {
               {MOODS.map((m) => (
                 <Chip
                   key={m.mood}
-                  icon={m.emoji}
+                  image={m.image}
                   label=""
                   selected={editMoodValue === m.mood}
                   onPress={() => setEditMoodValue(m.mood)}
@@ -564,7 +570,7 @@ export function BienestarHomeScreen() {
                 />
               </View>
               <View className="flex-1">
-                <Button label={t("bienestar.cancel")} variant="ghost" onPress={() => setEditingMood(null)} />
+                <Button label={t("bienestar.cancel")} variant="outline" onPress={() => setEditingMood(null)} />
               </View>
             </View>
           </Card>

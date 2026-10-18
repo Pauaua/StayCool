@@ -13,7 +13,7 @@ export function IllustrationPlaceholder({ emoji, height = 140 }: IllustrationPla
   return (
     <View
       style={{ height }}
-      className="w-full items-center justify-center rounded-card border border-dashed border-brand-300 bg-white/40 dark:bg-white/5 mb-4"
+      className="w-full items-center justify-center rounded-card border border-dashed border-ink/30 bg-white/40 dark:bg-white/5 mb-4"
     >
       <Text style={{ fontSize: 48 }}>{emoji}</Text>
     </View>

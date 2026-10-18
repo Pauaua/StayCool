@@ -53,9 +53,9 @@ export function AddHygieneItemPicker({
     return (
       <Pressable
         onPress={() => setOpen(true)}
-        className="self-start rounded-full border border-brand-500 px-3 py-1.5"
+        className="self-start rounded-full border border-ink px-3 py-1.5"
       >
-        <Text className="text-xs font-semibold text-brand-500">{t("higiene.addItem")}</Text>
+        <Text className="text-xs font-semibold text-ink">{t("higiene.addItem")}</Text>
       </Pressable>
     );
   }
@@ -93,7 +93,7 @@ export function AddHygieneItemPicker({
           ))}
         </View>
       )}
-      <Button label={t("higiene.cancel")} variant="ghost" onPress={() => setOpen(false)} />
+      <Button label={t("higiene.cancel")} variant="outline" onPress={() => setOpen(false)} />
     </View>
   );
 }

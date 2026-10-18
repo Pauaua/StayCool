@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import { Image, Pressable, SafeAreaView, Text, View, Alert } from "react-native";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
-import { GradientBackground } from "@/components/ui/GradientBackground";
+import { sectionColors } from "@/theme";
+import { ScreenBackground } from "@/components/ui/ScreenBackground";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { AuthStackParamList } from "@/navigation/types";
+import { Heading } from "@/components/ui/Heading";
 
 type Props = NativeStackScreenProps<AuthStackParamList, "SignIn">;
 
@@ -27,11 +29,11 @@ export function SignInScreen({ navigation }: Props) {
   }
 
   return (
-    <GradientBackground>
+    <ScreenBackground color={sectionColors.Auth}>
       <SafeAreaView className="flex-1 px-6 justify-center">
         <View className="items-center mb-4">
           <Image
-            source={require("../../../../assets/images/Logo.jpg")}
+            source={require("../../../../assets/images/Logo.png")}
             style={{ width: 64, height: 64 }}
             resizeMode="contain"
           />
@@ -42,9 +44,9 @@ export function SignInScreen({ navigation }: Props) {
             style={{ width: 32, height: 32, marginRight: 8 }}
             resizeMode="contain"
           />
-          <Text className="font-script text-navy" style={{ fontSize: 40 }}>
+          <Heading style={{ fontSize: 30 }}>
             Ingresa tus datos
-          </Text>
+          </Heading>
         </View>
         <TextField
           label="Email"
@@ -55,16 +57,16 @@ export function SignInScreen({ navigation }: Props) {
         />
         <TextField label="Contraseña" secureTextEntry value={password} onChangeText={setPassword} />
         <Pressable onPress={() => navigation.navigate("ForgotPassword")} className="mb-4 self-end">
-          <Text className="text-navy text-sm">¿Olvidaste tu contraseña?</Text>
+          <Text className="text-ink text-sm">¿Olvidaste tu contraseña?</Text>
         </Pressable>
         <Button label="Iniciar sesión" onPress={handleSignIn} loading={loading} />
         <View className="h-3" />
         <Button
           label="Crear cuenta"
-          variant="ghost"
+          variant="outline"
           onPress={() => navigation.navigate("SignUp")}
         />
       </SafeAreaView>
-    </GradientBackground>
+    </ScreenBackground>
   );
 }

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { ActivityIndicator, Alert, Image, Pressable, SafeAreaView, ScrollView, Switch, Text, View } from "react-native";
+import { Heading } from "@/components/ui/Heading";
 import * as ImagePicker from "expo-image-picker";
 import { format } from "date-fns";
 import { Card } from "@/components/ui/Card";
@@ -57,7 +58,7 @@ export function OutfitDetailScreen({ route, navigation }: Props) {
 
   if (isLoading || !outfit) {
     return (
-      <SafeAreaView className="flex-1 bg-white dark:bg-surface-dark items-center justify-center">
+      <SafeAreaView className="flex-1 items-center justify-center">
         <ActivityIndicator color="#b825f2" />
       </SafeAreaView>
     );
@@ -114,11 +115,11 @@ export function OutfitDetailScreen({ route, navigation }: Props) {
 
   if (editing) {
     return (
-      <SafeAreaView className="flex-1 bg-white dark:bg-surface-dark px-5 pt-4">
+      <SafeAreaView className="flex-1 px-5 pt-4">
         <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
-          <Text className="text-2xl font-bold text-surface-dark dark:text-white mb-4">
+          <Heading className="text-2xl mb-4">
             {t("vestuario.editOutfit")}
-          </Text>
+          </Heading>
           <TextField label={t("vestuario.description")} value={description} onChangeText={setDescription} />
 
           <Text className="text-sm font-semibold text-surface-dark dark:text-white mb-2">
@@ -162,7 +163,7 @@ export function OutfitDetailScreen({ route, navigation }: Props) {
 
           <Button
             label={imageUri ? t("vestuario.photoSelected") : t("vestuario.addPhoto")}
-            variant="ghost"
+            variant="outline"
             onPress={pickImage}
           />
           <View className="h-2" />
@@ -171,7 +172,7 @@ export function OutfitDetailScreen({ route, navigation }: Props) {
               <Button label={t("vestuario.saveChanges")} onPress={handleSaveEdit} loading={updateOutfit.isPending} />
             </View>
             <View className="flex-1">
-              <Button label={t("common.cancel")} variant="ghost" onPress={() => setEditing(false)} />
+              <Button label={t("common.cancel")} variant="outline" onPress={() => setEditing(false)} />
             </View>
           </View>
         </ScrollView>
@@ -180,11 +181,11 @@ export function OutfitDetailScreen({ route, navigation }: Props) {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-white dark:bg-surface-dark px-5 pt-4">
+    <SafeAreaView className="flex-1 px-5 pt-4">
       <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
-        <Text className="text-2xl font-bold text-surface-dark dark:text-white mb-1">
+        <Heading className="text-2xl mb-1">
           {format(new Date(`${outfit.outfit_date}T00:00:00`), "dd MMMM yyyy")}
-        </Text>
+        </Heading>
 
         {outfit.photo_path ? (
           photoUrl ? (
@@ -229,7 +230,7 @@ export function OutfitDetailScreen({ route, navigation }: Props) {
 
         <View className="flex-row gap-4 mt-6 justify-center">
           <Pressable onPress={startEditing}>
-            <Text className="text-sm text-brand-500 font-semibold">{t("common.edit")}</Text>
+            <Text className="text-sm text-ink font-semibold">{t("common.edit")}</Text>
           </Pressable>
           <Pressable onPress={handleDelete} disabled={deleteOutfit.isPending}>
             <Text className="text-sm text-accent-coral font-semibold">

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Switch, Text, View } from "react-native";
+import { Heading } from "@/components/ui/Heading";
 import { TextField } from "@/components/ui/TextField";
 import { Chip } from "@/components/ui/Chip";
 import { Button } from "@/components/ui/Button";
@@ -44,9 +45,9 @@ export function GastoDetalladoScreen({ navigation }: Props) {
 
   return (
     <FormScreen>
-        <Text className="text-2xl font-bold text-surface-dark dark:text-white mb-4">
+        <Heading className="text-2xl mb-4">
           {t("gastos.bigTitle")}
-        </Text>
+        </Heading>
         <TextField label={t("gastos.whatBought")} value={item} onChangeText={setItem} />
         <TextField label={t("gastos.purpose")} value={purpose} onChangeText={setPurpose} />
         <TextField label={t("gastos.amount")} keyboardType="numeric" value={amount} onChangeText={setAmount} />

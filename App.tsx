@@ -9,7 +9,7 @@ import {
   RethinkSans_600SemiBold,
   RethinkSans_700Bold,
 } from "@expo-google-fonts/rethink-sans";
-import { Parisienne_400Regular } from "@expo-google-fonts/parisienne";
+import { ProtestStrike_400Regular } from "@expo-google-fonts/protest-strike";
 import { queryClient } from "@/lib/queryClient";
 import { AuthProvider } from "@/features/auth/hooks/useAuth";
 import { RootNavigator } from "@/navigation/RootNavigator";
@@ -35,7 +35,7 @@ export default function App() {
     RethinkSans_400Regular,
     RethinkSans_600SemiBold,
     RethinkSans_700Bold,
-    Parisienne_400Regular,
+    ProtestStrike_400Regular,
   });
 
   useEffect(() => {

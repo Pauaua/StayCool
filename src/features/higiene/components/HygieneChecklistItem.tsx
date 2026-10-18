@@ -47,10 +47,10 @@ export function HygieneChecklistItem({
         <Pressable
           onPress={onToggle}
           className={`w-5 h-5 rounded-full items-center justify-center border-2 ${
-            completed ? "bg-brand-500 border-brand-500" : "border-gray-300 dark:border-gray-600"
+            completed ? "bg-morado border-ink" : "border-gray-300 dark:border-gray-600"
           }`}
         >
-          {completed ? <Text className="text-white text-xs">✓</Text> : null}
+          {completed ? <Text className="text-ink text-xs">✓</Text> : null}
         </Pressable>
         <Pressable onPress={onRemove} hitSlop={8}>
           <Text className="text-gray-400 text-xs">✕</Text>

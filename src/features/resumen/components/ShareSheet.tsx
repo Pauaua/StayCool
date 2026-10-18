@@ -63,7 +63,7 @@ export function ShareSheet({ visible, onClose, onSelect, onMoreOptions, pendingN
           </View>
 
           <Pressable onPress={onMoreOptions} className="mt-6 items-center py-3 border-t border-gray-100 dark:border-gray-700">
-            <Text className="text-brand-500 font-semibold">Más opciones</Text>
+            <Text className="text-ink font-semibold">Más opciones</Text>
           </Pressable>
         </Pressable>
       </Pressable>

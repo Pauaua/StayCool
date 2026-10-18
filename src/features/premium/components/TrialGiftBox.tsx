@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Alert, Animated, Dimensions, Easing, Image, Modal, Pressable, StyleSheet, Text, View } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
+import { colors } from "@/theme";
 import { useClaimTrial, useProfile } from "@/features/home/hooks/useProfile";
 import { useT } from "@/lib/i18n";
 import { REMINDER_IDS, scheduleOneTimeReminder } from "@/notifications/notifications";
 
 // Prueba gratuita de 3 días del plan Full, ofrecida como una caja de
-// regalo brillante en el panel principal. Se muestra mientras el usuario
+// regalo (ilustración RegaloCerrado → RegaloAbierto al tocarla) en el panel
+// principal. Se muestra mientras el usuario
 // no la haya reclamado todavía (profile.trial_claimed_at == null),
 // pagando o no — si ya es full de verdad no le hace ningún daño de todos
 // modos. Todo el trabajo de "que no se pueda reclamar dos veces" vive en
@@ -75,15 +76,26 @@ function SparkleRain() {
   );
 }
 
-// `size` es el diámetro del círculo con brillo (260 = tamaño completo). El
-// contenedor lo achica cuando la pantalla es baja, para que el regalo y su
-// mensaje siempre quepan sin quedar tapados por los botones.
-export function TrialGiftBox({ size = 260 }: { size?: number }) {
+// `size` es el lado del regalo (260 = tamaño completo). El contenedor lo
+// achica cuando la pantalla es baja, para que el regalo y su mensaje siempre
+// quepan sin quedar tapados por los botones. `onVisibleChange` avisa cuándo
+// el regalo aparece o desaparece, para que el contenedor reparta el espacio.
+export function TrialGiftBox({
+  size = 260,
+  onVisibleChange,
+}: {
+  size?: number;
+  onVisibleChange?: (visible: boolean) => void;
+}) {
   const k = size / 260;
   const { data: profile } = useProfile();
   const claimTrial = useClaimTrial();
   const { t } = useT();
   const [successVisible, setSuccessVisible] = useState(false);
+  // Al tocar el regalo pasa a la ilustración abierta y queda así hasta cerrar
+  // el modal (aunque claim_trial() ya haya marcado trial_claimed_at).
+  const [opened, setOpened] = useState(false);
+  const openPop = useRef(new Animated.Value(1)).current;
 
   const pulse = useRef(new Animated.Value(0)).current;
   const sparkleSpin = useRef(new Animated.Value(0)).current;
@@ -107,13 +119,24 @@ export function TrialGiftBox({ size = 260 }: { size?: number }) {
   }, [pulse, sparkleSpin]);
 
   const scale = pulse.interpolate({ inputRange: [0, 1], outputRange: [1, 1.06] });
-  const glowOpacity = pulse.interpolate({ inputRange: [0, 1], outputRange: [0.4, 0.85] });
   const rotate = sparkleSpin.interpolate({ inputRange: [0, 1], outputRange: ["0deg", "360deg"] });
 
-  const showBox = !!profile && !profile.trial_claimed_at;
+  const showBox = opened || (!!profile && !profile.trial_claimed_at);
+
+  useEffect(() => {
+    onVisibleChange?.(showBox);
+  }, [showBox, onVisibleChange]);
+
+  function closeSuccess() {
+    setSuccessVisible(false);
+    setOpened(false);
+  }
 
   async function handlePress() {
-    if (claimTrial.isPending) return;
+    if (claimTrial.isPending || opened) return;
+    setOpened(true);
+    openPop.setValue(0.85);
+    Animated.spring(openPop, { toValue: 1, friction: 4, tension: 160, useNativeDriver: true }).start();
     try {
       const endsAt = await claimTrial.mutateAsync();
       // Aviso local justo cuando vence la prueba, para que sepa que volvió
@@ -126,6 +149,7 @@ export function TrialGiftBox({ size = 260 }: { size?: number }) {
       );
       setSuccessVisible(true);
     } catch (error) {
+      setOpened(false);
       Alert.alert(t("trial.errorTitle"), error instanceof Error ? error.message : "Intenta de nuevo.");
     }
   }
@@ -136,25 +160,13 @@ export function TrialGiftBox({ size = 260 }: { size?: number }) {
         <View className="items-center">
           <Pressable onPress={handlePress} disabled={claimTrial.isPending} hitSlop={12}>
             <View style={{ width: size, height: size, alignItems: "center", justifyContent: "center" }}>
-              <Animated.View
-                style={{
-                  position: "absolute",
-                  width: size,
-                  height: size,
-                  borderRadius: size / 2,
-                  backgroundColor: "#ffffff",
-                  opacity: glowOpacity,
-                  transform: [{ scale }],
-                }}
-              />
-
               {/* Decoración: un par de brillitos girando alrededor del círculo. */}
               <Animated.View
                 style={{ position: "absolute", width: 30 * k, height: 30 * k, top: 6 * k, left: 10 * k, transform: [{ rotate }] }}
               >
                 <Image
                   source={require("../../../../assets/images/brillitos.png")}
-                  style={{ width: 30 * k, height: 30 * k, tintColor: "#ffffff" }}
+                  style={{ width: 30 * k, height: 30 * k, tintColor: colors.ink }}
                   resizeMode="contain"
                 />
               </Animated.View>
@@ -163,77 +175,67 @@ export function TrialGiftBox({ size = 260 }: { size?: number }) {
               >
                 <Image
                   source={require("../../../../assets/images/brillitos.png")}
-                  style={{ width: 22 * k, height: 22 * k, tintColor: "#ffffff" }}
+                  style={{ width: 22 * k, height: 22 * k, tintColor: colors.ink }}
                   resizeMode="contain"
                 />
               </Animated.View>
 
-              <Animated.View style={{ transform: [{ scale }] }}>
-                <LinearGradient
-                  colors={["#ffffff", "#d9ebff", "#a9d8ff"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={{
-                    width: 216 * k,
-                    height: 216 * k,
-                    borderRadius: 108 * k,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderWidth: 4,
-                    borderColor: "#ffffff",
-                  }}
-                >
-                  <Text style={{ fontSize: 96 * k }}>🎁</Text>
-                </LinearGradient>
+              <Animated.View style={{ transform: [{ scale: opened ? openPop : scale }] }}>
+                <Image
+                  source={
+                    opened
+                      ? require("../../../../assets/images/RegaloAbierto.png")
+                      : require("../../../../assets/images/RegaloCerrado.png")
+                  }
+                  style={{ width: 216 * k, height: 216 * k }}
+                  resizeMode="contain"
+                />
               </Animated.View>
             </View>
           </Pressable>
-          <Text className="mt-2 text-base font-semibold" style={{ color: "#002054" }}>
+          <Text className="mt-2 text-base font-semibold" style={{ color: colors.ink }}>
             {t("trial.giftLabel")}
           </Text>
         </View>
       ) : null}
 
-      <Modal visible={successVisible} transparent animationType="fade" onRequestClose={() => setSuccessVisible(false)}>
+      <Modal visible={successVisible} transparent animationType="fade" onRequestClose={closeSuccess}>
         <View className="flex-1 items-center justify-center bg-black/50 px-8">
           {successVisible ? <SparkleRain /> : null}
 
-          <LinearGradient
-            colors={["#d9ebff", "#ecc6ff", "#ebfff7"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={{ borderRadius: 24, padding: 24, width: "100%", alignItems: "center" }}
-          >
+          <View
+          style={{ borderRadius: 24, padding: 24, width: "100%", alignItems: "center", backgroundColor: colors.rosado }}
+        >
             <Pressable
-              onPress={() => setSuccessVisible(false)}
+              onPress={closeSuccess}
               hitSlop={12}
               style={{ position: "absolute", top: 14, right: 14, zIndex: 1 }}
             >
-              <Text style={{ fontSize: 20, color: "#002054" }}>✕</Text>
+              <Text style={{ fontSize: 20, color: colors.ink }}>✕</Text>
             </Pressable>
 
             <Image
-              source={require("../../../../assets/images/Logo.jpg")}
+              source={require("../../../../assets/images/Logo.png")}
               style={{ width: 72, height: 72, borderRadius: 16, marginBottom: 12 }}
               resizeMode="contain"
             />
 
-            <Text className="text-lg font-bold text-center mb-6" style={{ color: "#002054" }}>
+            <Text className="text-lg font-bold text-center mb-6" style={{ color: colors.ink }}>
               {t("trial.successMessage")}
             </Text>
 
             <Pressable
-              onPress={() => setSuccessVisible(false)}
+              onPress={closeSuccess}
               className="rounded-full px-8 py-3"
-              style={{ backgroundColor: "#002054" }}
+              style={{ backgroundColor: colors.white, borderWidth: 1, borderColor: colors.ink }}
             >
-              <Text className="font-semibold text-white">{t("trial.goHomeButton")}</Text>
+              <Text className="font-semibold text-ink">{t("trial.goHomeButton")}</Text>
             </Pressable>
 
-            <Text className="text-xs text-center mt-4" style={{ color: "#002054", opacity: 0.7 }}>
+            <Text className="text-xs text-center mt-4" style={{ color: colors.ink, opacity: 0.7 }}>
               {t("trial.disclaimer")}
             </Text>
-          </LinearGradient>
+          </View>
         </View>
       </Modal>
     </>

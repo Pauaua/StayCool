@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { ActivityIndicator, Alert, Pressable, SafeAreaView, ScrollView, Switch, Text, View } from "react-native";
+import { Heading } from "@/components/ui/Heading";
 import { TextField } from "@/components/ui/TextField";
 import { Chip } from "@/components/ui/Chip";
 import { Button } from "@/components/ui/Button";
@@ -72,7 +73,7 @@ function QuickDetail({
 
   if (isLoading || !expense) {
     return (
-      <SafeAreaView className="flex-1 bg-white dark:bg-surface-dark items-center justify-center">
+      <SafeAreaView className="flex-1 items-center justify-center">
         <ActivityIndicator color="#b825f2" />
       </SafeAreaView>
     );
@@ -110,11 +111,11 @@ function QuickDetail({
 
   if (editing) {
     return (
-      <SafeAreaView className="flex-1 bg-white dark:bg-surface-dark px-5 pt-4">
+      <SafeAreaView className="flex-1 px-5 pt-4">
         <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
-          <Text className="text-2xl font-bold text-surface-dark dark:text-white mb-4">
+          <Heading className="text-2xl mb-4">
             {t("gastos.editExpense")}
-          </Text>
+          </Heading>
           <TextField label={t("gastos.expenseName")} value={name} onChangeText={setName} />
           <Text className="text-sm font-semibold text-surface-dark dark:text-white mb-2">{t("gastos.type")}</Text>
           <View className="flex-row flex-wrap mb-4">
@@ -129,7 +130,7 @@ function QuickDetail({
               <Button label={t("gastos.saveChanges")} onPress={handleSaveEdit} loading={updateExpense.isPending} />
             </View>
             <View className="flex-1">
-              <Button label={t("gastos.cancel")} variant="ghost" onPress={() => setEditing(false)} />
+              <Button label={t("gastos.cancel")} variant="outline" onPress={() => setEditing(false)} />
             </View>
           </View>
         </ScrollView>
@@ -138,9 +139,9 @@ function QuickDetail({
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-white dark:bg-surface-dark px-5 pt-4">
+    <SafeAreaView className="flex-1 px-5 pt-4">
       <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
-        <Text className="text-2xl font-bold text-surface-dark dark:text-white mb-4">{expense.name}</Text>
+        <Heading className="text-2xl mb-4">{expense.name}</Heading>
         <Row label={t("gastos.type")} value={t(EXPENSE_TYPE_KEY[expense.expense_type] ?? "gastos.type.otro")} />
         <Row label={t("gastos.date")} value={expense.expense_date} />
         <Row label={t("gastos.amount")} value={expense.amount ? `$${expense.amount}` : "—"} />
@@ -152,7 +153,7 @@ function QuickDetail({
         ) : null}
         <View className="flex-row gap-4 mt-6 justify-center">
           <Pressable onPress={startEditing}>
-            <Text className="text-sm text-brand-500 font-semibold">{t("gastos.edit")}</Text>
+            <Text className="text-sm text-ink font-semibold">{t("gastos.edit")}</Text>
           </Pressable>
           <Pressable onPress={handleDelete} disabled={deleteExpense.isPending}>
             <Text className="text-sm text-accent-coral text-center">
@@ -185,7 +186,7 @@ function DetailedDetail({
 
   if (isLoading || !expense) {
     return (
-      <SafeAreaView className="flex-1 bg-white dark:bg-surface-dark items-center justify-center">
+      <SafeAreaView className="flex-1 items-center justify-center">
         <ActivityIndicator color="#b825f2" />
       </SafeAreaView>
     );
@@ -225,11 +226,11 @@ function DetailedDetail({
 
   if (editing) {
     return (
-      <SafeAreaView className="flex-1 bg-white dark:bg-surface-dark px-5 pt-4">
+      <SafeAreaView className="flex-1 px-5 pt-4">
         <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
-          <Text className="text-2xl font-bold text-surface-dark dark:text-white mb-4">
+          <Heading className="text-2xl mb-4">
             {t("gastos.editExpense")}
-          </Text>
+          </Heading>
           <TextField label={t("gastos.whatBought")} value={item} onChangeText={setItem} />
           <TextField label={t("gastos.purpose")} value={purpose} onChangeText={setPurpose} />
           <TextField label={t("gastos.amount")} keyboardType="numeric" value={amount} onChangeText={setAmount} />
@@ -250,7 +251,7 @@ function DetailedDetail({
               <Button label={t("gastos.saveChanges")} onPress={handleSaveEdit} loading={updateExpense.isPending} />
             </View>
             <View className="flex-1">
-              <Button label={t("gastos.cancel")} variant="ghost" onPress={() => setEditing(false)} />
+              <Button label={t("gastos.cancel")} variant="outline" onPress={() => setEditing(false)} />
             </View>
           </View>
         </ScrollView>
@@ -259,11 +260,11 @@ function DetailedDetail({
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-white dark:bg-surface-dark px-5 pt-4">
+    <SafeAreaView className="flex-1 px-5 pt-4">
       <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
-        <Text className="text-2xl font-bold text-surface-dark dark:text-white mb-4">
+        <Heading className="text-2xl mb-4">
           {expense.item_purchased}
-        </Text>
+        </Heading>
         <Row label={t("gastos.date")} value={expense.expense_date} />
         <Row label={t("gastos.amount")} value={`$${expense.amount}`} />
         <Row label={t("gastos.expenseKind")} value={t(EXPENSE_KIND_KEY[expense.expense_kind] ?? "gastos.kind.extra")} />
@@ -279,7 +280,7 @@ function DetailedDetail({
         ) : null}
         <View className="flex-row gap-4 mt-6 justify-center">
           <Pressable onPress={startEditing}>
-            <Text className="text-sm text-brand-500 font-semibold">{t("gastos.edit")}</Text>
+            <Text className="text-sm text-ink font-semibold">{t("gastos.edit")}</Text>
           </Pressable>
           <Pressable onPress={handleDelete} disabled={deleteExpense.isPending}>
             <Text className="text-sm text-accent-coral text-center">

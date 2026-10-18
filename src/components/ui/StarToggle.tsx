@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { Animated, Easing, Pressable, useColorScheme } from "react-native";
+import { colors } from "@/theme";
 
 interface StarToggleProps {
   value: boolean;
@@ -32,7 +33,7 @@ export function StarToggle({ value, onValueChange }: StarToggleProps) {
 
   const backgroundColor = anim.interpolate({
     inputRange: [0, 1],
-    outputRange: [scheme === "dark" ? "#374151" : "#e5e7eb", "#ecc6ff"],
+    outputRange: [scheme === "dark" ? "#374151" : "#e5e7eb", colors.rosado],
   });
   const translateX = anim.interpolate({ inputRange: [0, 1], outputRange: [0, TRAVEL] });
   const rotate = anim.interpolate({ inputRange: [0, 1], outputRange: ["0deg", "360deg"] });

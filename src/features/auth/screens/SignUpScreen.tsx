@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import { Image, SafeAreaView, Text, View, Alert } from "react-native";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
-import { GradientBackground } from "@/components/ui/GradientBackground";
+import { sectionColors } from "@/theme";
+import { ScreenBackground } from "@/components/ui/ScreenBackground";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { AuthStackParamList } from "@/navigation/types";
+import { Heading } from "@/components/ui/Heading";
 
 type Props = NativeStackScreenProps<AuthStackParamList, "SignUp">;
 
@@ -35,18 +37,18 @@ export function SignUpScreen({ navigation }: Props) {
   }
 
   return (
-    <GradientBackground>
+    <ScreenBackground color={sectionColors.Auth}>
       <SafeAreaView className="flex-1 px-6 justify-center pt-8">
         <View className="items-center mb-2">
           <Image
-            source={require("../../../../assets/images/Logo.jpg")}
+            source={require("../../../../assets/images/Logo.png")}
             style={{ width: 64, height: 64 }}
             resizeMode="contain"
           />
         </View>
-        <Text className="font-script text-navy mb-8" style={{ fontSize: 40 }}>
+        <Heading className="mb-8" style={{ fontSize: 30 }}>
           Crea tu cuenta
-        </Text>
+        </Heading>
         <TextField label="Nombre Social" value={displayName} onChangeText={setDisplayName} />
         <TextField
           label="Email"
@@ -72,10 +74,10 @@ export function SignUpScreen({ navigation }: Props) {
         <View className="h-3" />
         <Button
           label="Ya tengo cuenta"
-          variant="ghost"
+          variant="outline"
           onPress={() => navigation.navigate("SignIn")}
         />
       </SafeAreaView>
-    </GradientBackground>
+    </ScreenBackground>
   );
 }

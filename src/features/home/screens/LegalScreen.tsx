@@ -7,7 +7,7 @@ import { LEGAL_CONTENT } from "@/features/home/data/legalContent";
 // (contenido provisto por el responsable de la app, ver legalContent.ts).
 export function LegalScreen() {
   return (
-    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-surface-dark">
+    <SafeAreaView className="flex-1">
       <ScrollView className="px-5 pt-4" contentContainerStyle={{ paddingBottom: 40 }}>
         <MarkdownLite content={LEGAL_CONTENT} />
       </ScrollView>

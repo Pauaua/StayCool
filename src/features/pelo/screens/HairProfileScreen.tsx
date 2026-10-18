@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { SafeAreaView, ScrollView, Switch, Text, View } from "react-native";
+import { Heading } from "@/components/ui/Heading";
 import { Card } from "@/components/ui/Card";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
@@ -37,11 +38,11 @@ export function HairProfileScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-surface-dark px-5 pt-4">
+    <SafeAreaView className="flex-1 px-5 pt-4">
       <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
-        <Text className="text-2xl font-bold text-surface-dark dark:text-white mb-4">
+        <Heading className="text-2xl mb-4">
           {t("pelo.profileTitle")}
-        </Text>
+        </Heading>
 
         <Card className="mb-4">
           <TextField

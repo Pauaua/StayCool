@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { SafeAreaView, ScrollView, Text, View } from "react-native";
+import { Heading } from "@/components/ui/Heading";
 import { TextField } from "@/components/ui/TextField";
 import { Chip } from "@/components/ui/Chip";
 import { Button } from "@/components/ui/Button";
@@ -32,9 +33,9 @@ export function NotaRapidaScreen({ navigation }: Props) {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-white dark:bg-surface-dark px-5 pt-4">
+    <SafeAreaView className="flex-1 px-5 pt-4">
       <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
-        <Text className="text-2xl font-bold text-surface-dark dark:text-white mb-4">{t("notas.quickTitle")}</Text>
+        <Heading className="text-2xl mb-4">{t("notas.quickTitle")}</Heading>
         <TextField label={t("notas.name")} value={name} onChangeText={setName} />
         <TextField label={t("notas.description")} value={description} onChangeText={setDescription} multiline />
 

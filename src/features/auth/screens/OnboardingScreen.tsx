@@ -1,11 +1,13 @@
 import React from "react";
 import { Image, SafeAreaView, Text, View, useWindowDimensions } from "react-native";
 import { Button } from "@/components/ui/Button";
-import { GradientBackground } from "@/components/ui/GradientBackground";
+import { sectionColors } from "@/theme";
+import { ScreenBackground } from "@/components/ui/ScreenBackground";
 import { Reveal } from "@/components/ui/Reveal";
 import { Floating } from "@/components/ui/Floating";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { AuthStackParamList } from "@/navigation/types";
+import { Heading } from "@/components/ui/Heading";
 
 type Props = NativeStackScreenProps<AuthStackParamList, "Onboarding">;
 
@@ -17,20 +19,20 @@ export function OnboardingScreen({ navigation }: Props) {
   const heroWidth = width - 48;
 
   return (
-    <GradientBackground>
+    <ScreenBackground color={sectionColors.Auth}>
       <SafeAreaView className="flex-1 px-6 py-12">
         <Reveal className="mt-16" offset={-16} duration={500}>
           <View className="flex-row items-center mb-3">
-            <Text className="font-script text-navy" style={{ fontSize: 48 }}>
+            <Heading style={{ fontSize: 36 }}>
               Agenda Cool
-            </Text>
+            </Heading>
             <Image
               source={require("../../../../assets/images/brillitos.png")}
               style={{ width: 32, height: 32, marginLeft: 8 }}
               resizeMode="contain"
             />
           </View>
-          <Text className="text-navy/80" style={{ fontSize: 14 }}>
+          <Text className="text-ink/80" style={{ fontSize: 14 }}>
             Tu bienestar, imagen, vida social y gastos, en un solo lugar. Rápido, simple y bonito.
           </Text>
         </Reveal>
@@ -38,7 +40,7 @@ export function OnboardingScreen({ navigation }: Props) {
         <Reveal className="flex-1 items-center justify-start" delay={150} offset={30} duration={600}>
           <Floating>
             <Image
-              source={require("../../../../assets/images/imagen_home.png")}
+              source={require("../../../../assets/images/ImagenInicial.png")}
               style={{ width: heroWidth, height: 420 }}
               resizeMode="contain"
             />
@@ -50,11 +52,11 @@ export function OnboardingScreen({ navigation }: Props) {
           <View className="h-3" />
           <Button
             label="Ya tengo cuenta"
-            variant="ghost"
+            variant="outline"
             onPress={() => navigation.navigate("SignIn")}
           />
         </Reveal>
       </SafeAreaView>
-    </GradientBackground>
+    </ScreenBackground>
   );
 }

@@ -63,7 +63,7 @@ export function MarkdownLite({ content }: { content: string }) {
     if (line.startsWith("## ")) {
       flushParagraph(key);
       blocks.push(
-        <Text key={key} className="text-lg font-bold text-brand-500 mt-4 mb-2">
+        <Text key={key} className="text-lg font-bold text-ink mt-4 mb-2">
           {line.slice(3)}
         </Text>
       );

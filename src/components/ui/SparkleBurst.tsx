@@ -1,12 +1,13 @@
 import React, { useEffect, useMemo, useRef } from "react";
 import { Animated, Dimensions, Easing, Image, StyleSheet } from "react-native";
+import { colors } from "@/theme";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const SPARKLE_COUNT = 64;
 const DURATION = 1100;
 // Más colores con contraste (navy y el morado de la marca) para que los
 // brillitos se lean bien sobre el degradado pastel; el blanco solo acompaña.
-const TINTS = ["#002054", "#b825f2", "#ffffff", "#ecc6ff", "#002054", "#fef1ba", "#b825f2", "#ffffff"];
+const TINTS = [colors.ink, "#b825f2", "#ffffff", colors.rosado, colors.ink, colors.amarillo, "#b825f2", "#ffffff"];
 // Distancia suficiente para que los brillitos más lejanos crucen toda la pantalla.
 const MAX_DISTANCE = Math.hypot(SCREEN_WIDTH, SCREEN_HEIGHT);
 

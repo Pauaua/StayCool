@@ -10,11 +10,11 @@ import {
   Text,
   View,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 import { PressableScale } from "@/components/ui/PressableScale";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useT } from "@/lib/i18n";
+import { colors } from "@/theme";
 
 export interface RailItem {
   key: string;
@@ -72,17 +72,11 @@ function RailIcon({ item, active }: { item: RailItem; active: boolean }) {
           width: ICON_SIZE,
           height: ICON_SIZE,
           borderRadius: ICON_SIZE / 2,
-          ...(item.premium ? { borderWidth: 2, borderColor: "#D4AF37" } : { borderWidth: 1 }),
+          borderWidth: item.premium ? 2 : 1.5,
+          borderColor: item.premium ? colors.gold : colors.ink,
+          backgroundColor: active ? colors.amarillo : colors.white,
         }}
-        className={`items-center justify-center ${
-          item.premium
-            ? active
-              ? "bg-pastel-purple"
-              : "bg-white/70"
-            : active
-            ? "bg-pastel-purple border-pastel-purple"
-            : "bg-white/70 border-white"
-        }`}
+        className="items-center justify-center"
       >
         {item.icon ? (
           <Image source={item.icon} style={{ width: 34, height: 34 }} resizeMode="contain" />
@@ -99,7 +93,7 @@ function RailIcon({ item, active }: { item: RailItem; active: boolean }) {
             right: -5,
             width: 16,
             height: 16,
-            tintColor: "#002054",
+            tintColor: colors.ink,
             opacity: twinkle,
             transform: [{ scale: badgeScale }, { rotate: badgeRotate }],
           }}
@@ -113,8 +107,8 @@ function RailIcon({ item, active }: { item: RailItem; active: boolean }) {
 // Rail lateral fijo con todos los módulos. En mobile no existe "hover", así
 // que en vez de expandirse al pasar el mouse, se expande/colapsa con un tap
 // en el botón de arriba y queda así hasta que el usuario lo vuelva a tocar.
-// El fondo degradado pastel + íconos circulares siguen la estética de
-// referencia (assets/estilo/modelo.jpeg).
+// Fondo morado sólido + íconos en círculos blancos con borde, según el manual
+// de marca; el módulo activo se rellena de amarillo.
 export function SideRail({
   items,
   activeKey,
@@ -149,26 +143,24 @@ export function SideRail({
 
   return (
     <Animated.View style={{ width: widthAnim }}>
-      <LinearGradient
-        colors={["#fef1ba", "#ecc6ff", "#ebfff7", "#d9ebff"]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
+      <View
         style={{
           flex: 1,
+          backgroundColor: colors.morado,
           paddingTop: insets.top + 8,
           paddingBottom: insets.bottom + 8,
         }}
       >
         <View className="items-center mb-2">
           <Image
-            source={require("../../assets/images/Logo.jpg")}
+            source={require("../../assets/images/Logo.png")}
             style={{ width: expanded ? 56 : 36, height: expanded ? 56 : 36 }}
             resizeMode="contain"
           />
         </View>
 
         <Pressable onPress={toggle} className="items-center py-2 mb-3" hitSlop={8}>
-          <Text className="text-navy text-lg">{expanded ? "◀" : "☰"}</Text>
+          <Text className="text-ink text-lg">{expanded ? "◀" : "☰"}</Text>
         </Pressable>
 
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -186,7 +178,7 @@ export function SideRail({
                 {expanded ? (
                   <Text
                     numberOfLines={1}
-                    className={`ml-3 font-semibold ${active ? "text-navy" : "text-navy/70"}`}
+                    className={`ml-3 font-semibold ${active ? "text-ink" : "text-ink/80"}`}
                   >
                     {item.label}
                   </Text>
@@ -201,8 +193,15 @@ export function SideRail({
           className="flex-row items-center px-2.5 py-1.5 mx-2 mt-2"
         >
           <View
-            style={{ width: ICON_SIZE, height: ICON_SIZE, borderRadius: ICON_SIZE / 2 }}
-            className="items-center justify-center border bg-white/70 border-white"
+            style={{
+              width: ICON_SIZE,
+              height: ICON_SIZE,
+              borderRadius: ICON_SIZE / 2,
+              borderWidth: 1.5,
+              borderColor: colors.ink,
+              backgroundColor: colors.white,
+            }}
+            className="items-center justify-center"
           >
             <Image
               source={require("../../assets/images/log out.png")}
@@ -211,12 +210,12 @@ export function SideRail({
             />
           </View>
           {expanded ? (
-            <Text numberOfLines={1} className="ml-3 font-semibold text-navy/70">
+            <Text numberOfLines={1} className="ml-3 font-semibold text-ink/80">
               {t("common.signOut")}
             </Text>
           ) : null}
         </Pressable>
-      </LinearGradient>
+      </View>
     </Animated.View>
   );
 }

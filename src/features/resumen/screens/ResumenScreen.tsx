@@ -1,5 +1,7 @@
 import React, { useRef, useState } from "react";
 import { ActivityIndicator, Alert, Image, Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
+import { colors } from "@/theme";
+import { Heading } from "@/components/ui/Heading";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { PremiumGate } from "@/features/premium/components/PremiumGate";
@@ -44,19 +46,19 @@ export function ResumenScreen() {
   useHideRailWhileMounted();
 
   return (
-    <SafeAreaView className="flex-1" style={{ backgroundColor: "#faf3ff" }}>
+    <SafeAreaView className="flex-1">
       <FallingCircles />
       <ScrollView className="px-5 pt-4" contentContainerStyle={{ paddingBottom: 60 }}>
         <Pressable onPress={goToWelcome} className="flex-row items-center mb-3" hitSlop={8}>
-          <Text className="text-xl text-brand-500">‹</Text>
-          <Text className="text-sm text-brand-500 ml-1">Panel inicial</Text>
+          <Text className="text-xl text-ink">‹</Text>
+          <Text className="text-sm text-ink ml-1">Panel inicial</Text>
         </Pressable>
 
         <View className="flex-row items-center mb-1">
           <View
-            style={{ width: 8, height: 24, borderRadius: 4, backgroundColor: "#ecc6ff", marginRight: 8 }}
+            style={{ width: 8, height: 24, borderRadius: 4, backgroundColor: colors.morado, marginRight: 8 }}
           />
-          <Text className="text-2xl font-bold text-surface-dark dark:text-white">Mi Resumen</Text>
+          <Heading className="text-2xl">Mi Resumen</Heading>
         </View>
         <Text className="text-sm text-gray-500 mb-4">Todo lo que registraste, en una vista.</Text>
         <PremiumGate minTier="basico">
@@ -189,7 +191,7 @@ function ResumenContent() {
           <Pressable
             key={tab.id}
             onPress={() => (canViewPeriod(tab.id) ? setPeriod(tab.id) : showPeriodLockedMessage())}
-            style={period === tab.id ? { backgroundColor: "#ecc6ff" } : undefined}
+            style={period === tab.id ? { backgroundColor: colors.rosado } : undefined}
             className="flex-1 py-2 rounded-card items-center"
           >
             <View className="flex-row items-center">
@@ -204,7 +206,7 @@ function ResumenContent() {
                 className={
                   period === tab.id ? "font-bold" : "text-gray-500 dark:text-gray-400"
                 }
-                style={period === tab.id ? { color: "#002054" } : undefined}
+                style={period === tab.id ? { color: colors.ink } : undefined}
               >
                 {tab.label}
               </Text>
@@ -215,7 +217,7 @@ function ResumenContent() {
 
       {isLoading ? (
         <View className="items-center py-16">
-          <ActivityIndicator color="#002054" size="large" />
+          <ActivityIndicator color={colors.ink} size="large" />
         </View>
       ) : isError || !data ? (
         <Card className="items-center py-8">
@@ -271,7 +273,7 @@ function ResumenContent() {
                 : undefined
             }
           >
-            <Card style={{ borderLeftWidth: 4, borderLeftColor: "#ecc6ff" }}>
+            <Card style={{ borderLeftWidth: 4, borderLeftColor: colors.morado }}>
               <Text className="text-surface-dark dark:text-white">
                 <Text className="font-bold">Bienestar: </Text>
                 Comiste {data.bienestar.mealsCount}{" "}
@@ -282,7 +284,7 @@ function ResumenContent() {
               </Text>
             </Card>
 
-            <Card style={{ borderLeftWidth: 4, borderLeftColor: "#ecc6ff" }}>
+            <Card style={{ borderLeftWidth: 4, borderLeftColor: colors.morado }}>
               <Text className="text-surface-dark dark:text-white">
                 <Text className="font-bold">Higiene: </Text>
                 Cumpliste el {data.higiene.completionPercent}% de tu checklist
@@ -295,7 +297,7 @@ function ResumenContent() {
               </Text>
             </Card>
 
-            <Card style={{ borderLeftWidth: 4, borderLeftColor: "#ecc6ff" }}>
+            <Card style={{ borderLeftWidth: 4, borderLeftColor: colors.morado }}>
               <Text className="text-surface-dark dark:text-white">
                 <Text className="font-bold">Pelo: </Text>
                 Te lavaste el pelo {data.pelo.washCount}{" "}
@@ -305,7 +307,7 @@ function ResumenContent() {
               </Text>
             </Card>
 
-            <Card style={{ borderLeftWidth: 4, borderLeftColor: "#ecc6ff" }}>
+            <Card style={{ borderLeftWidth: 4, borderLeftColor: colors.morado }}>
               <Text className="text-surface-dark dark:text-white">
                 <Text className="font-bold">Cara: </Text>
                 Te maquillaste {data.cara.makeupDays}{" "}
@@ -313,7 +315,7 @@ function ResumenContent() {
               </Text>
             </Card>
 
-            <Card style={{ borderLeftWidth: 4, borderLeftColor: "#ecc6ff" }}>
+            <Card style={{ borderLeftWidth: 4, borderLeftColor: colors.morado }}>
               <Text className="text-surface-dark dark:text-white">
                 <Text className="font-bold">Imagen: </Text>
                 Registraste {data.imagen.outfitsCount}{" "}
@@ -321,7 +323,7 @@ function ResumenContent() {
               </Text>
             </Card>
 
-            <Card style={{ borderLeftWidth: 4, borderLeftColor: "#ecc6ff" }}>
+            <Card style={{ borderLeftWidth: 4, borderLeftColor: colors.morado }}>
               <Text className="text-surface-dark dark:text-white">
                 <Text className="font-bold">Actividades sociales: </Text>
                 Saliste {data.social.activitiesCount}{" "}
@@ -333,7 +335,7 @@ function ResumenContent() {
               </Text>
             </Card>
 
-            <Card style={{ borderLeftWidth: 4, borderLeftColor: "#ecc6ff" }}>
+            <Card style={{ borderLeftWidth: 4, borderLeftColor: colors.morado }}>
               <Text className="text-surface-dark dark:text-white">
                 <Text className="font-bold">Gastos: </Text>
                 Gastaste ${data.gastos.total.toLocaleString("es-AR", { maximumFractionDigits: 0 })}.
@@ -365,7 +367,7 @@ function ResumenContent() {
             <Pressable
               onPress={canShareThisPeriod ? () => setShareSheetVisible(true) : showShareLockedMessage}
               className="rounded-full px-5 py-3.5 flex-row items-center justify-center"
-              style={{ backgroundColor: "#ecc6ff" }}
+              style={{ backgroundColor: colors.rosado }}
             >
               {canShareThisPeriod ? null : (
                 <Image
@@ -374,7 +376,7 @@ function ResumenContent() {
                   resizeMode="contain"
                 />
               )}
-              <Text className="font-semibold text-base" style={{ color: "#002054" }}>
+              <Text className="font-semibold text-base" style={{ color: colors.ink }}>
                 Compartir
               </Text>
             </Pressable>
@@ -386,7 +388,7 @@ function ResumenContent() {
                   ? "Generando PDF..."
                   : "Descargar PDF"
               }
-              variant="ghost"
+              variant="outline"
               loading={canShareThisPeriod && isExportingPdf}
               onPress={canShareThisPeriod ? handleDownloadPdf : showShareLockedMessage}
               icon={!canShareThisPeriod ? require("../../../../assets/images/candado.png") : undefined}

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Text, View } from "react-native";
+import { Heading } from "@/components/ui/Heading";
 import { TextField } from "@/components/ui/TextField";
 import { Chip } from "@/components/ui/Chip";
 import { Button } from "@/components/ui/Button";
@@ -66,9 +67,9 @@ export function GustoDetalladoScreen({ navigation }: Props) {
 
   return (
     <FormScreen>
-        <Text className="text-2xl font-bold text-surface-dark dark:text-white mb-4">
+        <Heading className="text-2xl mb-4">
           {t("gustos.detailedTitle")}
-        </Text>
+        </Heading>
 
         <Text className="text-sm font-semibold text-surface-dark dark:text-white mb-2">{t("gustos.category")}</Text>
         <View className="flex-row flex-wrap mb-3">

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Alert, Image, Modal, Pressable, SafeAreaView, ScrollView, Switch, Text, View } from "react-native";
+import { colors } from "@/theme";
+import { Heading } from "@/components/ui/Heading";
 import * as ImagePicker from "expo-image-picker";
 import { Calendar, DateData } from "react-native-calendars";
 import { format } from "date-fns";
@@ -82,14 +84,14 @@ export function PeloHomeScreen({ navigation }: Props) {
   const lastWash = washItems[0];
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-surface-dark px-5 pt-4">
+    <SafeAreaView className="flex-1 px-5 pt-4">
       <View className="flex-row items-center mb-4">
         <Image
           source={require("../../../../assets/images/pelito.png")}
           style={{ width: 56, height: 56, marginRight: 8 }}
           resizeMode="contain"
         />
-        <Text className="text-2xl font-bold text-surface-dark dark:text-white">{t("pelo.title")}</Text>
+        <Heading className="text-2xl">{t("pelo.title")}</Heading>
       </View>
 
       <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
@@ -103,9 +105,9 @@ export function PeloHomeScreen({ navigation }: Props) {
         <Pressable
           onPress={() => navigation.navigate("HairProfile")}
           className="self-start rounded-full border-2 px-3 py-1.5 mb-4"
-          style={{ borderColor: "#ecc6ff" }}
+          style={{ borderColor: colors.morado }}
         >
-          <Text className="text-xs font-semibold text-brand-500">{t("pelo.addCharacteristics")}</Text>
+          <Text className="text-xs font-semibold text-ink">{t("pelo.addCharacteristics")}</Text>
         </Pressable>
 
         <Card className="mb-4">
@@ -144,13 +146,13 @@ export function PeloHomeScreen({ navigation }: Props) {
 
           <Button
             label={imageUri ? t("pelo.photoSelected") : t("pelo.addPhoto")}
-            variant="ghost"
+            variant="outline"
             onPress={pickImage}
           />
           <View className="h-2" />
           <Button
             label={t("pelo.saveHairstyle")}
-            variant="secondary"
+            variant="filled"
             onPress={() => {
               if (!hairstyle.trim()) return;
               logStyle.mutate({
@@ -199,7 +201,7 @@ export function PeloHomeScreen({ navigation }: Props) {
           </Pressable>
         ))}
         {hairstyles.hasNextPage ? (
-          <Button label={t("pelo.loadMore")} variant="ghost" onPress={() => hairstyles.fetchNextPage()} />
+          <Button label={t("pelo.loadMore")} variant="outline" onPress={() => hairstyles.fetchNextPage()} />
         ) : null}
 
         <Text className="text-sm font-semibold text-surface-dark dark:text-white mb-2 mt-4">
@@ -212,7 +214,7 @@ export function PeloHomeScreen({ navigation }: Props) {
             </Text>
             <View className="flex-row gap-4 flex-shrink-0">
               <Pressable onPress={() => openEditWash(item)}>
-                <Text className="text-xs text-brand-500 font-semibold">{t("common.edit")}</Text>
+                <Text className="text-xs text-ink font-semibold">{t("common.edit")}</Text>
               </Pressable>
               <Pressable
                 onPress={() =>
@@ -228,7 +230,7 @@ export function PeloHomeScreen({ navigation }: Props) {
           </Card>
         ))}
         {washHistory.hasNextPage ? (
-          <Button label={t("pelo.loadMore")} variant="ghost" onPress={() => washHistory.fetchNextPage()} />
+          <Button label={t("pelo.loadMore")} variant="outline" onPress={() => washHistory.fetchNextPage()} />
         ) : null}
       </ScrollView>
 
@@ -245,9 +247,9 @@ export function PeloHomeScreen({ navigation }: Props) {
             </Text>
             <Calendar
               current={editWashDate}
-              markedDates={{ [editWashDate]: { selected: true, selectedColor: "#002054" } }}
+              markedDates={{ [editWashDate]: { selected: true, selectedColor: colors.ink } }}
               onDayPress={(day: DateData) => setEditWashDate(day.dateString)}
-              theme={{ selectedDayBackgroundColor: "#002054", todayTextColor: "#002054" }}
+              theme={{ selectedDayBackgroundColor: colors.ink, todayTextColor: colors.ink }}
             />
             <View className="mt-2">
               <TextField label={t("pelo.washTime")} value={editWashTime} onChangeText={setEditWashTime} />
@@ -257,7 +259,7 @@ export function PeloHomeScreen({ navigation }: Props) {
                 <Button label={t("bienestar.saveChanges")} onPress={saveEditWash} loading={updateWash.isPending} />
               </View>
               <View className="flex-1">
-                <Button label={t("common.cancel")} variant="ghost" onPress={() => setEditingWash(null)} />
+                <Button label={t("common.cancel")} variant="outline" onPress={() => setEditingWash(null)} />
               </View>
             </View>
           </Card>

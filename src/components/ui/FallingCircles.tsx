@@ -1,11 +1,12 @@
 import React, { useEffect, useRef } from "react";
 import { Animated, Dimensions, StyleSheet } from "react-native";
+import { colors } from "@/theme";
 
 const { width, height } = Dimensions.get("window");
 const CIRCLE_COUNT = 14;
 // Paleta por defecto: predomina el moradito, mezclado con el resto de los
 // colores de la app.
-const DEFAULT_COLORS = ["#ecc6ff", "#ecc6ff", "#ecc6ff", "#d9ebff", "#fef1ba", "#ebfff7"];
+const DEFAULT_COLORS = [colors.rosado, colors.rosado, colors.rosado, colors.amarillo, colors.amarillo, colors.cian];
 
 function randomBetween(min: number, max: number) {
   return Math.random() * (max - min) + min;

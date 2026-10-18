@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Text } from "react-native";
+import { Heading } from "@/components/ui/Heading";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
 import { FormScreen } from "@/components/ui/FormScreen";
@@ -33,7 +34,7 @@ export function NotaDetalladaScreen({ navigation }: Props) {
 
   return (
     <FormScreen>
-      <Text className="text-2xl font-bold text-surface-dark dark:text-white mb-4">{t("notas.fullTitle")}</Text>
+      <Heading className="text-2xl mb-4">{t("notas.fullTitle")}</Heading>
       <TextField label={t("notas.name")} value={name} onChangeText={setName} />
       <TextField label={t("notas.whereWere")} value={location} onChangeText={setLocation} />
       <TextField label={t("notas.theIdea")} value={idea} onChangeText={setIdea} multiline />

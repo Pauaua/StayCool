@@ -6,7 +6,7 @@ import { KeyboardAvoidingView, Platform, SafeAreaView, ScrollView } from "react-
 // + padding inferior en el ScrollView).
 export function FormScreen({ children }: { children: React.ReactNode }) {
   return (
-    <SafeAreaView className="flex-1 bg-white dark:bg-surface-dark px-5 pt-4">
+    <SafeAreaView className="flex-1 px-5 pt-4">
       <KeyboardAvoidingView
         className="flex-1"
         behavior={Platform.OS === "ios" ? "padding" : undefined}

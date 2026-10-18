@@ -10,6 +10,7 @@ import {
   Text,
   View,
 } from "react-native";
+import { colors } from "@/theme";
 import {
   useCreateHygieneItem,
   useDeactivateHygieneItem,
@@ -97,7 +98,7 @@ function DayDetailModal({
         <Card className="w-full" style={{ maxHeight: "85%" }}>
           <Text className="text-lg font-bold text-surface-dark dark:text-white mb-3">{date}</Text>
           {isLoading ? (
-            <ActivityIndicator color="#002054" />
+            <ActivityIndicator color={colors.ink} />
           ) : rows.length > 0 ? (
             <ScrollView showsVerticalScrollIndicator={false} style={{ flexGrow: 0 }}>
               {rows.map((row) => (
@@ -135,7 +136,7 @@ function DayDetailModal({
             </Pressable>
           ) : null}
           <View className="mt-2">
-            <Button label={t("higiene.close")} variant="ghost" onPress={onClose} />
+            <Button label={t("higiene.close")} variant="outline" onPress={onClose} />
           </View>
         </Card>
       </View>
@@ -188,7 +189,7 @@ export function HigieneHomeScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-surface-dark px-5 pt-8">
+    <SafeAreaView className="flex-1 px-5 pt-8">
       <BackToWelcome />
       <View className="flex-row items-center mb-4">
         <Image
@@ -246,7 +247,7 @@ export function HigieneHomeScreen() {
           <View className="flex-1">
             <Button
               label={t("higiene.updateToday")}
-              variant="secondary"
+              variant="filled"
               size="sm"
               onPress={handleUpdateToday}
               loading={history.isRefetching}
@@ -262,7 +263,7 @@ export function HigieneHomeScreen() {
             <Card className="mb-1.5 py-2.5">
               <View className="flex-row justify-between">
                 <Text className="text-sm text-surface-dark dark:text-white">{item.log_date}</Text>
-                <Text className="text-sm text-brand-500 font-semibold">
+                <Text className="text-sm text-ink font-semibold">
                   {item.completedItems}/{item.totalItems}
                 </Text>
               </View>
@@ -270,7 +271,7 @@ export function HigieneHomeScreen() {
           </Pressable>
         ))}
         {history.hasNextPage ? (
-          <Button label={t("higiene.loadMore")} variant="ghost" onPress={() => history.fetchNextPage()} />
+          <Button label={t("higiene.loadMore")} variant="outline" onPress={() => history.fetchNextPage()} />
         ) : null}
       </ScrollView>
 

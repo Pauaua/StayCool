@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FlatList, Image, Pressable, SafeAreaView, Switch, Text, View } from "react-native";
+import { Heading } from "@/components/ui/Heading";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { TextField } from "@/components/ui/TextField";
@@ -64,7 +65,7 @@ function AddProductForm({
           <Button label={t("cara.save")} onPress={handleAdd} loading={create.isPending} />
         </View>
         <View className="flex-1">
-          <Button label={t("cara.cancel")} variant="ghost" onPress={onDone} />
+          <Button label={t("cara.cancel")} variant="outline" onPress={onDone} />
         </View>
       </View>
     </View>
@@ -129,7 +130,7 @@ function ProductRow({ product, category }: { product: FaceProduct; category: Fac
               <Button label={t("common.saveChanges")} onPress={handleSaveEdit} loading={update.isPending} />
             </View>
             <View className="flex-1">
-              <Button label={t("cara.cancel")} variant="ghost" onPress={() => setEditing(false)} />
+              <Button label={t("cara.cancel")} variant="outline" onPress={() => setEditing(false)} />
             </View>
           </View>
         </View>
@@ -143,7 +144,7 @@ function ProductRow({ product, category }: { product: FaceProduct; category: Fac
           </Text>
           <View className="flex-row gap-4">
             <Pressable onPress={startEditing}>
-              <Text className="text-xs text-brand-500 font-semibold">{t("common.edit")}</Text>
+              <Text className="text-xs text-ink font-semibold">{t("common.edit")}</Text>
             </Pressable>
             <Pressable onPress={() => remove.mutate(product.id)}>
               <Text className="text-xs text-accent-coral">{t("cara.deleteProduct")}</Text>
@@ -188,7 +189,7 @@ function ProductRegistry({
 
       {!adding ? (
         <View className="mt-2">
-          <Button label={addLabel} variant="secondary" onPress={() => setAdding(true)} />
+          <Button label={addLabel} variant="filled" onPress={() => setAdding(true)} />
         </View>
       ) : null}
     </View>
@@ -204,7 +205,7 @@ export function CaraSectionScreen() {
   const makeupDaysThisWeek = (week.data ?? []).filter((d) => d.wore_makeup).length;
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-surface-dark px-5 pt-4">
+    <SafeAreaView className="flex-1 px-5 pt-4">
       <FlatList
         contentContainerStyle={{ paddingBottom: 40 }}
         data={week.data ?? []}
@@ -217,9 +218,9 @@ export function CaraSectionScreen() {
                 style={{ width: 56, height: 56, marginRight: 8 }}
                 resizeMode="contain"
               />
-              <Text className="text-2xl font-bold text-pastel-purple dark:text-white">
+              <Heading className="text-2xl">
                 {t("cara.title")}
-              </Text>
+              </Heading>
             </View>
 
             <Card className="mb-4">
@@ -243,7 +244,7 @@ export function CaraSectionScreen() {
               </Text>
             </Card>
 
-            <Text className="text-xl font-bold text-pastel-purple mt-2 mb-1">
+            <Text className="text-xl font-bold text-ink mt-2 mb-1">
               {t("cara.facialCleansing")}
             </Text>
             <Text className="text-sm text-gray-500 mb-2">{t("cara.facialCleansingDesc")}</Text>
@@ -259,7 +260,7 @@ export function CaraSectionScreen() {
               addLabel={t("cara.addMakeup")}
             />
 
-            <Text className="text-lg font-semibold text-pastel-purple dark:text-white mb-2 mt-2">
+            <Text className="text-lg font-semibold text-ink dark:text-white mb-2 mt-2">
               {t("cara.weekHistory")}
             </Text>
           </>

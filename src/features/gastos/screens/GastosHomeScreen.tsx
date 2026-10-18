@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FlatList, Image, Pressable, SafeAreaView, Text, View } from "react-native";
+import { Heading } from "@/components/ui/Heading";
 import { format, startOfMonth } from "date-fns";
 import { Card } from "@/components/ui/Card";
 import { BackToWelcome } from "@/components/ui/BackToWelcome";
@@ -79,7 +80,7 @@ function BudgetCard({ totalSpent }: { totalSpent: number }) {
           <Text className="text-sm text-gray-500 mb-1">{t("gastos.availableThisMonth")}</Text>
           <Text
             className={`text-3xl font-bold ${
-              (remaining ?? 0) < 0 ? "text-accent-coral" : "text-brand-500"
+              (remaining ?? 0) < 0 ? "text-accent-coral" : "text-ink"
             }`}
             numberOfLines={1}
             adjustsFontSizeToFit
@@ -91,7 +92,7 @@ function BudgetCard({ totalSpent }: { totalSpent: number }) {
           </Text>
         </View>
         <Pressable onPress={() => setEditing(true)} className="flex-shrink-0">
-          <Text className="text-brand-500 text-sm">{t("gastos.edit")}</Text>
+          <Text className="text-ink text-sm">{t("gastos.edit")}</Text>
         </Pressable>
       </View>
     </Card>
@@ -112,7 +113,7 @@ export function GastosHomeScreen({ navigation }: Props) {
   const remainingBudget = (profile?.monthly_budget ?? 0) - (summary.data?.total ?? 0);
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-surface-dark px-5 pt-4">
+    <SafeAreaView className="flex-1 px-5 pt-4">
       <BackToWelcome />
       <View className="flex-row items-center mb-4">
         <Image
@@ -120,16 +121,16 @@ export function GastosHomeScreen({ navigation }: Props) {
           style={{ width: 56, height: 56, marginRight: 8 }}
           resizeMode="contain"
         />
-        <Text className="text-2xl font-bold text-surface-dark dark:text-white">{t("gastos.title")}</Text>
+        <Heading className="text-2xl">{t("gastos.title")}</Heading>
       </View>
 
       <BudgetCard totalSpent={summary.data?.total ?? 0} />
 
       <Card className="mb-4">
         <Text className="text-sm text-gray-500 mb-1">{t("gastos.totalSpentThisMonth")}</Text>
-        <Text className="text-2xl font-bold text-surface-dark dark:text-white">
+        <Heading className="text-2xl">
           ${summary.data ? formatMoney(summary.data.total) : "—"}
-        </Text>
+        </Heading>
         {summary.data &&
           Object.entries(summary.data.breakdown).map(([type, amount]) => (
             <View key={type} className="flex-row justify-between mt-2">
@@ -160,7 +161,7 @@ export function GastosHomeScreen({ navigation }: Props) {
         </View>
         <Button
           label={t("gastos.bigExpense")}
-          variant="secondary"
+          variant="filled"
           onPress={() => navigation.navigate("GastoDetallado")}
         />
       </View>

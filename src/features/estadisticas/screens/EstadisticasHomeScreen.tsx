@@ -1,5 +1,6 @@
 import React from "react";
 import { Image, Pressable, SafeAreaView, Text, View } from "react-native";
+import { Heading } from "@/components/ui/Heading";
 import { Card } from "@/components/ui/Card";
 import { BackToWelcome } from "@/components/ui/BackToWelcome";
 import { PremiumGate } from "@/features/premium/components/PremiumGate";
@@ -45,7 +46,7 @@ const SECTIONS: {
 export function EstadisticasHomeScreen({ navigation }: Props) {
   const { t } = useT();
   return (
-    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-surface-dark px-5 pt-4">
+    <SafeAreaView className="flex-1 px-5 pt-4">
       <BackToWelcome />
       <View className="flex-row items-center mb-4">
         <Image
@@ -53,9 +54,9 @@ export function EstadisticasHomeScreen({ navigation }: Props) {
           style={{ width: 56, height: 56, marginRight: 8 }}
           resizeMode="contain"
         />
-        <Text className="text-2xl font-bold text-surface-dark dark:text-white">
+        <Heading className="text-2xl">
           {t("estadisticas.title")}
-        </Text>
+        </Heading>
       </View>
 
       <PremiumGate minTier="full">

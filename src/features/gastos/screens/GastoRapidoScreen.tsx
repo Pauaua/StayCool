@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { SafeAreaView, ScrollView, Text, View } from "react-native";
+import { Heading } from "@/components/ui/Heading";
 import { TextField } from "@/components/ui/TextField";
 import { Chip } from "@/components/ui/Chip";
 import { Button } from "@/components/ui/Button";
@@ -40,11 +41,11 @@ export function GastoRapidoScreen({ navigation }: Props) {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-white dark:bg-surface-dark px-5 pt-4">
+    <SafeAreaView className="flex-1 px-5 pt-4">
       <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
-        <Text className="text-2xl font-bold text-surface-dark dark:text-white mb-4">
+        <Heading className="text-2xl mb-4">
           {t("gastos.quickTitle")}
-        </Text>
+        </Heading>
         <TextField label={t("gastos.expenseName")} value={name} onChangeText={setName} />
         <Text className="text-sm font-semibold text-surface-dark dark:text-white mb-2">{t("gastos.type")}</Text>
         <View className="flex-row flex-wrap mb-4">

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Alert, Image, Modal, Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
+import { colors } from "@/theme";
+import { Heading } from "@/components/ui/Heading";
 import { Calendar } from "react-native-calendars";
 import * as ImagePicker from "expo-image-picker";
 import { format } from "date-fns";
@@ -26,7 +28,7 @@ import type { HomeStackParamList } from "@/navigation/types";
 type Props = NativeStackScreenProps<HomeStackParamList, "Configuracion">;
 
 // Azul profundo predominante, mezclado con el celeste y el resto de la paleta.
-const CONFIG_CIRCLE_COLORS = ["#002054", "#002054", "#002054", "#d9ebff", "#d9ebff", "#ecc6ff", "#ebfff7"];
+const CONFIG_CIRCLE_COLORS = [colors.ink, colors.ink, colors.ink, colors.amarillo, colors.amarillo, colors.rosado, colors.cian];
 
 const LANGUAGES: { value: "es" | "en" }[] = [{ value: "es" }, { value: "en" }];
 
@@ -127,27 +129,27 @@ export function ConfiguracionScreen({ navigation }: Props) {
   }
 
   return (
-    <SafeAreaView className="flex-1 px-5 pt-4" style={{ backgroundColor: "#eef4ff" }}>
+    <SafeAreaView className="flex-1 px-5 pt-4">
       <FallingCircles colors={CONFIG_CIRCLE_COLORS} />
       <Pressable onPress={goToWelcome} className="flex-row items-center mb-3" hitSlop={8}>
-        <Text className="text-xl" style={{ color: "#002054" }}>‹</Text>
-        <Text className="text-sm ml-1" style={{ color: "#002054" }}>{t("config.back")}</Text>
+        <Text className="text-xl" style={{ color: colors.ink }}>‹</Text>
+        <Text className="text-sm ml-1" style={{ color: colors.ink }}>{t("config.back")}</Text>
       </Pressable>
 
       <View className="flex-row items-center mb-4">
         <View
-          style={{ width: 8, height: 24, borderRadius: 4, backgroundColor: "#002054", marginRight: 8 }}
+          style={{ width: 8, height: 24, borderRadius: 4, backgroundColor: colors.morado, marginRight: 8 }}
         />
         <Image
           source={require("../../../../assets/images/tuerca.png")}
           style={{ width: 28, height: 28, marginRight: 8 }}
           resizeMode="contain"
         />
-        <Text className="text-2xl font-bold text-surface-dark dark:text-white">{t("config.title")}</Text>
+        <Heading className="text-2xl">{t("config.title")}</Heading>
       </View>
 
       <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
-      <Card className="mb-4" style={{ borderLeftWidth: 4, borderLeftColor: "#ecc6ff" }}>
+      <Card className="mb-4" style={{ borderLeftWidth: 4, borderLeftColor: colors.morado }}>
         <Text className="text-base font-bold text-surface-dark dark:text-white mb-1">
           {t("config.photo.title")}
         </Text>
@@ -159,7 +161,7 @@ export function ConfiguracionScreen({ navigation }: Props) {
           <View className="mt-3 w-full">
             <Button
               label={t("settings.changePhoto")}
-              variant="secondary"
+              variant="filled"
               onPress={handlePickPhoto}
               loading={uploadAvatar.isPending}
               icon={!isFull ? require("../../../../assets/images/candado.png") : undefined}
@@ -170,7 +172,7 @@ export function ConfiguracionScreen({ navigation }: Props) {
 
       <DivaRemindersSettings />
 
-      <Card style={{ borderLeftWidth: 4, borderLeftColor: "#002054" }}>
+      <Card style={{ borderLeftWidth: 4, borderLeftColor: colors.ink }}>
         <Text className="text-base font-bold text-surface-dark dark:text-white mb-1">
           {t("config.language.title")}
         </Text>
@@ -188,15 +190,15 @@ export function ConfiguracionScreen({ navigation }: Props) {
                 className={`flex-row items-center justify-between rounded-card px-4 py-3 border ${
                   selected ? "" : "bg-white dark:bg-surface-cardDark border-gray-200 dark:border-gray-700"
                 }`}
-                style={selected ? { backgroundColor: "#d9ebff", borderColor: "#002054" } : undefined}
+                style={selected ? { backgroundColor: colors.amarillo, borderColor: colors.ink } : undefined}
               >
                 <Text
                   className={selected ? "font-semibold" : "text-surface-dark dark:text-white"}
-                  style={selected ? { color: "#002054" } : undefined}
+                  style={selected ? { color: colors.ink } : undefined}
                 >
                   {t(lang.value === "es" ? "config.language.es" : "config.language.en")}
                 </Text>
-                {selected ? <Text style={{ color: "#002054" }}>✓</Text> : null}
+                {selected ? <Text style={{ color: colors.ink }}>✓</Text> : null}
               </Pressable>
             );
           })}
@@ -207,7 +209,7 @@ export function ConfiguracionScreen({ navigation }: Props) {
         </Text>
       </Card>
 
-      <Card className="mt-4 mb-4" style={{ borderLeftWidth: 4, borderLeftColor: "#d9ebff" }}>
+      <Card className="mt-4 mb-4" style={{ borderLeftWidth: 4, borderLeftColor: colors.morado }}>
         <Text className="text-base font-bold text-surface-dark dark:text-white mb-1">
           {t("config.socialName.title")}
         </Text>
@@ -221,7 +223,7 @@ export function ConfiguracionScreen({ navigation }: Props) {
         />
       </Card>
 
-      <Card style={{ borderLeftWidth: 4, borderLeftColor: "#002054" }}>
+      <Card style={{ borderLeftWidth: 4, borderLeftColor: colors.ink }}>
         <Text className="text-base font-bold text-surface-dark dark:text-white mb-1">
           {t("config.pronoun.title")}
         </Text>
@@ -239,15 +241,15 @@ export function ConfiguracionScreen({ navigation }: Props) {
                 className={`flex-row items-center justify-between rounded-card px-4 py-3 border ${
                   selected ? "" : "bg-white dark:bg-surface-cardDark border-gray-200 dark:border-gray-700"
                 }`}
-                style={selected ? { backgroundColor: "#d9ebff", borderColor: "#002054" } : undefined}
+                style={selected ? { backgroundColor: colors.amarillo, borderColor: colors.ink } : undefined}
               >
                 <Text
                   className={selected ? "font-semibold" : "text-surface-dark dark:text-white"}
-                  style={selected ? { color: "#002054" } : undefined}
+                  style={selected ? { color: colors.ink } : undefined}
                 >
                   {t(PRONOUN_KEY[option.value])}
                 </Text>
-                {selected ? <Text style={{ color: "#002054" }}>✓</Text> : null}
+                {selected ? <Text style={{ color: colors.ink }}>✓</Text> : null}
               </Pressable>
             );
           })}
@@ -256,7 +258,7 @@ export function ConfiguracionScreen({ navigation }: Props) {
         <Text className="text-xs text-gray-400 mt-3">{t("config.pronoun.note")}</Text>
       </Card>
 
-      <Card className="mt-4" style={{ borderLeftWidth: 4, borderLeftColor: "#ecc6ff" }}>
+      <Card className="mt-4" style={{ borderLeftWidth: 4, borderLeftColor: colors.morado }}>
         <Text className="text-base font-bold text-surface-dark dark:text-white mb-1">
           {t("config.period.title")}
         </Text>
@@ -274,11 +276,11 @@ export function ConfiguracionScreen({ navigation }: Props) {
                 className={`flex-1 items-center rounded-card px-4 py-3 border ${
                   selected ? "" : "bg-white dark:bg-surface-cardDark border-gray-200 dark:border-gray-700"
                 }`}
-                style={selected ? { backgroundColor: "#ecc6ff", borderColor: "#002054" } : undefined}
+                style={selected ? { backgroundColor: colors.rosado, borderColor: colors.ink } : undefined}
               >
                 <Text
                   className={selected ? "font-semibold" : "text-surface-dark dark:text-white"}
-                  style={selected ? { color: "#002054" } : undefined}
+                  style={selected ? { color: colors.ink } : undefined}
                 >
                   {value ? t("config.period.yes") : t("config.period.no")}
                 </Text>
@@ -299,11 +301,11 @@ export function ConfiguracionScreen({ navigation }: Props) {
                     className={`flex-1 items-center rounded-card px-3 py-2 border ${
                       selected ? "" : "bg-white dark:bg-surface-cardDark border-gray-200 dark:border-gray-700"
                     }`}
-                    style={selected ? { backgroundColor: "#d9ebff", borderColor: "#002054" } : undefined}
+                    style={selected ? { backgroundColor: colors.amarillo, borderColor: colors.ink } : undefined}
                   >
                     <Text
                       className={`text-xs ${selected ? "font-semibold" : "text-surface-dark dark:text-white"}`}
-                      style={selected ? { color: "#002054" } : undefined}
+                      style={selected ? { color: colors.ink } : undefined}
                     >
                       {value ? t("config.period.knowsExact") : tg("config.period.approximate")}
                     </Text>
@@ -343,13 +345,13 @@ export function ConfiguracionScreen({ navigation }: Props) {
                     }}
                     markedDates={
                       profile.last_period_date
-                        ? { [profile.last_period_date]: { selected: true, selectedColor: "#002054" } }
+                        ? { [profile.last_period_date]: { selected: true, selectedColor: colors.ink } }
                         : {}
                     }
-                    theme={{ arrowColor: "#002054", todayTextColor: "#002054" }}
+                    theme={{ arrowColor: colors.ink, todayTextColor: colors.ink }}
                   />
                   <Pressable onPress={() => setShowDay1Calendar(false)} className="mt-2 items-center py-2">
-                    <Text style={{ color: "#002054" }}>{t("config.period.closeCalendar")}</Text>
+                    <Text style={{ color: colors.ink }}>{t("config.period.closeCalendar")}</Text>
                   </Pressable>
                 </Card>
               </View>
@@ -401,7 +403,7 @@ export function ConfiguracionScreen({ navigation }: Props) {
         onPress={() => navigation.navigate("Legal")}
         className="mt-4 rounded-card px-4 py-3 border bg-white dark:bg-surface-cardDark border-gray-200 dark:border-gray-700"
       >
-        <Text className="text-sm font-semibold" style={{ color: "#002054" }}>
+        <Text className="text-sm font-semibold" style={{ color: colors.ink }}>
           {t("config.legal.link")}
         </Text>
       </Pressable>
@@ -409,7 +411,7 @@ export function ConfiguracionScreen({ navigation }: Props) {
       <View className="mt-6">
         <Button
           label={t("config.pauseAccount.button")}
-          variant="secondary"
+          variant="filled"
           onPress={handlePauseAccount}
           loading={update.isPending}
         />

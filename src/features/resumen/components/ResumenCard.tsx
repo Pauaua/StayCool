@@ -1,6 +1,6 @@
 import React, { forwardRef } from "react";
 import { Dimensions, Text, View } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
+import { colors, fonts } from "@/theme";
 import { useT, type TranslationKey } from "@/lib/i18n";
 import type { ResumenData, ResumenPeriod } from "@/features/resumen/types";
 
@@ -13,16 +13,12 @@ const PERIOD_UNIT_KEY: Record<ResumenPeriod, TranslationKey> = {
   yearly: "resumen.period.yearlyUnit",
 };
 
-// Misma paleta que el resto de la app: amarillo → morado → verde → celeste,
-// con navy para el texto.
+// Manual de marca: fondo pastel sólido con texto oscuro.
 const COLORS = {
-  navy: "#002054",
-  navyMuted: "rgba(0,32,84,0.65)",
-  yellow: "#fef1ba",
-  purple: "#ecc6ff",
-  green: "#ebfff7",
-  blue: "#d9ebff",
-  hairline: "rgba(0,32,84,0.12)",
+  ink: colors.ink,
+  inkMuted: "rgba(18,16,22,0.65)",
+  background: colors.rosado,
+  hairline: "rgba(18,16,22,0.12)",
 };
 
 function formatSleep(minutes: number) {
@@ -41,7 +37,7 @@ function Line({ text }: { text: string }) {
         borderBottomColor: COLORS.hairline,
       }}
     >
-      <Text style={{ fontSize: 12.5, lineHeight: 17, color: COLORS.navy, fontWeight: "600" }}>{text}</Text>
+      <Text style={{ fontSize: 12.5, lineHeight: 17, color: COLORS.ink, fontWeight: "600" }}>{text}</Text>
     </View>
   );
 }
@@ -69,43 +65,39 @@ export const ResumenCard = forwardRef<View, ResumenCardProps>(({ data, period },
         overflow: "hidden",
       }}
     >
-      <LinearGradient
-        colors={[COLORS.yellow, COLORS.purple, COLORS.green, COLORS.blue]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={{ flex: 1, padding: CARD_WIDTH * 0.085 }}
-      >
+      <View style={{ flex: 1, padding: CARD_WIDTH * 0.085, backgroundColor: COLORS.background }}>
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-          <Text style={{ fontFamily: "Parisienne_400Regular", fontSize: 16, color: COLORS.navy }}>
-            StayCool<Text style={{ color: COLORS.navy }}>+</Text>
+          <Text style={{ fontFamily: fonts.display, fontSize: 14, color: COLORS.ink, textTransform: "uppercase" }}>
+            StayCool<Text style={{ color: COLORS.ink }}>+</Text>
           </Text>
           <View
             style={{
               borderWidth: 1,
-              borderColor: COLORS.navy,
+              borderColor: COLORS.ink,
               borderRadius: 999,
               paddingHorizontal: 9,
               paddingVertical: 4,
             }}
           >
-            <Text style={{ fontSize: 8, fontWeight: "700", color: COLORS.navy, letterSpacing: 1 }}>
+            <Text style={{ fontSize: 8, fontWeight: "700", color: COLORS.ink, letterSpacing: 1 }}>
               {t("resumenCard.wrappedLabel", { period: periodWord.toUpperCase() })}
             </Text>
           </View>
         </View>
 
         <View style={{ marginTop: CARD_HEIGHT * 0.05 }}>
-          <Text style={{ fontSize: 9, fontWeight: "700", color: COLORS.navyMuted, letterSpacing: 1.5 }}>
+          <Text style={{ fontSize: 9, fontWeight: "700", color: COLORS.inkMuted, letterSpacing: 1.5 }}>
             {data.displayName
               ? t("resumenCard.eyebrowWithName", { period: periodWord.toUpperCase(), name: data.displayName.toUpperCase() })
               : t("resumenCard.eyebrowNoName", { period: periodWord.toUpperCase() })}
           </Text>
           <Text
             style={{
-              fontFamily: "Parisienne_400Regular",
-              fontSize: 30,
-              color: COLORS.navy,
-              lineHeight: 34,
+              fontFamily: fonts.display,
+              fontSize: 24,
+              color: COLORS.ink,
+              lineHeight: 28,
+              textTransform: "uppercase",
               marginTop: 6,
             }}
           >
@@ -164,20 +156,20 @@ export const ResumenCard = forwardRef<View, ResumenCardProps>(({ data, period },
             justifyContent: "space-between",
           }}
         >
-          <Text style={{ fontSize: 8, color: COLORS.navyMuted, fontWeight: "600" }}>
+          <Text style={{ fontSize: 8, color: COLORS.inkMuted, fontWeight: "600" }}>
             {t("resumenCard.generatedInPrefix")}{" "}
-            <Text style={{ color: COLORS.navy, fontWeight: "800" }}>StayCoolPlus</Text>
+            <Text style={{ color: COLORS.ink, fontWeight: "800" }}>StayCoolPlus</Text>
           </Text>
           <View style={{ flexDirection: "row", gap: 4 }}>
             {[0, 1, 2].map((i) => (
               <View
                 key={i}
-                style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: COLORS.navy, opacity: 0.4 }}
+                style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: COLORS.ink, opacity: 0.4 }}
               />
             ))}
           </View>
         </View>
-      </LinearGradient>
+      </View>
     </View>
   );
 });

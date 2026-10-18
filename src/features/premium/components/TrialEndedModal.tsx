@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Image, Modal, Pressable, Text, View } from "react-native";
+import { colors } from "@/theme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { LinearGradient } from "expo-linear-gradient";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useProfile } from "@/features/home/hooks/useProfile";
 import { usePremium } from "@/features/premium/hooks/usePremium";
@@ -59,43 +59,40 @@ export function TrialEndedModal({ onSubscribe }: { onSubscribe: () => void }) {
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={() => close()}>
       <View className="flex-1 items-center justify-center bg-black/50 px-8">
-        <LinearGradient
-          colors={["#d9ebff", "#ecc6ff", "#ebfff7"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={{ borderRadius: 24, padding: 24, width: "100%", alignItems: "center" }}
+        <View
+          style={{ borderRadius: 24, padding: 24, width: "100%", alignItems: "center", backgroundColor: colors.rosado }}
         >
           <Image
             source={require("../../../../assets/images/brillitos.png")}
-            style={{ width: 44, height: 44, marginBottom: 8, tintColor: "#002054" }}
+            style={{ width: 44, height: 44, marginBottom: 8, tintColor: colors.ink }}
             resizeMode="contain"
           />
-          <Text className="text-xl font-bold text-center mb-2" style={{ color: "#002054" }}>
+          <Text className="text-xl font-bold text-center mb-2" style={{ color: colors.ink }}>
             {t("trial.endedModalTitle")}
           </Text>
-          <Text className="text-base text-center mb-6" style={{ color: "#002054" }}>
+          <Text className="text-base text-center mb-6" style={{ color: colors.ink }}>
             {t("trial.endedModalMessage")}
           </Text>
 
           <PressableScale
             wrapperClassName="w-full"
             className="rounded-full px-8 py-3 items-center"
-            style={{ backgroundColor: "#002054" }}
+            style={{ backgroundColor: colors.white, borderWidth: 1, borderColor: colors.ink }}
             onPress={() => {
               setSparkles((n) => n + 1);
               close(onSubscribe);
             }}
           >
-            <Text className="font-semibold text-white">{t("trial.endedModalCta")}</Text>
+            <Text className="font-semibold text-ink">{t("trial.endedModalCta")}</Text>
             <TapSparkles trigger={sparkles} />
           </PressableScale>
 
           <Pressable onPress={() => close()} hitSlop={10} className="mt-4">
-            <Text className="text-sm" style={{ color: "#002054", opacity: 0.7 }}>
+            <Text className="text-sm" style={{ color: colors.ink, opacity: 0.7 }}>
               {t("trial.endedModalClose")}
             </Text>
           </Pressable>
-        </LinearGradient>
+        </View>
       </View>
     </Modal>
   );

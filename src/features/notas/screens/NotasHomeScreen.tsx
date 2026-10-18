@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Alert, FlatList, Image, Modal, Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
+import { Heading } from "@/components/ui/Heading";
 import { format } from "date-fns";
 import { Card } from "@/components/ui/Card";
 import { BackToWelcome } from "@/components/ui/BackToWelcome";
@@ -69,7 +70,7 @@ function QuickNoteEditModal({ note, onClose }: { note: QuickNote | null; onClose
               />
             </View>
             <View className="flex-1">
-              <Button label={t("common.cancel")} variant="ghost" onPress={onClose} />
+              <Button label={t("common.cancel")} variant="outline" onPress={onClose} />
             </View>
           </View>
           <Pressable onPress={handleDelete} disabled={remove.isPending}>
@@ -146,7 +147,7 @@ function DetailedNoteEditModal({ note, onClose }: { note: DetailedNote | null; o
                 />
               </View>
               <View className="flex-1">
-                <Button label={t("common.cancel")} variant="ghost" onPress={onClose} />
+                <Button label={t("common.cancel")} variant="outline" onPress={onClose} />
               </View>
             </View>
             <Pressable onPress={handleDelete} disabled={remove.isPending}>
@@ -170,7 +171,7 @@ export function NotasHomeScreen({ navigation }: Props) {
   const { t } = useT();
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-surface-dark px-5 pt-8">
+    <SafeAreaView className="flex-1 px-5 pt-8">
       <BackToWelcome />
       <View className="flex-row items-center mb-4">
         <Image
@@ -178,14 +179,14 @@ export function NotasHomeScreen({ navigation }: Props) {
           style={{ width: 56, height: 56, marginRight: 8 }}
           resizeMode="contain"
         />
-        <Text className="text-2xl font-bold text-surface-dark dark:text-white">{t("notas.title")}</Text>
+        <Heading className="text-2xl">{t("notas.title")}</Heading>
       </View>
 
       <View className="mb-4">
         <View className="mb-2">
           <Button label={t("notas.quickIdea")} onPress={() => navigation.navigate("NotaRapida")} />
         </View>
-        <Button label={t("notas.fullIdea")} variant="secondary" onPress={() => navigation.navigate("NotaDetallada")} />
+        <Button label={t("notas.fullIdea")} variant="filled" onPress={() => navigation.navigate("NotaDetallada")} />
       </View>
 
       <Text className="text-lg font-semibold text-surface-dark dark:text-white mb-2">
@@ -210,7 +211,7 @@ export function NotasHomeScreen({ navigation }: Props) {
                 <Text className="text-surface-dark dark:text-white font-semibold">{item.name}</Text>
                 {item.description ? <Text className="text-gray-500 text-sm">{item.description}</Text> : null}
                 {item.feeling ? (
-                  <Text className="text-brand-500 text-sm">{t("notas.feelingLabel", { value: item.feeling })}</Text>
+                  <Text className="text-ink text-sm">{t("notas.feelingLabel", { value: item.feeling })}</Text>
                 ) : null}
                 <Text className="text-xs text-gray-400">{format(new Date(item.logged_at), "dd MMM yyyy")}</Text>
               </Card>
@@ -231,7 +232,7 @@ export function NotasHomeScreen({ navigation }: Props) {
                 <Text className="text-gray-500 text-sm">{item.idea}</Text>
                 {item.location ? <Text className="text-xs text-gray-400">📍 {item.location}</Text> : null}
                 {item.feelings ? (
-                  <Text className="text-brand-500 text-sm">{t("notas.feelingsLabel", { value: item.feelings })}</Text>
+                  <Text className="text-ink text-sm">{t("notas.feelingsLabel", { value: item.feelings })}</Text>
                 ) : null}
                 {item.thoughts ? (
                   <Text className="text-gray-500 text-sm">{t("notas.thoughtsLabel", { value: item.thoughts })}</Text>

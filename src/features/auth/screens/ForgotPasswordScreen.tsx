@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import { Alert, Image, SafeAreaView, Text, View } from "react-native";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
-import { GradientBackground } from "@/components/ui/GradientBackground";
+import { sectionColors } from "@/theme";
+import { ScreenBackground } from "@/components/ui/ScreenBackground";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { AuthStackParamList } from "@/navigation/types";
+import { Heading } from "@/components/ui/Heading";
 
 type Props = NativeStackScreenProps<AuthStackParamList, "ForgotPassword">;
 
@@ -32,11 +34,11 @@ export function ForgotPasswordScreen({ navigation }: Props) {
   }
 
   return (
-    <GradientBackground>
+    <ScreenBackground color={sectionColors.Auth}>
       <SafeAreaView className="flex-1 px-6 justify-center">
         <View className="items-center mb-4">
           <Image
-            source={require("../../../../assets/images/Logo.jpg")}
+            source={require("../../../../assets/images/Logo.png")}
             style={{ width: 64, height: 64 }}
             resizeMode="contain"
           />
@@ -47,11 +49,11 @@ export function ForgotPasswordScreen({ navigation }: Props) {
             style={{ width: 32, height: 32, marginRight: 8 }}
             resizeMode="contain"
           />
-          <Text className="font-script text-navy" style={{ fontSize: 36 }}>
+          <Heading style={{ fontSize: 28 }}>
             Recuperar contraseña
-          </Text>
+          </Heading>
         </View>
-        <Text className="text-navy/70 mb-6">
+        <Text className="text-ink/70 mb-6">
           Ingresa tu correo electrónico y, si está asociada a alguna cuenta creada en StayCool, te
           llegará un correo para restaurar tu contraseña. ¡Atenta!
         </Text>
@@ -64,6 +66,6 @@ export function ForgotPasswordScreen({ navigation }: Props) {
         />
         <Button label="Enviar link" onPress={handleSend} loading={loading} />
       </SafeAreaView>
-    </GradientBackground>
+    </ScreenBackground>
   );
 }

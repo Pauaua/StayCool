@@ -1,5 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { ActivityIndicator, Image, Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
+import { colors } from "@/theme";
+import { Heading } from "@/components/ui/Heading";
 import { format, parseISO, type Locale } from "date-fns";
 import { enUS, es } from "date-fns/locale";
 import { Card } from "@/components/ui/Card";
@@ -65,11 +67,11 @@ export function ReportScreen({
   const isCurrent = period.from <= todayIso && period.to >= todayIso;
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-surface-dark">
+    <SafeAreaView className="flex-1">
       <ScrollView className="px-5 pt-4" contentContainerStyle={{ paddingBottom: 40 }}>
         <Pressable onPress={onBack} className="flex-row items-center mb-2" hitSlop={8}>
-          <Text className="text-xl text-brand-500">‹</Text>
-          <Text className="text-sm text-brand-500 ml-1">{t("estadisticas.back")}</Text>
+          <Text className="text-xl text-ink">‹</Text>
+          <Text className="text-sm text-ink ml-1">{t("estadisticas.back")}</Text>
         </Pressable>
 
         <View className="flex-row items-center mb-2">
@@ -78,12 +80,12 @@ export function ReportScreen({
             style={{ width: 48, height: 48, marginRight: 8 }}
             resizeMode="contain"
           />
-          <Text className="text-2xl font-bold text-surface-dark dark:text-white">{t(titleKey)}</Text>
+          <Heading className="text-2xl">{t(titleKey)}</Heading>
         </View>
 
         <View className="flex-row items-center justify-between mb-3">
           <Pressable onPress={() => setPeriod(shiftPeriod(period, -1, now))} hitSlop={12}>
-            <Text className="text-2xl text-brand-500 px-2">‹</Text>
+            <Text className="text-2xl text-ink px-2">‹</Text>
           </Pressable>
           <Text className="text-base font-semibold text-surface-dark dark:text-white text-center flex-1">
             {periodLabel(period, now, locale, lang, t)}
@@ -93,14 +95,14 @@ export function ReportScreen({
             hitSlop={12}
             disabled={!forwardEnabled}
           >
-            <Text className="text-2xl text-brand-500 px-2" style={{ opacity: forwardEnabled ? 1 : 0.2 }}>
+            <Text className="text-2xl text-ink px-2" style={{ opacity: forwardEnabled ? 1 : 0.2 }}>
               ›
             </Text>
           </Pressable>
         </View>
 
         {pending ? (
-          <Card className="mb-4" style={{ borderLeftWidth: 4, borderLeftColor: "#fef1ba" }}>
+          <Card className="mb-4" style={{ borderLeftWidth: 4, borderLeftColor: colors.morado }}>
             <Text className="text-sm text-surface-dark dark:text-white">
               {t(kind === "week" ? "stats.pending.week" : "stats.pending.month", {
                 date: format(parseISO(pending.to), lang === "en" ? "MMMM d" : "d 'de' MMMM", { locale }),
@@ -110,12 +112,12 @@ export function ReportScreen({
         ) : null}
 
         {isLoading ? (
-          <ActivityIndicator color="#002054" className="mt-8" />
+          <ActivityIndicator color={colors.ink} className="mt-8" />
         ) : isError || !report ? (
           <Pressable onPress={() => refetch()}>
             <Card className="items-center py-8">
               <Text className="text-gray-500 text-center">{t("stats.loadError")}</Text>
-              <Text className="text-brand-500 mt-2">{t("paywall.retry")}</Text>
+              <Text className="text-ink mt-2">{t("paywall.retry")}</Text>
             </Card>
           </Pressable>
         ) : !report.hasData ? (

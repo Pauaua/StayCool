@@ -1,5 +1,6 @@
 import React from "react";
 import { Alert, Image, Text, View } from "react-native";
+import { colors } from "@/theme";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { StarToggle } from "@/components/ui/StarToggle";
@@ -30,7 +31,7 @@ export function DivaRemindersSettings() {
   }
 
   return (
-    <Card className="mb-4" style={{ borderLeftWidth: 4, borderLeftColor: "#fef1ba" }}>
+    <Card className="mb-4" style={{ borderLeftWidth: 4, borderLeftColor: colors.morado }}>
       <View className="flex-row items-center mb-1">
         <Image
           source={require("../../../../assets/images/uñotas.png")}
@@ -46,7 +47,7 @@ export function DivaRemindersSettings() {
       {/* Solo en desarrollo: __DEV__ es false en cualquier build de Play. */}
       {__DEV__ ? (
         <View className="mt-3">
-          <Button label={t("divaReminders.devTest")} variant="ghost" onPress={handleDevTest} />
+          <Button label={t("divaReminders.devTest")} variant="outline" onPress={handleDevTest} />
         </View>
       ) : null}
     </Card>

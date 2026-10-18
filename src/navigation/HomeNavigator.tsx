@@ -10,7 +10,7 @@ import { ResumenScreen } from "@/features/resumen/screens/ResumenScreen";
 import { ConfiguracionScreen } from "@/features/home/screens/ConfiguracionScreen";
 import { LegalScreen } from "@/features/home/screens/LegalScreen";
 import type { HomeStackParamList } from "@/navigation/types";
-import { defaultScreenOptions } from "@/navigation/screenOptions";
+import { sectionScreenOptions } from "@/navigation/screenOptions";
 
 const Stack = createNativeStackNavigator<HomeStackParamList>();
 
@@ -25,7 +25,7 @@ export function HomeNavigator({
 }) {
   return (
     <NavigationContainer independent>
-      <Stack.Navigator screenOptions={{ ...defaultScreenOptions, headerShown: false }} initialRouteName={initialRouteName}>
+      <Stack.Navigator screenOptions={sectionScreenOptions("Home")} initialRouteName={initialRouteName}>
         <Stack.Screen name="HomeDashboard" component={HomeScreen} />
         <Stack.Screen
           name="Settings"

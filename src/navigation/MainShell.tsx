@@ -15,6 +15,7 @@ import { NotasNavigator } from "@/navigation/NotasNavigator";
 import { EstadisticasNavigator } from "@/navigation/EstadisticasNavigator";
 import { useDivaReminders } from "@/notifications/diva/useDivaReminders";
 import { consumePendingModule, onOpenModuleRequest } from "@/notifications/diva/events";
+import { sectionColors, type SectionKey } from "@/theme";
 
 function buildModules(
   initialHomeRoute: keyof HomeStackParamList,
@@ -141,7 +142,10 @@ export function MainShell({
   }, [modules]);
 
   return (
-    <View className="flex-1 flex-row bg-white dark:bg-surface-dark">
+    <View
+      className="flex-1 flex-row"
+      style={{ backgroundColor: sectionColors[activeKey as SectionKey] }}
+    >
       {railHidden ? null : <SideRail items={modules} activeKey={activeKey} onSelect={handleSelect} />}
       <Animated.View
         className="flex-1"

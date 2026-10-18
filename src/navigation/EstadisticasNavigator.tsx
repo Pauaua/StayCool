@@ -8,14 +8,14 @@ import { EstadisticasMensualScreen } from "@/features/estadisticas/screens/Estad
 import { EstadisticasAnualScreen } from "@/features/estadisticas/screens/EstadisticasAnualScreen";
 import { PaywallScreen } from "@/features/premium/screens/PaywallScreen";
 import type { EstadisticasStackParamList } from "@/navigation/types";
-import { defaultScreenOptions } from "@/navigation/screenOptions";
+import { sectionScreenOptions } from "@/navigation/screenOptions";
 
 const Stack = createNativeStackNavigator<EstadisticasStackParamList>();
 
 export function EstadisticasNavigator() {
   return (
     <NavigationContainer independent>
-      <Stack.Navigator screenOptions={{ ...defaultScreenOptions, headerShown: false }}>
+      <Stack.Navigator screenOptions={sectionScreenOptions("Estadisticas")}>
         <Stack.Screen name="EstadisticasHome" component={EstadisticasHomeScreen} />
         <Stack.Screen name="EstadisticasHoy" component={EstadisticasHoyScreen} />
         <Stack.Screen name="EstadisticasSemanal" component={EstadisticasSemanalScreen} />

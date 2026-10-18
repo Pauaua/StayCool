@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Alert, FlatList, Image, Modal, Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
+import { Heading } from "@/components/ui/Heading";
 import { format } from "date-fns";
 import { Card } from "@/components/ui/Card";
 import { BackToWelcome } from "@/components/ui/BackToWelcome";
@@ -99,7 +100,7 @@ function QuickTasteEditModal({ taste, onClose }: { taste: QuickTaste | null; onC
               />
             </View>
             <View className="flex-1">
-              <Button label={t("common.cancel")} variant="ghost" onPress={onClose} />
+              <Button label={t("common.cancel")} variant="outline" onPress={onClose} />
             </View>
           </View>
           <Pressable onPress={handleDelete} disabled={remove.isPending}>
@@ -218,7 +219,7 @@ function DetailedTasteEditModal({ taste, onClose }: { taste: DetailedTaste | nul
                 <Button label={t("common.saveChanges")} onPress={handleSave} loading={update.isPending} />
               </View>
               <View className="flex-1">
-                <Button label={t("common.cancel")} variant="ghost" onPress={onClose} />
+                <Button label={t("common.cancel")} variant="outline" onPress={onClose} />
               </View>
             </View>
             <Pressable onPress={handleDelete} disabled={remove.isPending}>
@@ -242,7 +243,7 @@ export function GustosHomeScreen({ navigation }: Props) {
   const { t } = useT();
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-surface-dark px-5 pt-8">
+    <SafeAreaView className="flex-1 px-5 pt-8">
       <BackToWelcome />
       <View className="flex-row items-center mb-4">
         <Image
@@ -250,7 +251,7 @@ export function GustosHomeScreen({ navigation }: Props) {
           style={{ width: 56, height: 56, marginRight: 8 }}
           resizeMode="contain"
         />
-        <Text className="text-2xl font-bold text-surface-dark dark:text-white">{t("gustos.title")}</Text>
+        <Heading className="text-2xl">{t("gustos.title")}</Heading>
       </View>
 
 
@@ -261,7 +262,7 @@ export function GustosHomeScreen({ navigation }: Props) {
         </View>
         <Button
           label={t("gustos.musicSeriesBooks")}
-          variant="secondary"
+          variant="filled"
           onPress={() => navigation.navigate("GustoDetallado")}
         />
       </View>

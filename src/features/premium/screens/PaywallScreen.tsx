@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, Alert, Image, Linking, Platform, Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
+import { colors } from "@/theme";
+import { Heading } from "@/components/ui/Heading";
 import { format } from "date-fns";
 import type {
   CustomerInfo,
@@ -19,7 +21,7 @@ import { useT } from "@/lib/i18n";
 import { env } from "@/config/env";
 
 // Amarillo predominante, mezclado con el resto de la paleta.
-const PAYWALL_CIRCLE_COLORS = ["#fef1ba", "#fef1ba", "#fef1ba", "#ecc6ff", "#d9ebff", "#ebfff7"];
+const PAYWALL_CIRCLE_COLORS = [colors.amarillo, colors.amarillo, colors.amarillo, colors.rosado, colors.amarillo, colors.cian];
 
 // Copy de los 3 planes. El precio de "So Basic!" es fijo (no depende de
 // RevenueCat) porque todavía no hay producto configurado en el dashboard;
@@ -256,8 +258,8 @@ export function PaywallScreen() {
 
   if (isLoading) {
     return (
-      <SafeAreaView className="flex-1 items-center justify-center bg-gray-50 dark:bg-surface-dark">
-        <ActivityIndicator color="#002054" size="large" />
+      <SafeAreaView className="flex-1 items-center justify-center">
+        <ActivityIndicator color={colors.ink} size="large" />
       </SafeAreaView>
     );
   }
@@ -265,21 +267,21 @@ export function PaywallScreen() {
   const packages = offering?.availablePackages ?? [];
 
   return (
-    <SafeAreaView className="flex-1" style={{ backgroundColor: "#fffaeb" }}>
+    <SafeAreaView className="flex-1">
       <FallingCircles colors={PAYWALL_CIRCLE_COLORS} />
       <ScrollView className="px-5 pt-4" contentContainerStyle={{ paddingBottom: 40 }}>
         <Pressable onPress={goToWelcome} className="flex-row items-center mb-3" hitSlop={8}>
-          <Text className="text-xl text-brand-500">‹</Text>
-          <Text className="text-sm text-brand-500 ml-1">Panel inicial</Text>
+          <Text className="text-xl text-ink">‹</Text>
+          <Text className="text-sm text-ink ml-1">Panel inicial</Text>
         </Pressable>
 
         <View className="flex-row items-center justify-center mb-1">
           <View
-            style={{ width: 8, height: 24, borderRadius: 4, backgroundColor: "#fef1ba", marginRight: 8 }}
+            style={{ width: 8, height: 24, borderRadius: 4, backgroundColor: colors.morado, marginRight: 8 }}
           />
-          <Text className="text-2xl font-bold text-surface-dark dark:text-white text-center">
+          <Heading className="text-2xl text-center">
             {t("paywall.title")}
-          </Text>
+          </Heading>
         </View>
         <Text className="text-sm text-gray-500 dark:text-gray-400 mb-6 text-center">
           {t("paywall.currentPlan", {
@@ -287,12 +289,12 @@ export function PaywallScreen() {
           })}
         </Text>
         {isTrialActive && trialEndsAt ? (
-          <Text className="text-sm font-semibold text-brand-500 mb-6 text-center" style={{ marginTop: -18 }}>
+          <Text className="text-sm font-semibold text-ink mb-6 text-center" style={{ marginTop: -18 }}>
             {t("paywall.trialActive", { date: format(trialEndsAt, "dd/MM/yyyy HH:mm") })}
           </Text>
         ) : null}
         {trialEndedNotice ? (
-          <Card className="mb-4" style={{ borderLeftWidth: 4, borderLeftColor: "#ecc6ff" }}>
+          <Card className="mb-4" style={{ borderLeftWidth: 4, borderLeftColor: colors.morado }}>
             <Text className="text-sm text-surface-dark dark:text-white">{t("paywall.trialEnded")}</Text>
           </Card>
         ) : null}
@@ -307,7 +309,7 @@ export function PaywallScreen() {
           <Card className="mb-4 bg-accent-amber/10 border border-accent-amber">
             <Text className="text-sm text-surface-dark dark:text-white">{t("paywall.offeringsError")}</Text>
             <View className="mt-3">
-              <Button label={t("paywall.retry")} variant="ghost" onPress={loadOfferings} />
+              <Button label={t("paywall.retry")} variant="outline" onPress={loadOfferings} />
             </View>
           </Card>
         ) : null}
@@ -318,7 +320,7 @@ export function PaywallScreen() {
           const isPending = pendingTier === plan.tier;
 
           return (
-            <Card key={plan.tier} className="mb-4" style={{ borderLeftWidth: 4, borderLeftColor: "#fef1ba" }}>
+            <Card key={plan.tier} className="mb-4" style={{ borderLeftWidth: 4, borderLeftColor: colors.morado }}>
               <View className="flex-row items-center justify-between mb-1">
                 <View className="flex-row items-center">
                   {plan.icon ? (
@@ -333,7 +335,7 @@ export function PaywallScreen() {
                   </Text>
                 </View>
                 {isCurrentPlan ? (
-                  <Text className="text-xs font-semibold text-brand-500">{t("paywall.currentPlanBadge")}</Text>
+                  <Text className="text-xs font-semibold text-ink">{t("paywall.currentPlanBadge")}</Text>
                 ) : null}
               </View>
               <Text className="text-sm text-gray-500 dark:text-gray-400 mb-3">
@@ -360,9 +362,9 @@ export function PaywallScreen() {
               {plan.tier === "free" ? null : plan.tier === "full" && isCurrentPlan ? (
                 <View
                   className="mt-3 rounded-full px-5 py-3.5 items-center justify-center"
-                  style={{ backgroundColor: "#fef1ba", opacity: 0.7 }}
+                  style={{ backgroundColor: colors.morado, opacity: 0.7 }}
                 >
-                  <Text className="font-semibold text-base" style={{ color: "#002054" }}>
+                  <Text className="font-semibold text-base" style={{ color: colors.ink }}>
                     ¡Ya eres una Diva!
                   </Text>
                 </View>
@@ -372,14 +374,14 @@ export function PaywallScreen() {
                   disabled={!pkg || pendingTier !== null}
                   className="mt-3 rounded-full px-5 py-3.5 items-center justify-center"
                   style={{
-                    backgroundColor: "#fef1ba",
+                    backgroundColor: colors.morado,
                     opacity: !pkg || pendingTier !== null ? 0.5 : 1,
                   }}
                 >
                   {isPending ? (
-                    <ActivityIndicator color="#002054" />
+                    <ActivityIndicator color={colors.ink} />
                   ) : (
-                    <Text className="font-semibold text-base" style={{ color: "#002054" }}>
+                    <Text className="font-semibold text-base" style={{ color: colors.ink }}>
                       {pkg
                         ? hasPaidSubscription
                           ? t("paywall.changePlan")
@@ -396,7 +398,7 @@ export function PaywallScreen() {
         <View className="mt-2">
           <Button
             label={t("paywall.restore")}
-            variant="ghost"
+            variant="outline"
             onPress={handleRestore}
             loading={isRestoring}
             disabled={isRestoring || pendingTier !== null}
@@ -407,7 +409,7 @@ export function PaywallScreen() {
           <Pressable
             onPress={handleManageSubscription}
             disabled={pendingTier !== null}
-            className="mt-2 rounded-full px-6 py-3.5 flex-row items-center justify-center border border-brand-500"
+            className="mt-2 rounded-full px-6 py-3.5 flex-row items-center justify-center border border-ink"
             style={{ opacity: pendingTier !== null ? 0.5 : 1 }}
           >
             <Image
@@ -415,7 +417,7 @@ export function PaywallScreen() {
               style={{ width: 20, height: 20, marginRight: 8 }}
               resizeMode="contain"
             />
-            <Text className="font-semibold text-base text-brand-500">
+            <Text className="font-semibold text-base text-ink">
               {t("paywall.cancelSubscription")}
             </Text>
           </Pressable>
@@ -426,13 +428,13 @@ export function PaywallScreen() {
         </Text>
         <View className="flex-row justify-center mt-2">
           <Pressable onPress={() => Linking.openURL(PRIVACY_URL)} hitSlop={8}>
-            <Text className="text-xs font-semibold underline" style={{ color: "#002054" }}>
+            <Text className="text-xs font-semibold underline" style={{ color: colors.ink }}>
               {t("paywall.privacy")}
             </Text>
           </Pressable>
           <Text className="text-xs text-gray-400 mx-2">·</Text>
           <Pressable onPress={() => Linking.openURL(TERMS_URL)} hitSlop={8}>
-            <Text className="text-xs font-semibold underline" style={{ color: "#002054" }}>
+            <Text className="text-xs font-semibold underline" style={{ color: colors.ink }}>
               {t("paywall.terms")}
             </Text>
           </Pressable>

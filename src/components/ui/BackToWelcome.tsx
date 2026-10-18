@@ -11,8 +11,8 @@ export function BackToWelcome() {
   const { t } = useT();
   return (
     <Pressable onPress={goToWelcome} className="flex-row items-center mb-2 self-start" hitSlop={8}>
-      <Text className="text-xl text-brand-500">‹</Text>
-      <Text className="text-sm text-brand-500 ml-1">{t("home.back")}</Text>
+      <Text className="text-xl text-ink">‹</Text>
+      <Text className="text-sm text-ink ml-1">{t("home.back")}</Text>
     </Pressable>
   );
 }

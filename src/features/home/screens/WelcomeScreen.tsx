@@ -1,13 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Alert, GestureResponderEvent, Image, Text, View } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
+import { Alert, GestureResponderEvent, Image, Text, View, useWindowDimensions } from "react-native";
 import { useSparkleTransition } from "@/components/ui/SparkleTransition";
-import { PressableScale } from "@/components/ui/PressableScale";
+import { Button } from "@/components/ui/Button";
+import { BottomIconBar } from "@/components/ui/BottomIconBar";
+import { ScreenBackground } from "@/components/ui/ScreenBackground";
+import { sectionColors } from "@/theme";
 import { Reveal } from "@/components/ui/Reveal";
 import { useAutoReactivateAccount, useProfile } from "@/features/home/hooks/useProfile";
 import { TrialGiftBox } from "@/features/premium/components/TrialGiftBox";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useT, type Language } from "@/lib/i18n";
+import { Heading } from "@/components/ui/Heading";
 
 interface WelcomeScreenProps {
   onOpenAgenda: () => void;
@@ -64,58 +67,6 @@ function formatTime(date: Date): string {
   return `${hours}:${minutes}`;
 }
 
-function PillButton({
-  label,
-  onPress,
-  filled,
-  icon,
-  backgroundColor,
-  delay,
-}: {
-  label: string;
-  onPress: (e: GestureResponderEvent) => void;
-  filled?: boolean;
-  icon?: number;
-  backgroundColor?: string;
-  // Retraso de la entrada en cascada de los botones.
-  delay: number;
-}) {
-  return (
-    <Reveal className="w-full" delay={delay} offset={26} style={{ marginTop: 7, marginBottom: 7 }}>
-      <PressableScale
-        onPress={onPress}
-        className={`w-full rounded-full px-6 py-3 flex-row items-center justify-center border ${
-          backgroundColor
-            ? "active:opacity-80"
-            : filled
-              ? "bg-navy border-navy active:opacity-80"
-              : "bg-white/40 border-navy active:bg-white/60"
-        }`}
-        style={backgroundColor ? { backgroundColor, borderColor: "#002054" } : undefined}
-      >
-        {icon ? (
-          <Image
-            source={icon}
-            style={{
-              width: 42,
-              height: 42,
-              marginRight: 8,
-              tintColor: filled && !backgroundColor ? "#ffffff" : undefined,
-            }}
-            resizeMode="contain"
-          />
-        ) : null}
-        <Text
-          className={`font-semibold ${backgroundColor ? "text-navy" : filled ? "text-white" : "text-navy"}`}
-          style={{ fontSize: 18 }}
-        >
-          {label}
-        </Text>
-      </PressableScale>
-    </Reveal>
-  );
-}
-
 // Pantalla intermedia entre el login y la app: sin rail lateral, solo el
 // saludo, la fecha/hora actual y los accesos principales. Vive fuera de
 // MainShell a propósito, así no carga los navigators de los módulos hasta
@@ -134,6 +85,7 @@ export function WelcomeScreen({
   const sparkle = useSparkleTransition();
   const busy = useRef(false);
   const [giftSpace, setGiftSpace] = useState(300);
+  const { width } = useWindowDimensions();
 
   useEffect(() => {
     const interval = setInterval(() => setNow(new Date()), 1000 * 30);
@@ -141,6 +93,13 @@ export function WelcomeScreen({
   }, []);
 
   const displayName = profile?.display_name?.trim();
+  // Mientras se ve el regalo (sin reclamar, o recién abierto), el personaje
+  // comparte el espacio con la caja.
+  const [giftPending, setGiftPending] = useState(false);
+  const available = Math.max(110, Math.min(260, giftSpace - GIFT_LABEL_SPACE));
+  const sharedWidth = (width - 48 - 16) / 2;
+  const characterSize = giftPending ? Math.min(available, sharedWidth) : available;
+  const giftSize = Math.max(110, Math.min(available, sharedWidth));
 
   function handleSignOut() {
     Alert.alert(t("common.confirmSignOutTitle"), tg("common.confirmSignOutMessage"), [
@@ -166,73 +125,90 @@ export function WelcomeScreen({
   }
 
   return (
-    <LinearGradient
-      colors={["#fef1ba", "#ecc6ff", "#ebfff7", "#d9ebff"]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-      className="flex-1"
-    >
-      <View className="flex-1 items-center px-6 pt-16 pb-8">
+    <ScreenBackground color={sectionColors.Welcome}>
+      <View className="flex-1 items-center px-6 pt-16">
         <Reveal className="w-full max-w-sm items-center" offset={-18} duration={480}>
-          <Text className="font-script text-navy text-center" style={{ fontSize: 56, lineHeight: 64 }}>
+          <Heading className="text-center" style={{ fontSize: 40, lineHeight: 46 }}>
             {displayName ? t("welcome.greetingWithName", { name: displayName }) : tg("welcome.greeting")}
-          </Text>
-          <Text className="mt-1 text-base text-center text-navy">{t("welcome.subtitle")}</Text>
+          </Heading>
+          <Text className="mt-1 text-base text-center text-ink">{t("welcome.subtitle")}</Text>
 
           <View className="mt-8 items-center">
-            <Text className="text-5xl font-bold text-navy">{formatTime(now)}</Text>
-            <Text className="mt-1 text-base capitalize text-navy">{formatDate(now, lang)}</Text>
+            <Heading style={{ fontSize: 48 }}>{formatTime(now)}</Heading>
+            <Text className="mt-1 text-base capitalize text-ink">{formatDate(now, lang)}</Text>
           </View>
         </Reveal>
 
-        {/* El regalo ocupa todo el espacio libre entre el reloj y los botones
-            y se achica para caber (con su mensaje). zIndex alto: si aun así
-            algo se solapara, el regalo queda por encima de los botones. */}
+        {/* El personaje (y el regalo, si está pendiente) ocupan todo el espacio
+            libre entre el reloj y los botones y se achican para caber. zIndex
+            alto: si aun así algo se solapara, quedan por encima de los botones. */}
         <View
-          style={{ flex: 1, zIndex: 10, elevation: 10 }}
-          className="items-center justify-center"
+          style={{ flex: 1, zIndex: 10, elevation: 10, gap: 16 }}
+          className="w-full flex-row items-center justify-center"
           onLayout={(e) => setGiftSpace(e.nativeEvent.layout.height)}
         >
-          <TrialGiftBox size={Math.max(110, Math.min(260, giftSpace - GIFT_LABEL_SPACE))} />
+          <Image
+            source={require("../../../../assets/images/ImagenLogin.png")}
+            style={{ width: characterSize, height: characterSize }}
+            resizeMode="contain"
+          />
+          <TrialGiftBox size={giftSize} onVisibleChange={setGiftPending} />
         </View>
 
-        <View className="mt-4 w-full items-center">
-          <PillButton
-            delay={200}
-            label={t("welcome.openAgenda")}
-            onPress={withBurst(onOpenAgenda)}
-            icon={require("../../../../assets/images/notas2.png")}
-          />
-          <PillButton
-            delay={280}
-            label={t("welcome.viewResumen")}
-            onPress={withBurst(onOpenResumen)}
-            icon={require("../../../../assets/images/estadisticas.png")}
-          />
-          <PillButton
-            delay={360}
-            label={t("welcome.goPremium")}
-            onPress={withBurst(onOpenPaywall)}
-            filled
-            icon={require("../../../../assets/images/brillitos.png")}
-            backgroundColor="#ecc6ff"
-          />
-          <PillButton
-            delay={440}
-            label={t("welcome.settings")}
-            onPress={withBurst(onOpenConfiguracion)}
-            icon={require("../../../../assets/images/tuerca.png")}
-          />
-          <PillButton
-            delay={520}
-            label={t("common.signOut")}
-            onPress={withBurst(handleSignOut)}
-            icon={require("../../../../assets/images/log out.png")}
-          />
+        <View className="mt-4 mb-2 w-full items-center" style={{ gap: 12 }}>
+          <Reveal className="w-full" delay={200} offset={26}>
+            <Button
+              fullWidth
+              variant="filled"
+              label={t("welcome.viewResumen")}
+              onPress={withBurst(onOpenResumen)}
+              icon={require("../../../../assets/images/estadisticas.png")}
+            />
+          </Reveal>
+          <Reveal className="w-full" delay={280} offset={26}>
+            <Button
+              fullWidth
+              variant="primary"
+              font="display"
+              label={t("welcome.goPremium")}
+              onPress={withBurst(onOpenPaywall)}
+              icon={require("../../../../assets/images/brillitos.png")}
+            />
+          </Reveal>
+          <Reveal className="w-full" delay={360} offset={26}>
+            <Button
+              fullWidth
+              variant="outline"
+              label={t("welcome.settings")}
+              onPress={withBurst(onOpenConfiguracion)}
+              icon={require("../../../../assets/images/tuerca.png")}
+            />
+          </Reveal>
         </View>
-
       </View>
 
-    </LinearGradient>
+      <BottomIconBar
+        items={[
+          {
+            key: "signOut",
+            label: t("common.signOut"),
+            icon: require("../../../../assets/images/log out.png"),
+            onPress: withBurst(handleSignOut),
+          },
+          {
+            key: "home",
+            label: t("welcome.navHome"),
+            icon: require("../../../../assets/images/home.png"),
+            active: true,
+          },
+          {
+            key: "agenda",
+            label: t("welcome.navAgenda"),
+            icon: require("../../../../assets/images/notas2.png"),
+            onPress: withBurst(onOpenAgenda),
+          },
+        ]}
+      />
+    </ScreenBackground>
   );
 }

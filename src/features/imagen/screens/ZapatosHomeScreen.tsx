@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FlatList, Image, Pressable, SafeAreaView, Text, View } from "react-native";
+import { Heading } from "@/components/ui/Heading";
 import * as ImagePicker from "expo-image-picker";
 import { format } from "date-fns";
 import { Card } from "@/components/ui/Card";
@@ -77,7 +78,7 @@ export function ZapatosHomeScreen({ navigation }: Props) {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-surface-dark px-5 pt-4">
+    <SafeAreaView className="flex-1 px-5 pt-4">
       <FlatList
         style={{ flex: 1 }}
         contentContainerStyle={{ paddingBottom: 40 }}
@@ -92,9 +93,9 @@ export function ZapatosHomeScreen({ navigation }: Props) {
                 style={{ width: 56, height: 56, marginRight: 8 }}
                 resizeMode="contain"
               />
-              <Text className="text-2xl font-bold text-surface-dark dark:text-white">
+              <Heading className="text-2xl">
                 {t("zapatos.title")}
-              </Text>
+              </Heading>
             </View>
 
             <Card className="mb-4">
@@ -157,7 +158,7 @@ export function ZapatosHomeScreen({ navigation }: Props) {
 
               <Button
                 label={imageUri ? t("vestuario.photoSelected") : t("vestuario.addPhoto")}
-                variant="ghost"
+                variant="outline"
                 onPress={pickImage}
               />
               <View className="h-2" />

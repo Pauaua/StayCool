@@ -30,7 +30,7 @@ export function AvatarShopScreen() {
 
   if (!selection || !unlocked) {
     return (
-      <SafeAreaView className="flex-1 items-center justify-center bg-gray-50 dark:bg-surface-dark">
+      <SafeAreaView className="flex-1 items-center justify-center">
         <ActivityIndicator color="#b825f2" size="large" />
       </SafeAreaView>
     );
@@ -65,7 +65,7 @@ export function AvatarShopScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-surface-dark">
+    <SafeAreaView className="flex-1">
       <ScrollView className="px-5 pt-4" contentContainerStyle={{ paddingBottom: 40 }}>
         <View className="items-center mb-4">
           <Image
@@ -73,7 +73,7 @@ export function AvatarShopScreen() {
             style={{ width: 120, height: 120, borderRadius: 60, borderWidth: 3, borderColor: "#e485ff" }}
           />
           {/* Sparkless/MOOney para modificar el avatar: deshabilitado a propósito.
-          <Text className="mt-3 text-sm font-semibold text-brand-500">🪙 {balance} MOOney</Text>
+          <Text className="mt-3 text-sm font-semibold text-ink">🪙 {balance} MOOney</Text>
           */}
         </View>
 
@@ -93,7 +93,7 @@ export function AvatarShopScreen() {
                     disabled={isPending(category, piece.id)}
                     className={`rounded-card px-3 py-2.5 border ${
                       equipped
-                        ? "bg-brand-500 border-brand-500"
+                        ? "bg-morado border-ink"
                         : "bg-white dark:bg-surface-cardDark border-gray-200 dark:border-gray-700"
                     }`}
                   >
@@ -101,10 +101,10 @@ export function AvatarShopScreen() {
                       <ActivityIndicator size="small" color={equipped ? "#fff" : "#b825f2"} />
                     ) : (
                       <>
-                        <Text className={equipped ? "text-white font-semibold" : "text-surface-dark dark:text-white"}>
+                        <Text className={equipped ? "text-ink font-semibold" : "text-surface-dark dark:text-white"}>
                           {piece.label}
                         </Text>
-                        <Text className={`text-xs mt-0.5 ${equipped ? "text-white/80" : "text-gray-400"}`}>
+                        <Text className={`text-xs mt-0.5 ${equipped ? "text-ink/70" : "text-gray-400"}`}>
                           {owned ? (equipped ? "Equipado" : "Desbloqueado") : `🪙 ${piece.cost}`}
                         </Text>
                       </>
