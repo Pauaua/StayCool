@@ -16,6 +16,7 @@ import { EstadisticasNavigator } from "@/navigation/EstadisticasNavigator";
 import { useDivaReminders } from "@/notifications/diva/useDivaReminders";
 import { consumePendingModule, onOpenModuleRequest } from "@/notifications/diva/events";
 import { sectionColors, type SectionKey } from "@/theme";
+import { useT, type TranslationKey } from "@/lib/i18n";
 import { AgendaMenuScreen } from "@/features/home/screens/AgendaMenuScreen";
 import { navigateInModule } from "@/navigation/moduleNavigation";
 
@@ -23,70 +24,76 @@ import { navigateInModule } from "@/navigation/moduleNavigation";
 // abre desde Home y es la única pantalla sin rail lateral.
 const AGENDA_KEY = "Agenda";
 
+// Los Component de cada módulo tienen que mantener su identidad entre renders
+// (si no, React desmonta el stack y se pierde la navegación interna), por eso
+// la etiqueta va como clave y se traduce recién al dibujar el rail.
+type ModuleDef = Omit<RailItem, "label"> & { labelKey: TranslationKey; Component: React.ComponentType };
+
 function buildModules(
   initialHomeRoute: keyof HomeStackParamList,
-  isFull: boolean
-): (RailItem & { Component: React.ComponentType })[] {
+  isFull: boolean,
+  onHomeRouteChange: (route: string | undefined) => void
+): ModuleDef[] {
   return [
     {
       key: "Home",
-      label: "Inicio",
+      labelKey: "nav.home",
       emoji: "🏠",
       icon: require("../../assets/images/home.png"),
-      Component: () => <HomeNavigator initialRouteName={initialHomeRoute} />,
+      Component: () => <HomeNavigator initialRouteName={initialHomeRoute} onRouteChange={onHomeRouteChange} />,
     },
     {
       key: "Bienestar",
-      label: "Bienestar",
+      labelKey: "bienestar.title",
       emoji: "🧘",
       icon: require("../../assets/images/bienestar(_).png"),
       Component: BienestarNavigator,
     },
     {
       key: "Imagen",
-      label: "Imagen",
+      labelKey: "imagen.title",
       emoji: "👗",
       icon: require("../../assets/images/aufit.png"),
       Component: ImagenNavigator,
     },
     {
       key: "Higiene",
-      label: "Cuidado Personal",
+      labelKey: "nav.selfCare",
       emoji: "🪥",
       icon: require("../../assets/images/higuiene.png"),
       Component: HigieneNavigator,
     },
     {
       key: "Social",
-      label: "Social",
+      labelKey: "nav.social",
       emoji: "🎉",
       icon: require("../../assets/images/eventos sociales.png"),
       Component: SocialNavigator,
     },
     {
       key: "Gastos",
-      label: "Gastos",
+      labelKey: "gastos.title",
       emoji: "💸",
       icon: require("../../assets/images/dineral.png"),
       Component: GastosNavigator,
     },
     {
       key: "Gustos",
-      label: "Gustos",
+      labelKey: "gustos.title",
       emoji: "🎧",
       icon: require("../../assets/images/musica.png"),
       Component: GustosNavigator,
     },
     {
       key: "Notas",
-      label: "Notas",
+      labelKey: "notas.title",
       emoji: "📝",
       icon: require("../../assets/images/notas.png"),
       Component: NotasNavigator,
     },
     {
       key: "Estadisticas",
-      label: "Estadísticas",
+      labelKey: "estadisticas.title",
       emoji: isFull ? "📊" : "🔒",
       icon: isFull
         ? require("../../assets/images/estadisticas.png")
@@ -108,10 +115,19 @@ export function MainShell({
   initialHomeRoute?: keyof HomeStackParamList;
 }) {
   const { isFull } = usePremium();
+  const { t } = useT();
   const { hidden: railHidden } = useRailVisibility();
   const [activeKey, setActiveKey] = useState("Home");
   const [initialRoute] = useState(initialHomeRoute);
-  const modules = useMemo(() => buildModules(initialRoute, isFull), [initialRoute, isFull]);
+  // Pantalla actual del stack de Inicio: el panel principal (Hola + semana +
+  // recordatorios) se ve sin rail, igual que el menú Agenda.
+  const [homeRoute, setHomeRoute] = useState<string | undefined>(initialHomeRoute);
+  const modules = useMemo(
+    () => buildModules(initialRoute, isFull, setHomeRoute),
+    [initialRoute, isFull]
+  );
+  const showRail =
+    !railHidden && activeKey !== AGENDA_KEY && !(activeKey === "Home" && homeRoute === "HomeDashboard");
   // Al cambiar de módulo, el contenido entra con fade + un leve deslizamiento
   // hacia arriba (mismo timing que el resto de las entradas de la app).
   const enter = useRef(new Animated.Value(1)).current;
@@ -160,9 +176,13 @@ export function MainShell({
       className="flex-1 flex-row"
       style={{ backgroundColor: sectionColors[activeKey as SectionKey] }}
     >
-      {railHidden || activeKey === AGENDA_KEY ? null : (
-        <SideRail items={modules} activeKey={activeKey} onSelect={handleSelect} />
-      )}
+      {showRail ? (
+        <SideRail
+          items={modules.map((m) => ({ ...m, label: t(m.labelKey) }))}
+          activeKey={activeKey}
+          onSelect={handleSelect}
+        />
+      ) : null}
       <Animated.View
         className="flex-1"
         style={{

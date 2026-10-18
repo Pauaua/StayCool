@@ -39,26 +39,26 @@ export function AgendaMenuScreen({
   const [heroSpace, setHeroSpace] = useState({ width: 0, height: 0 });
 
   const rows: Shortcut[][] = [
-    [{ module: "Social", label: "Social", icon: require("../../../../assets/images/eventos sociales.png") }],
+    [{ module: "Social", label: t("nav.social"), icon: require("../../../../assets/images/eventos sociales.png") }],
     [
       {
         module: "Imagen",
         route: "ImagenHome",
-        label: "Imagen",
+        label: t("imagen.title"),
         icon: require("../../../../assets/images/makeup.png"),
       },
-      { module: "Gastos", label: "Gastos", icon: require("../../../../assets/images/dineral.png") },
+      { module: "Gastos", label: t("gastos.title"), icon: require("../../../../assets/images/dineral.png") },
     ],
     [
-      { module: "Bienestar", label: "Bienestar", icon: require("../../../../assets/images/bienestar(_).png") },
-      { module: "Gustos", label: "Gustos", icon: require("../../../../assets/images/musica.png") },
-      { module: "Higiene", label: "Cuidado Personal", icon: require("../../../../assets/images/higuiene.png") },
+      { module: "Bienestar", label: t("bienestar.title"), icon: require("../../../../assets/images/bienestar(_).png") },
+      { module: "Gustos", label: t("gustos.title"), icon: require("../../../../assets/images/musica.png") },
+      { module: "Higiene", label: t("nav.selfCare"), icon: require("../../../../assets/images/higuiene.png") },
     ],
     [
-      { module: "Notas", label: "Notas", icon: require("../../../../assets/images/notas.png") },
+      { module: "Notas", label: t("notas.title"), icon: require("../../../../assets/images/notas.png") },
       {
         module: "Estadisticas",
-        label: "Estadísticas",
+        label: t("estadisticas.title"),
         icon: isFull
           ? require("../../../../assets/images/estadisticas.png")
           : require("../../../../assets/images/candado.png"),
@@ -68,7 +68,7 @@ export function AgendaMenuScreen({
       {
         module: "Imagen",
         route: "VestuarioHome",
-        label: "Vestuario",
+        label: t("vestuario.title"),
         icon: require("../../../../assets/images/vestidosss.png"),
       },
     ],

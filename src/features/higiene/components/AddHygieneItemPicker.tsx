@@ -9,7 +9,10 @@ import { useT, type TranslationKey } from "@/lib/i18n";
 const PRESET_ICON_IMAGES: Record<string, number> = {
   "Corte de uñas": require("../../../../assets/images/uñotas.png"),
   "Protector solar": require("../../../../assets/images/solazo.png"),
-  "Masaje capilar": require("../../../../assets/images/brillitos.png"),
+  "Hilo dental": require("../../../../assets/images/cepillito.png"),
+  "Aplicación de crema": require("../../../../assets/images/desodorante.png"),
+  Depilación: require("../../../../assets/images/brillitos.png"),
+  "Masaje capilar": require("../../../../assets/images/pelito lavado.png"),
   Skincare: require("../../../../assets/images/makeup.png"),
   Exfoliación: require("../../../../assets/images/higuiene.png"),
 };

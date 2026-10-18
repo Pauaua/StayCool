@@ -1,6 +1,7 @@
 import React from "react";
 import { Alert, Image, Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
 import { format } from "date-fns";
+import { enUS, es } from "date-fns/locale";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Heading } from "@/components/ui/Heading";
@@ -24,7 +25,7 @@ type Props = NativeStackScreenProps<HomeStackParamList, "HomeDashboard">;
 export function HomeScreen({ navigation }: Props) {
   const { session, signOut } = useAuth();
   const goToWelcome = useGoToWelcome();
-  const { t, tg } = useT();
+  const { t, tg, lang } = useT();
   const { data, isLoading } = useDashboardSummary();
   useSyncReminders();
   // const { isFull } = usePremium();
@@ -109,7 +110,9 @@ export function HomeScreen({ navigation }: Props) {
                   {data?.nextActivity ? (
                     <>
                       <Text className="mt-1 text-base font-semibold text-ink">
-                        {format(new Date(data.nextActivity.scheduled_at), "dd MMM · HH:mm")}
+                        {format(new Date(data.nextActivity.scheduled_at), "dd MMM · HH:mm", {
+                          locale: lang === "en" ? enUS : es,
+                        })}
                       </Text>
                       <Text className="text-sm text-ink/80" numberOfLines={2}>
                         {data.nextActivity.title ?? t("home.nextActivityUntitled")}

@@ -52,7 +52,7 @@ export function SettingsScreen({ navigation }: Props) {
     );
   }
 
-  const tierLabel = tier === "full" ? "Diva" : tier === "basico" ? "So Basic!" : "Gratis";
+  const tierLabel = tier === "full" ? "Diva" : tier === "basico" ? "So Basic!" : t("plan.free");
   const createdAt = session?.user.created_at ? new Date(session.user.created_at) : null;
 
   return (

@@ -120,7 +120,7 @@ export function ConfiguracionScreen({ navigation }: Props) {
           } catch (error) {
             Alert.alert(
               t("config.deleteAccount.errorTitle"),
-              error instanceof Error ? error.message : "Intenta de nuevo."
+              error instanceof Error ? error.message : t("common.tryAgain")
             );
           }
         },
@@ -204,9 +204,6 @@ export function ConfiguracionScreen({ navigation }: Props) {
           })}
         </View>
 
-        <Text className="text-xs text-gray-400 mt-3">
-          {profile?.language === "en" ? t("config.language.noteEn") : t("config.language.noteEs")}
-        </Text>
       </Card>
 
       <Card className="mt-4 mb-4" style={{ borderLeftWidth: 4, borderLeftColor: colors.morado }}>
@@ -385,7 +382,7 @@ export function ConfiguracionScreen({ navigation }: Props) {
 
             <TextField
               label={t("config.period.messageLabel")}
-              placeholder="Se aproxima desprendimiento de endometrio, ¡Prepárate!"
+              placeholder={t("notif.periodBody")}
               defaultValue={profile.period_reminder_message ?? ""}
               multiline
               onEndEditing={(e) => {

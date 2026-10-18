@@ -1,4 +1,5 @@
 import React from "react";
+import { useT } from "@/lib/i18n";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NotasHomeScreen } from "@/features/notas/screens/NotasHomeScreen";
@@ -10,6 +11,7 @@ import { sectionScreenOptions } from "@/navigation/screenOptions";
 const Stack = createNativeStackNavigator<NotasStackParamList>();
 
 export function NotasNavigator() {
+  const { t } = useT();
   return (
     <NavigationContainer independent>
       <Stack.Navigator screenOptions={sectionScreenOptions("Notas")}>
@@ -17,12 +19,12 @@ export function NotasNavigator() {
         <Stack.Screen
           name="NotaRapida"
           component={NotaRapidaScreen}
-          options={{ headerShown: true, title: "Idea rápida" }}
+          options={{ headerShown: true, title: t("nav.quickIdea") }}
         />
         <Stack.Screen
           name="NotaDetallada"
           component={NotaDetalladaScreen}
-          options={{ headerShown: true, title: "Idea completa" }}
+          options={{ headerShown: true, title: t("nav.fullIdea") }}
         />
       </Stack.Navigator>
     </NavigationContainer>

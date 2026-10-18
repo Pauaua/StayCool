@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Image, SafeAreaView, Text, View, Alert } from "react-native";
+import { useT } from "@/lib/i18n";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
 import { sectionColors } from "@/theme";
@@ -13,6 +14,7 @@ type Props = NativeStackScreenProps<AuthStackParamList, "SignUp">;
 
 export function SignUpScreen({ navigation }: Props) {
   const { signUpWithPassword } = useAuth();
+  const { t } = useT();
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,14 +25,14 @@ export function SignUpScreen({ navigation }: Props) {
 
   async function handleSignUp() {
     if (!passwordsMatch) {
-      Alert.alert("Las contraseñas no coinciden", "Revisa que ambas contraseñas sean iguales.");
+      Alert.alert(t("auth.passwordsMismatch"), t("auth.passwordsMismatchBody"));
       return;
     }
     setLoading(true);
     try {
       await signUpWithPassword(email.trim(), password, displayName.trim());
     } catch (error) {
-      Alert.alert("No se pudo crear la cuenta", (error as Error).message);
+      Alert.alert(t("auth.signUpFailed"), (error as Error).message);
     } finally {
       setLoading(false);
     }
@@ -47,25 +49,25 @@ export function SignUpScreen({ navigation }: Props) {
           />
         </View>
         <Heading className="mb-8" style={{ fontSize: 30 }}>
-          Crea tu cuenta
+          {t("auth.signUpTitle")}
         </Heading>
-        <TextField label="Nombre Social" value={displayName} onChangeText={setDisplayName} />
+        <TextField label={t("auth.socialName")} value={displayName} onChangeText={setDisplayName} />
         <TextField
-          label="Email"
+          label={t("auth.email")}
           autoCapitalize="none"
           keyboardType="email-address"
           value={email}
           onChangeText={setEmail}
         />
-        <TextField label="Contraseña" secureTextEntry value={password} onChangeText={setPassword} />
+        <TextField label={t("auth.password")} secureTextEntry value={password} onChangeText={setPassword} />
         <TextField
-          label="Repetir contraseña"
+          label={t("auth.repeatPassword")}
           secureTextEntry
           value={confirmPassword}
           onChangeText={setConfirmPassword}
         />
         <Button
-          label="Registrarme"
+          label={t("auth.signUp")}
           onPress={handleSignUp}
           loading={loading}
           disabled={!passwordsMatch}
@@ -73,7 +75,7 @@ export function SignUpScreen({ navigation }: Props) {
         />
         <View className="h-3" />
         <Button
-          label="Ya tengo cuenta"
+          label={t("auth.haveAccount")}
           variant="outline"
           onPress={() => navigation.navigate("SignIn")}
         />

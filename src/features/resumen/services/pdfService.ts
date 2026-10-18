@@ -1,6 +1,7 @@
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
 import { translate, type Language } from "@/lib/i18n";
+import { activityTypeLabel, expenseCategoryLabel, feelingLabel } from "@/features/resumen/labels";
 import type { ResumenData, ResumenPeriod } from "@/features/resumen/types";
 
 function formatSleep(minutes: number) {
@@ -28,10 +29,10 @@ function buildResumenHtml(data: ResumenData, period: ResumenPeriod, lang: Langua
   const t = (key: Parameters<typeof translate>[1], vars?: Record<string, string>) => translate(lang, key, vars);
 
   const socialTypes = Object.entries(data.social.typeBreakdown)
-    .map(([type, count]) => `${type} (${count})`)
+    .map(([type, count]) => `${activityTypeLabel(lang, type)} (${count})`)
     .join(", ") || "—";
   const gastosBreakdown = Object.entries(data.gastos.breakdown)
-    .map(([kind, amount]) => `<tr><td>${kind}</td><td style="text-align:right">${formatMoney(amount, lang)}</td></tr>`)
+    .map(([kind, amount]) => `<tr><td>${expenseCategoryLabel(lang, kind)}</td><td style="text-align:right">${formatMoney(amount, lang)}</td></tr>`)
     .join("");
 
   return `
@@ -87,7 +88,7 @@ function buildResumenHtml(data: ResumenData, period: ResumenPeriod, lang: Langua
         <tr><td class="module">${t("pdf.social")}</td><td style="text-align:right">${t("pdf.socialValue", {
     count: String(data.social.activitiesCount),
     types: socialTypes,
-  })}${data.social.avgFeelingLabel ? t("pdf.socialAvgFeeling", { feeling: data.social.avgFeelingLabel }) : ""}</td></tr>
+  })}${data.social.avgFeelingLabel ? t("pdf.socialAvgFeeling", { feeling: feelingLabel(lang, data.social.avgFeelingLabel) }) : ""}</td></tr>
       </table>
 
       <table>

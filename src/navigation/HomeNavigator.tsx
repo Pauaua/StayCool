@@ -1,4 +1,5 @@
 import React from "react";
+import { useT } from "@/lib/i18n";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { HomeScreen } from "@/features/home/screens/HomeScreen";
@@ -21,29 +22,34 @@ const Stack = createNativeStackNavigator<HomeStackParamList>();
 // necesita el suyo propio.
 export function HomeNavigator({
   initialRouteName = "HomeDashboard",
+  onRouteChange,
 }: {
   initialRouteName?: keyof HomeStackParamList;
+  // Avisa a MainShell la pantalla actual: en el panel principal no va rail.
+  onRouteChange?: (route: string | undefined) => void;
 }) {
+  const { t } = useT();
   const navigationRef = useModuleNavigationRef("Home");
+  const reportRoute = () => onRouteChange?.(navigationRef.getCurrentRoute()?.name);
   return (
-    <NavigationContainer independent ref={navigationRef}>
+    <NavigationContainer independent ref={navigationRef} onReady={reportRoute} onStateChange={reportRoute}>
       <Stack.Navigator screenOptions={sectionScreenOptions("Home")} initialRouteName={initialRouteName}>
         <Stack.Screen name="HomeDashboard" component={HomeScreen} />
         <Stack.Screen
           name="Settings"
           component={SettingsScreen}
-          options={{ headerShown: true, title: "Mis datos" }}
+          options={{ headerShown: true, title: t("settings.title") }}
         />
         {/* Sparkless/MOOney para modificar el avatar: deshabilitado a propósito.
         <Stack.Screen
           name="AvatarShop"
           component={AvatarShopScreen}
-          options={{ headerShown: true, title: "Personalizar avatar" }}
+          options={{ headerShown: true, title: t("settings.customizeAvatar") }}
         /> */}
         <Stack.Screen
           name="Resumen"
           component={ResumenScreen}
-          options={{ headerShown: true, title: "Mi Resumen" }}
+          options={{ headerShown: true, title: t("resumen.title") }}
         />
         <Stack.Screen
           name="Paywall"
@@ -53,12 +59,12 @@ export function HomeNavigator({
         <Stack.Screen
           name="Configuracion"
           component={ConfiguracionScreen}
-          options={{ headerShown: true, title: "Configuración" }}
+          options={{ headerShown: true, title: t("welcome.settings") }}
         />
         <Stack.Screen
           name="Legal"
           component={LegalScreen}
-          options={{ headerShown: true, title: "Legal" }}
+          options={{ headerShown: true, title: t("nav.legal") }}
         />
       </Stack.Navigator>
     </NavigationContainer>

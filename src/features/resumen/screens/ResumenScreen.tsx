@@ -13,27 +13,22 @@ import { ResumenCard } from "@/features/resumen/components/ResumenCard";
 import { ShareSheet } from "@/features/resumen/components/ShareSheet";
 import { captureCardImage, shareGeneric, shareToNetwork, type ShareNetwork } from "@/features/resumen/services/shareService";
 import { generateAndSharePdf } from "@/features/resumen/services/pdfService";
-import { useT } from "@/lib/i18n";
+import { useT, type TranslationKey } from "@/lib/i18n";
 // import { grantMooneyForResumen } from "@/features/premium/services/mooneyService";
 import { FallingCircles } from "@/components/ui/FallingCircles";
 import type { ResumenPeriod } from "@/features/resumen/types";
+import { expenseCategoryLabel, feelingLabel } from "@/features/resumen/labels";
 
-const PERIOD_TABS: { id: ResumenPeriod; label: string }[] = [
-  { id: "weekly", label: "Semanal" },
-  { id: "monthly", label: "Mensual" },
-  { id: "yearly", label: "Anual" },
+const PERIOD_TABS: { id: ResumenPeriod; labelKey: TranslationKey }[] = [
+  { id: "weekly", labelKey: "resumen.period.weekly" },
+  { id: "monthly", labelKey: "resumen.period.monthly" },
+  { id: "yearly", labelKey: "resumen.period.yearly" },
 ];
 
-const PERIOD_ADJECTIVE: Record<ResumenPeriod, string> = {
-  weekly: "semanal",
-  monthly: "mensual",
-  yearly: "anual",
-};
-
-const PERIOD_UNIT: Record<ResumenPeriod, string> = {
-  weekly: "semana",
-  monthly: "mes",
-  yearly: "año",
+const PERIOD_ADJECTIVE_KEY: Record<ResumenPeriod, TranslationKey> = {
+  weekly: "resumen.period.weeklyAdj",
+  monthly: "resumen.period.monthlyAdj",
+  yearly: "resumen.period.yearlyAdj",
 };
 
 function formatSleep(minutes: number) {
@@ -43,6 +38,7 @@ function formatSleep(minutes: number) {
 
 export function ResumenScreen() {
   const goToWelcome = useGoToWelcome();
+  const { t } = useT();
   useHideRailWhileMounted();
 
   return (
@@ -51,16 +47,16 @@ export function ResumenScreen() {
       <ScrollView className="px-5 pt-4" contentContainerStyle={{ paddingBottom: 60 }}>
         <Pressable onPress={goToWelcome} className="flex-row items-center mb-3" hitSlop={8}>
           <Text className="text-xl text-ink">‹</Text>
-          <Text className="text-sm text-ink ml-1">Panel inicial</Text>
+          <Text className="text-sm text-ink ml-1">{t("resumen.back")}</Text>
         </Pressable>
 
         <View className="flex-row items-center mb-1">
           <View
             style={{ width: 8, height: 24, borderRadius: 4, backgroundColor: colors.morado, marginRight: 8 }}
           />
-          <Heading className="text-2xl">Mi Resumen</Heading>
+          <Heading className="text-2xl">{t("resumen.title")}</Heading>
         </View>
-        <Text className="text-sm text-gray-500 mb-4">Todo lo que registraste, en una vista.</Text>
+        <Text className="text-sm text-gray-500 mb-4">{t("resumen.subtitle")}</Text>
         <PremiumGate minTier="basico">
           <ResumenContent />
         </PremiumGate>
@@ -89,7 +85,11 @@ function ResumenContent() {
   const { data, isLoading, isError } = useResumenData(period);
   const periodKey = useResumenPeriodKey(period);
   const { tier, isFull } = usePremium();
-  const { lang } = useT();
+  const { lang, t } = useT();
+  const periodAdj = t(PERIOD_ADJECTIVE_KEY[period]);
+  const times = (n: number) => t(n === 1 ? "estadisticas.word.vez" : "estadisticas.word.veces");
+  const money = (n: number) =>
+    `$${n.toLocaleString(lang === "en" ? "en-US" : "es-AR", { maximumFractionDigits: 0 })}`;
 
   // Compartir/descargar el wrapped no es gratis: Free no puede ninguno, So
   // Basic! solo el mensual, Diva los tres (semanal/mensual/anual).
@@ -101,23 +101,14 @@ function ResumenContent() {
   const canViewPeriod = (p: ResumenPeriod) => p !== "yearly" || tier === "full";
 
   function showPeriodLockedMessage() {
-    Alert.alert(
-      "Es contenido premium",
-      "¡Vuélvete una Diva para poder ver tu resumen anual!"
-    );
+    Alert.alert(t("resumen.lockedTitle"), t("resumen.lockedViewYearly"));
   }
 
   function showShareLockedMessage() {
     if (period === "monthly") {
-      Alert.alert(
-        "Es contenido premium",
-        "Revisa nuestros planes premium para poder compartir tu resumen mensual."
-      );
+      Alert.alert(t("resumen.lockedTitle"), t("resumen.lockedMonthly"));
     } else {
-      Alert.alert(
-        "Es contenido premium",
-        `¡Vuélvete una Diva para poder compartir tu resumen ${PERIOD_ADJECTIVE[period]}!`
-      );
+      Alert.alert(t("resumen.lockedTitle"), t("resumen.lockedOther", { period: periodAdj }));
     }
   }
 
@@ -140,10 +131,10 @@ function ResumenContent() {
     setPendingNetwork(network);
     try {
       const imageUri = await captureCardImage(cardRef);
-      await shareToNetwork(network, imageUri, "Mi Resumen de StayCoolPlus 💜");
+      await shareToNetwork(network, imageUri, t("resumen.shareCaption"));
       await grantShareBonus();
     } catch (error) {
-      Alert.alert("No se pudo compartir", error instanceof Error ? error.message : "Intenta de nuevo.");
+      Alert.alert(t("resumen.shareFailedTitle"), error instanceof Error ? error.message : t("resumen.tryAgain"));
     } finally {
       setPendingNetwork(null);
       setShareSheetVisible(false);
@@ -154,10 +145,10 @@ function ResumenContent() {
     setPendingNetwork("whatsapp"); // reutilizamos el estado de "cargando" mientras se captura
     try {
       const imageUri = await captureCardImage(cardRef);
-      await shareGeneric(imageUri, "Mi Resumen de StayCoolPlus 💜");
+      await shareGeneric(imageUri, t("resumen.shareCaption"));
       await grantShareBonus();
     } catch (error) {
-      Alert.alert("No se pudo compartir", error instanceof Error ? error.message : "Intenta de nuevo.");
+      Alert.alert(t("resumen.shareFailedTitle"), error instanceof Error ? error.message : t("resumen.tryAgain"));
     } finally {
       setPendingNetwork(null);
       setShareSheetVisible(false);
@@ -171,7 +162,7 @@ function ResumenContent() {
       await generateAndSharePdf(data, period, lang);
       await grantShareBonus();
     } catch (error) {
-      Alert.alert("No se pudo generar el PDF", error instanceof Error ? error.message : "Intenta de nuevo.");
+      Alert.alert(t("resumen.pdfFailedTitle"), error instanceof Error ? error.message : t("resumen.tryAgain"));
     } finally {
       setIsExportingPdf(false);
     }
@@ -208,7 +199,7 @@ function ResumenContent() {
                 }
                 style={period === tab.id ? { color: colors.ink } : undefined}
               >
-                {tab.label}
+                {t(tab.labelKey)}
               </Text>
             </View>
           </Pressable>
@@ -221,7 +212,7 @@ function ResumenContent() {
         </View>
       ) : isError || !data ? (
         <Card className="items-center py-8">
-          <Text className="text-gray-500">No pudimos cargar tu resumen. Intenta de nuevo.</Text>
+          <Text className="text-gray-500">{t("resumen.loadErrorTitle")}</Text>
         </Card>
       ) : periodStillOngoing ? (
         <Card className="items-center py-10 px-6">
@@ -231,12 +222,13 @@ function ResumenContent() {
             resizeMode="contain"
           />
           <Text className="text-base font-bold text-surface-dark dark:text-white text-center mt-3">
-            Aún no podemos darte esa información
+            {t("resumen.ongoingTitle")}
           </Text>
           <Text className="text-sm text-gray-500 dark:text-gray-400 text-center mt-2">
-            Tu resumen {PERIOD_ADJECTIVE[period]} va a estar disponible recién cuando termines{" "}
-            {period === "monthly" ? "el mes" : "el año"}. Mantente Cool completando tus datos día a día en la
-            app para llegar a tu Resumen— mientras tanto, puedes ver cómo va tu {PERIOD_UNIT.weekly} en la pestaña Semanal.
+            {t("resumen.ongoingBody", {
+              period: periodAdj,
+              unit: t(period === "monthly" ? "resumen.ongoingUnitMonth" : "resumen.ongoingUnitYear"),
+            })}
           </Text>
         </Card>
       ) : !hasAnyResumenData(data) ? (
@@ -247,19 +239,18 @@ function ResumenContent() {
             resizeMode="contain"
           />
           <Text className="text-base font-bold text-surface-dark dark:text-white text-center mt-3">
-            Aún no tenemos datos suficientes para armar tu resumen
+            {t("resumen.noDataTitle")}
           </Text>
           <Text className="text-sm text-gray-500 dark:text-gray-400 text-center mt-2">
-            El resumen lo creas tu: completa tus datos día a día en cada módulo (Bienestar, Cuidado
-            Personal, Imagen, Pelo, Social, Gastos...) y a medida que registres, acá vas a ver tu
-            historia armarse sola.
+            {t("resumen.noDataBody")}
           </Text>
         </Card>
       ) : (
         <>
           <Text className="text-lg font-bold text-surface-dark dark:text-white mb-3">
-            Acá está tu resumen {PERIOD_ADJECTIVE[period]}
-            {data.displayName ? `, ${data.displayName}` : ""} ✨
+            {data.displayName
+              ? t("resumen.headerWithName", { period: periodAdj, name: data.displayName })
+              : t("resumen.headerNoName", { period: periodAdj })}
           </Text>
 
           {/* Dashboard navegable in-app, en frases por módulo. Borde dorado
@@ -275,74 +266,90 @@ function ResumenContent() {
           >
             <Card style={{ borderLeftWidth: 4, borderLeftColor: colors.morado }}>
               <Text className="text-surface-dark dark:text-white">
-                <Text className="font-bold">Bienestar: </Text>
-                Comiste {data.bienestar.mealsCount}{" "}
-                {data.bienestar.mealsCount === 1 ? "vez" : "veces"}, dormiste un promedio de{" "}
-                {formatSleep(data.bienestar.avgSleepMinutes)} y te ejercitaste{" "}
-                {data.bienestar.exerciseCount}{" "}
-                {data.bienestar.exerciseCount === 1 ? "vez" : "veces"}.
+                <Text className="font-bold">{t("resumen.sectionBienestar")}</Text>
+                {t("resumen.dashboard.bienestar", {
+                  meals: String(data.bienestar.mealsCount),
+                  mealsWord: times(data.bienestar.mealsCount),
+                  sleep: formatSleep(data.bienestar.avgSleepMinutes),
+                  exercise: String(data.bienestar.exerciseCount),
+                  exerciseWord: times(data.bienestar.exerciseCount),
+                })}
               </Text>
             </Card>
 
             <Card style={{ borderLeftWidth: 4, borderLeftColor: colors.morado }}>
               <Text className="text-surface-dark dark:text-white">
-                <Text className="font-bold">Higiene: </Text>
-                Cumpliste el {data.higiene.completionPercent}% de tu checklist
-                {data.comparison.hygieneCompletionPercentDelta !== 0
-                  ? ` (${data.comparison.hygieneCompletionPercentDelta > 0 ? "+" : ""}${
-                      data.comparison.hygieneCompletionPercentDelta
-                    } pts vs. el período anterior)`
-                  : ""}
-                .
+                <Text className="font-bold">{t("resumen.sectionHigiene")}</Text>
+                {t("resumen.dashboard.higiene", {
+                  percent: String(data.higiene.completionPercent),
+                  delta:
+                    data.comparison.hygieneCompletionPercentDelta !== 0
+                      ? t("resumen.dashboard.higieneDelta", {
+                          sign: data.comparison.hygieneCompletionPercentDelta > 0 ? "+" : "",
+                          delta: String(data.comparison.hygieneCompletionPercentDelta),
+                        })
+                      : "",
+                })}
               </Text>
             </Card>
 
             <Card style={{ borderLeftWidth: 4, borderLeftColor: colors.morado }}>
               <Text className="text-surface-dark dark:text-white">
-                <Text className="font-bold">Pelo: </Text>
-                Te lavaste el pelo {data.pelo.washCount}{" "}
-                {data.pelo.washCount === 1 ? "vez" : "veces"} y probaste{" "}
-                {data.pelo.distinctHairstylesCount}{" "}
-                {data.pelo.distinctHairstylesCount === 1 ? "peinado distinto" : "peinados distintos"}.
+                <Text className="font-bold">{t("resumen.sectionPelo")}</Text>
+                {t("resumen.dashboard.pelo", {
+                  washes: String(data.pelo.washCount),
+                  washWord: times(data.pelo.washCount),
+                  styles: String(data.pelo.distinctHairstylesCount),
+                  styleWord: t(
+                    data.pelo.distinctHairstylesCount === 1
+                      ? "resumen.dashboard.styleDistinct"
+                      : "resumen.dashboard.stylesDistinct"
+                  ),
+                })}
               </Text>
             </Card>
 
             <Card style={{ borderLeftWidth: 4, borderLeftColor: colors.morado }}>
               <Text className="text-surface-dark dark:text-white">
-                <Text className="font-bold">Cara: </Text>
-                Te maquillaste {data.cara.makeupDays}{" "}
-                {data.cara.makeupDays === 1 ? "día" : "días"}.
+                <Text className="font-bold">{t("resumen.sectionCara")}</Text>
+                {t("resumen.dashboard.cara", {
+                  n: String(data.cara.makeupDays),
+                  word: t(data.cara.makeupDays === 1 ? "estadisticas.word.dia" : "estadisticas.word.dias"),
+                })}
               </Text>
             </Card>
 
             <Card style={{ borderLeftWidth: 4, borderLeftColor: colors.morado }}>
               <Text className="text-surface-dark dark:text-white">
-                <Text className="font-bold">Imagen: </Text>
-                Registraste {data.imagen.outfitsCount}{" "}
-                {data.imagen.outfitsCount === 1 ? "outfit" : "outfits"}.
+                <Text className="font-bold">{t("resumen.sectionImagen")}</Text>
+                {t("resumen.dashboard.imagen", {
+                  n: String(data.imagen.outfitsCount),
+                  word: t(data.imagen.outfitsCount === 1 ? "estadisticas.word.outfit" : "estadisticas.word.outfits"),
+                })}
               </Text>
             </Card>
 
             <Card style={{ borderLeftWidth: 4, borderLeftColor: colors.morado }}>
               <Text className="text-surface-dark dark:text-white">
-                <Text className="font-bold">Actividades sociales: </Text>
-                Saliste {data.social.activitiesCount}{" "}
-                {data.social.activitiesCount === 1 ? "vez" : "veces"}
-                {data.social.avgFeelingLabel
-                  ? `, y en promedio te sentiste "${data.social.avgFeelingLabel}"`
-                  : ""}
-                .
+                <Text className="font-bold">{t("resumen.sectionSocial")}</Text>
+                {t("resumen.dashboard.social", {
+                  n: String(data.social.activitiesCount),
+                  word: times(data.social.activitiesCount),
+                  feeling: data.social.avgFeelingLabel
+                    ? t("resumen.dashboard.socialFeeling", { feeling: feelingLabel(lang, data.social.avgFeelingLabel) })
+                    : "",
+                })}
               </Text>
             </Card>
 
             <Card style={{ borderLeftWidth: 4, borderLeftColor: colors.morado }}>
               <Text className="text-surface-dark dark:text-white">
-                <Text className="font-bold">Gastos: </Text>
-                Gastaste ${data.gastos.total.toLocaleString("es-AR", { maximumFractionDigits: 0 })}.
+                <Text className="font-bold">{t("resumen.sectionGastos")}</Text>
+                {t("resumen.dashboard.gastos", { amount: money(data.gastos.total) })}
               </Text>
               {Object.entries(data.gastos.breakdown).map(([kind, amount]) => (
                 <Text key={kind} className="text-xs text-gray-400 mt-1">
-                  {kind}: ${amount.toLocaleString("es-AR", { maximumFractionDigits: 0 })}
+                  {expenseCategoryLabel(lang, kind)}: {money(amount)}
                 </Text>
               ))}
             </Card>
@@ -350,7 +357,7 @@ function ResumenContent() {
 
           {/* Tarjeta compartible (capturada off-screen para el share/no se
               recorta la vista visible del dashboard) */}
-          <Text className="text-sm text-gray-500 mb-2">Vista previa de la tarjeta</Text>
+          <Text className="text-sm text-gray-500 mb-2">{t("resumen.cardPreviewLabel")}</Text>
           <View className="items-center mb-6">
             <View
               style={
@@ -377,17 +384,11 @@ function ResumenContent() {
                 />
               )}
               <Text className="font-semibold text-base" style={{ color: colors.ink }}>
-                Compartir
+                {t("resumen.share")}
               </Text>
             </Pressable>
             <Button
-              label={
-                !canShareThisPeriod
-                  ? "Descargar PDF"
-                  : isExportingPdf
-                  ? "Generando PDF..."
-                  : "Descargar PDF"
-              }
+              label={canShareThisPeriod && isExportingPdf ? t("resumen.generatingPdf") : t("resumen.downloadPdf")}
               variant="outline"
               loading={canShareThisPeriod && isExportingPdf}
               onPress={canShareThisPeriod ? handleDownloadPdf : showShareLockedMessage}

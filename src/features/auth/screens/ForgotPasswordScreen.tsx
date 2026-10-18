@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Alert, Image, SafeAreaView, Text, View } from "react-native";
+import { useT } from "@/lib/i18n";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
 import { sectionColors } from "@/theme";
@@ -13,6 +14,7 @@ type Props = NativeStackScreenProps<AuthStackParamList, "ForgotPassword">;
 
 export function ForgotPasswordScreen({ navigation }: Props) {
   const { requestPasswordReset } = useAuth();
+  const { t } = useT();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -22,12 +24,12 @@ export function ForgotPasswordScreen({ navigation }: Props) {
     try {
       await requestPasswordReset(email.trim());
       Alert.alert(
-        "Revisá tu correo",
-        "Te mandamos un link para elegir una contraseña nueva.",
-        [{ text: "OK", onPress: () => navigation.navigate("SignIn") }]
+        t("auth.checkEmailTitle"),
+        t("auth.checkEmailBody"),
+        [{ text: t("common.ok"), onPress: () => navigation.navigate("SignIn") }]
       );
     } catch (error) {
-      Alert.alert("No se pudo enviar el correo", (error as Error).message);
+      Alert.alert(t("auth.sendFailed"), (error as Error).message);
     } finally {
       setLoading(false);
     }
@@ -50,21 +52,20 @@ export function ForgotPasswordScreen({ navigation }: Props) {
             resizeMode="contain"
           />
           <Heading style={{ fontSize: 28 }}>
-            Recuperar contraseña
+            {t("auth.forgotTitle")}
           </Heading>
         </View>
         <Text className="text-ink/70 mb-6">
-          Ingresa tu correo electrónico y, si está asociada a alguna cuenta creada en StayCool, te
-          llegará un correo para restaurar tu contraseña. ¡Atenta!
+          {t("auth.forgotBody")}
         </Text>
         <TextField
-          label="Email"
+          label={t("auth.email")}
           autoCapitalize="none"
           keyboardType="email-address"
           value={email}
           onChangeText={setEmail}
         />
-        <Button label="Enviar link" onPress={handleSend} loading={loading} />
+        <Button label={t("auth.sendLink")} onPress={handleSend} loading={loading} />
       </SafeAreaView>
     </ScreenBackground>
   );

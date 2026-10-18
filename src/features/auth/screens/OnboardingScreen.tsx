@@ -1,5 +1,6 @@
 import React from "react";
 import { Image, SafeAreaView, Text, View, useWindowDimensions } from "react-native";
+import { useT } from "@/lib/i18n";
 import { Button } from "@/components/ui/Button";
 import { sectionColors } from "@/theme";
 import { ScreenBackground } from "@/components/ui/ScreenBackground";
@@ -17,6 +18,7 @@ export function OnboardingScreen({ navigation }: Props) {
   // colapsar a 0 en Android y la imagen desaparece.
   const { width } = useWindowDimensions();
   const heroWidth = width - 48;
+  const { t } = useT();
 
   return (
     <ScreenBackground color={sectionColors.Onboarding}>
@@ -33,7 +35,7 @@ export function OnboardingScreen({ navigation }: Props) {
             />
           </View>
           <Text className="text-ink/80" style={{ fontSize: 14 }}>
-            Tu bienestar, imagen, vida social y gastos, en un solo lugar. Rápido, simple y bonito.
+            {t("auth.onboardingTagline")}
           </Text>
         </Reveal>
 
@@ -48,10 +50,10 @@ export function OnboardingScreen({ navigation }: Props) {
         </Reveal>
 
         <Reveal delay={350} offset={26}>
-          <Button label="Crear cuenta" variant="white" fullWidth onPress={() => navigation.navigate("SignUp")} />
+          <Button label={t("auth.createAccount")} variant="white" fullWidth onPress={() => navigation.navigate("SignUp")} />
           <View className="h-3" />
           <Button
-            label="Ya tengo cuenta"
+            label={t("auth.haveAccount")}
             variant="outlineWhite"
             fullWidth
             onPress={() => navigation.navigate("SignIn")}

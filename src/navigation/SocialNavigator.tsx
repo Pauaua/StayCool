@@ -1,4 +1,5 @@
 import React from "react";
+import { useT } from "@/lib/i18n";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { SocialCalendarioScreen } from "@/features/social/screens/SocialCalendarioScreen";
@@ -9,6 +10,7 @@ import { sectionScreenOptions } from "@/navigation/screenOptions";
 const Stack = createNativeStackNavigator<SocialStackParamList>();
 
 export function SocialNavigator() {
+  const { t } = useT();
   return (
     <NavigationContainer independent>
       <Stack.Navigator screenOptions={sectionScreenOptions("Social")}>
@@ -16,7 +18,7 @@ export function SocialNavigator() {
         <Stack.Screen
           name="SocialRegistro"
           component={SocialRegistroScreen}
-          options={{ headerShown: true, title: "Nueva actividad" }}
+          options={{ headerShown: true, title: t("nav.newActivity") }}
         />
       </Stack.Navigator>
     </NavigationContainer>

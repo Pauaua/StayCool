@@ -35,8 +35,8 @@ const MONTHS = [
   "diciembre",
 ];
 
-// Alto reservado bajo el círculo del regalo para su mensaje ("¡Tienes un regalo!").
-const GIFT_LABEL_SPACE = 44;
+// Tope del personaje para que no se vea pixelado en pantallas grandes.
+const CHARACTER_MAX = 380;
 
 const WEEKDAYS_EN = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const MONTHS_EN = [
@@ -84,7 +84,7 @@ export function WelcomeScreen({
   const [now, setNow] = useState(() => new Date());
   const sparkle = useSparkleTransition();
   const busy = useRef(false);
-  const [giftSpace, setGiftSpace] = useState(300);
+  const [heroSpace, setHeroSpace] = useState(300);
   const { width } = useWindowDimensions();
 
   useEffect(() => {
@@ -93,13 +93,8 @@ export function WelcomeScreen({
   }, []);
 
   const displayName = profile?.display_name?.trim();
-  // Mientras se ve el regalo (sin reclamar, o recién abierto), el personaje
-  // comparte el espacio con la caja.
-  const [giftPending, setGiftPending] = useState(false);
-  const available = Math.max(110, Math.min(260, giftSpace - GIFT_LABEL_SPACE));
-  const sharedWidth = (width - 48 - 16) / 2;
-  const characterSize = giftPending ? Math.min(available, sharedWidth) : available;
-  const giftSize = Math.max(110, Math.min(available, sharedWidth));
+  // El personaje ocupa todo el espacio libre entre el saludo y los botones.
+  const characterSize = Math.max(120, Math.min(heroSpace, width - 48, CHARACTER_MAX));
 
   function handleSignOut() {
     Alert.alert(t("common.confirmSignOutTitle"), tg("common.confirmSignOutMessage"), [
@@ -128,28 +123,29 @@ export function WelcomeScreen({
     <ScreenBackground color={sectionColors.Welcome}>
       <View className="flex-1 items-center px-6 pt-16">
         <Reveal className="w-full" offset={-18} duration={480}>
-          <Heading style={{ fontSize: 40, lineHeight: 46 }}>
-            {displayName ? t("welcome.greetingWithName", { name: displayName }) : t("welcome.greetingNoName")}
-          </Heading>
-          <Text className="mt-1 text-sm capitalize text-ink/70">
+          {/* Si el regalo sigue pendiente, la cajita cerrada queda al lado del
+              nombre (TrialGiftBox no dibuja nada una vez reclamado). */}
+          <View className="flex-row items-center" style={{ gap: 12 }}>
+            <Heading className="flex-shrink" style={{ fontSize: 60, lineHeight: 68 }}>
+              {displayName ? t("welcome.greetingWithName", { name: displayName }) : t("welcome.greetingNoName")}
+            </Heading>
+            <TrialGiftBox size={56} />
+          </View>
+          <Text className="mt-1 capitalize text-ink/70" style={{ fontSize: 21, lineHeight: 28 }}>
             {formatTime(now)} · {formatDate(now, lang)}
           </Text>
         </Reveal>
 
-        {/* El personaje (y el regalo, si está pendiente) ocupan todo el espacio
-            libre entre el reloj y los botones y se achican para caber. zIndex
-            alto: si aun así algo se solapara, quedan por encima de los botones. */}
         <View
-          style={{ flex: 1, zIndex: 10, elevation: 10, gap: 16 }}
-          className="w-full flex-row items-center justify-center"
-          onLayout={(e) => setGiftSpace(e.nativeEvent.layout.height)}
+          style={{ flex: 1 }}
+          className="w-full items-center justify-center"
+          onLayout={(e) => setHeroSpace(e.nativeEvent.layout.height)}
         >
           <Image
             source={require("../../../../assets/images/ImagenLogin.png")}
             style={{ width: characterSize, height: characterSize }}
             resizeMode="contain"
           />
-          <TrialGiftBox size={giftSize} onVisibleChange={setGiftPending} />
         </View>
 
         <Text className="mt-2 text-base text-center text-ink">{t("welcome.subtitle")}</Text>
@@ -159,11 +155,11 @@ export function WelcomeScreen({
           {[
             [
               { label: t("welcome.openAgenda"), action: onOpenAgenda },
-              { label: t("welcome.goPremium"), action: onOpenPaywall },
+              { label: t("welcome.viewResumen"), action: onOpenResumen },
             ],
             [
-              { label: t("welcome.viewResumen"), action: onOpenResumen },
               { label: t("welcome.settings"), action: onOpenConfiguracion },
+              { label: t("welcome.goPremium"), action: onOpenPaywall },
             ],
           ].map((row, i) => (
             <View key={i} className="flex-row" style={{ gap: 12 }}>

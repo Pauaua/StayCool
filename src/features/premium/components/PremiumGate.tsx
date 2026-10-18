@@ -1,5 +1,6 @@
 import React from "react";
 import { Image, Text, View } from "react-native";
+import { useT } from "@/lib/i18n";
 import { useNavigation } from "@react-navigation/native";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -19,6 +20,7 @@ const TIER_RANK = { free: 0, basico: 1, full: 2 } as const;
 export function PremiumGate({ minTier, children }: PremiumGateProps) {
   const { tier, isLoading } = usePremium();
   const navigation = useNavigation<any>();
+  const { t } = useT();
 
   if (isLoading) return null;
   if (TIER_RANK[tier] >= TIER_RANK[minTier]) return <>{children}</>;
@@ -31,10 +33,10 @@ export function PremiumGate({ minTier, children }: PremiumGateProps) {
         resizeMode="contain"
       />
       <Text className="text-lg font-bold text-surface-dark dark:text-white mt-3 text-center">
-        Hazte diva para acceder a esta sección
+        {t("premiumGate.title")}
       </Text>
       <View className="mt-4 w-full">
-        <Button label="Ver planes" onPress={() => navigation.navigate("Paywall")} />
+        <Button label={t("premiumGate.viewPlans")} onPress={() => navigation.navigate("Paywall")} />
       </View>
     </Card>
   );

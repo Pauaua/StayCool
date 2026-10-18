@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Alert, SafeAreaView, Text } from "react-native";
+import { useT } from "@/lib/i18n";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
 import { sectionColors } from "@/theme";
@@ -12,24 +13,25 @@ import { Heading } from "@/components/ui/Heading";
 // del mail y tiene que elegir una contraseña nueva antes de seguir.
 export function ResetPasswordScreen() {
   const { completePasswordReset } = useAuth();
+  const { t } = useT();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   async function handleSave() {
     if (password.length < 6) {
-      Alert.alert("Contraseña muy corta", "Usá al menos 6 caracteres.");
+      Alert.alert(t("auth.passwordTooShort"), t("auth.passwordTooShortBody"));
       return;
     }
     if (password !== confirmPassword) {
-      Alert.alert("Las contraseñas no coinciden");
+      Alert.alert(t("auth.passwordsMismatch"));
       return;
     }
     setLoading(true);
     try {
       await completePasswordReset(password);
     } catch (error) {
-      Alert.alert("No se pudo actualizar la contraseña", (error as Error).message);
+      Alert.alert(t("auth.resetFailed"), (error as Error).message);
     } finally {
       setLoading(false);
     }
@@ -39,16 +41,16 @@ export function ResetPasswordScreen() {
     <ScreenBackground color={sectionColors.Auth}>
       <SafeAreaView className="flex-1 px-6 justify-center">
         <Heading className="mb-3" style={{ fontSize: 28 }}>
-          Elegí una contraseña nueva
+          {t("auth.resetTitle")}
         </Heading>
-        <TextField label="Contraseña nueva" secureTextEntry value={password} onChangeText={setPassword} />
+        <TextField label={t("auth.newPassword")} secureTextEntry value={password} onChangeText={setPassword} />
         <TextField
-          label="Repetila"
+          label={t("auth.repeatIt")}
           secureTextEntry
           value={confirmPassword}
           onChangeText={setConfirmPassword}
         />
-        <Button label="Guardar" onPress={handleSave} loading={loading} />
+        <Button label={t("auth.save")} onPress={handleSave} loading={loading} />
       </SafeAreaView>
     </ScreenBackground>
   );

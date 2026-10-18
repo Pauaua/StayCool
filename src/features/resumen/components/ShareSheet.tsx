@@ -1,5 +1,6 @@
 import React from "react";
 import { ActivityIndicator, Modal, Pressable, Text, View } from "react-native";
+import { useT } from "@/lib/i18n";
 import { SHARE_TARGETS, type ShareNetwork } from "@/features/resumen/services/shareService";
 
 const NETWORK_STYLE: Record<ShareNetwork, { emoji: string; bg: string }> = {
@@ -23,11 +24,12 @@ interface ShareSheetProps {
 // específico de esa red; "Más opciones" abre el selector nativo para
 // cualquier otra app.
 export function ShareSheet({ visible, onClose, onSelect, onMoreOptions, pendingNetwork }: ShareSheetProps) {
+  const { t } = useT();
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <Pressable className="flex-1 bg-black/50 justify-end" onPress={onClose}>
         <Pressable className="bg-white dark:bg-surface-cardDark rounded-t-3xl p-6" onPress={(e) => e.stopPropagation()}>
-          <Text className="text-lg font-bold text-surface-dark dark:text-white mb-4">Compartir Mi Resumen</Text>
+          <Text className="text-lg font-bold text-surface-dark dark:text-white mb-4">{t("share.title")}</Text>
 
           <View className="flex-row flex-wrap gap-3 justify-between">
             {SHARE_TARGETS.map((target) => {
@@ -63,7 +65,7 @@ export function ShareSheet({ visible, onClose, onSelect, onMoreOptions, pendingN
           </View>
 
           <Pressable onPress={onMoreOptions} className="mt-6 items-center py-3 border-t border-gray-100 dark:border-gray-700">
-            <Text className="text-ink font-semibold">Más opciones</Text>
+            <Text className="text-ink font-semibold">{t("share.moreOptions")}</Text>
           </Pressable>
         </Pressable>
       </Pressable>

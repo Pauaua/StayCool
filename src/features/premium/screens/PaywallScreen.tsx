@@ -190,15 +190,15 @@ export function PaywallScreen() {
       const purchasedEntitlement = planTier === "full" ? ENTITLEMENT_FULL : ENTITLEMENT_BASICO;
       if (isDowngrade) {
         Alert.alert(
-          "Cambio programado",
-          "Seguirás siendo Diva hasta el fin de tu período actual; después tu plan pasa a So Basic!."
+          t("paywall.downgradeScheduledTitle"),
+          t("paywall.downgradeScheduledBody")
         );
       } else if (info.entitlements.active[purchasedEntitlement]) {
-        Alert.alert("¡Listo!", "Tu suscripción está activa.");
+        Alert.alert(t("paywall.successTitle"), t("paywall.successBody"));
       } else {
         Alert.alert(
-          "Recibimos tu compra",
-          'Tu plan se actualizará en unos minutos. Si no ves el cambio, toca "Restaurar compras".'
+          t("paywall.receivedTitle"),
+          t("paywall.receivedBody")
         );
       }
     } catch (error: any) {
@@ -207,8 +207,8 @@ export function PaywallScreen() {
       // un error, la compra se activa sola cuando la tienda la confirme.
       if (error?.code === Purchases.PURCHASES_ERROR_CODE.PAYMENT_PENDING_ERROR) {
         Alert.alert(
-          "Tu pago está pendiente",
-          "La tienda todavía está procesando tu pago. Tu plan se activará apenas se confirme; no necesitas volver a comprar."
+          t("paywall.pendingTitle"),
+          t("paywall.pendingBody")
         );
         return;
       }
@@ -220,12 +220,12 @@ export function PaywallScreen() {
       if (error?.code === Purchases.PURCHASES_ERROR_CODE.PRODUCT_NOT_AVAILABLE_FOR_PURCHASE_ERROR) {
         console.warn("Producto no disponible en la tienda", pkg.product.identifier, error);
         Alert.alert(
-          "Este plan todavía no está disponible",
-          "La tienda no encontró este plan. Asegúrate de haber instalado la app desde Google Play / App Store e intenta de nuevo más tarde."
+          t("paywall.unavailableTitle"),
+          t("paywall.unavailableBody")
         );
         return;
       }
-      Alert.alert("No se pudo completar la compra", error instanceof Error ? error.message : "Intenta de nuevo.");
+      Alert.alert(t("paywall.purchaseFailed"), error instanceof Error ? error.message : t("common.tryAgain"));
     } finally {
       setPendingTier(null);
     }
@@ -237,8 +237,8 @@ export function PaywallScreen() {
       await refresh();
     } catch (error) {
       Alert.alert(
-        "No se pudo abrir la gestión de suscripción",
-        error instanceof Error ? error.message : "Intenta de nuevo."
+        t("paywall.manageFailed"),
+        error instanceof Error ? error.message : t("common.tryAgain")
       );
     }
   }
@@ -248,9 +248,9 @@ export function PaywallScreen() {
     try {
       await Purchases.restorePurchases();
       await refresh();
-      Alert.alert("Compras restauradas", "Revisamos tu cuenta y actualizamos tu plan.");
+      Alert.alert(t("paywall.restoredTitle"), t("paywall.restoredBody"));
     } catch (error) {
-      Alert.alert("No se pudo restaurar", error instanceof Error ? error.message : "Intenta de nuevo.");
+      Alert.alert(t("paywall.restoreFailed"), error instanceof Error ? error.message : t("common.tryAgain"));
     } finally {
       setIsRestoring(false);
     }
@@ -272,7 +272,7 @@ export function PaywallScreen() {
       <ScrollView className="px-5 pt-4" contentContainerStyle={{ paddingBottom: 40 }}>
         <Pressable onPress={goToWelcome} className="flex-row items-center mb-3" hitSlop={8}>
           <Text className="text-xl text-ink">‹</Text>
-          <Text className="text-sm text-ink ml-1">Panel inicial</Text>
+          <Text className="text-sm text-ink ml-1">{t("paywall.back")}</Text>
         </Pressable>
 
         <View className="flex-row items-center justify-center mb-1">
@@ -285,7 +285,7 @@ export function PaywallScreen() {
         </View>
         <Text className="text-sm text-gray-500 dark:text-gray-400 mb-6 text-center">
           {t("paywall.currentPlan", {
-            plan: tier === "full" ? "Diva" : tier === "basico" ? "So Basic!" : "Gratis",
+            plan: tier === "full" ? "Diva" : tier === "basico" ? "So Basic!" : t("plan.free"),
           })}
         </Text>
         {isTrialActive && trialEndsAt ? (

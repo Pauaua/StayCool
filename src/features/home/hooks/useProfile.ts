@@ -10,6 +10,9 @@ import {
   scheduleOneTimeReminder,
 } from "@/notifications/notifications";
 import type { Profile } from "@/features/home/types";
+// Solo se usa dentro de efectos (no al cargar el módulo), así que el import
+// circular con i18n (que usa useProfile) no da problemas.
+import { translate, type Language } from "@/lib/i18n";
 
 export function useProfile() {
   const { session } = useAuth();
@@ -102,13 +105,14 @@ export function useSyncReminders() {
 
   useEffect(() => {
     if (!profile) return;
+    const lang: Language = profile.language === "en" ? "en" : "es";
 
     if (profile.makeup_reminder_enabled) {
       const { hour, minute } = parseTime(profile.makeup_reminder_time);
       scheduleDailyReminder(
         REMINDER_IDS.makeupRemoval,
-        "Hora de desmaquillarte 💄",
-        "No olvides quitarte el maquillaje antes de dormir.",
+        translate(lang, "notif.makeupTitle"),
+        translate(lang, "notif.makeupBody"),
         hour,
         minute
       );
@@ -120,8 +124,8 @@ export function useSyncReminders() {
       const { hour, minute } = parseTime(profile.hygiene_reminder_time);
       scheduleDailyReminder(
         REMINDER_IDS.hygieneChecklist,
-        "Checklist de higiene 🪥",
-        "Revisa si te falta algo en tu checklist de hoy.",
+        translate(lang, "notif.hygieneTitle"),
+        translate(lang, "notif.hygieneBody"),
         hour,
         minute
       );
@@ -133,8 +137,8 @@ export function useSyncReminders() {
       const { hour, minute } = parseTime(profile.skincare_morning_reminder_time);
       scheduleDailyReminder(
         REMINDER_IDS.skincareMorning,
-        "Skincare matutino ☀️",
-        "Es hora de tu rutina de skincare de la mañana.",
+        translate(lang, "notif.skincareMorningTitle"),
+        translate(lang, "notif.skincareMorningBody"),
         hour,
         minute
       );
@@ -146,8 +150,8 @@ export function useSyncReminders() {
       const { hour, minute } = parseTime(profile.skincare_night_reminder_time);
       scheduleDailyReminder(
         REMINDER_IDS.skincareNight,
-        "Skincare nocturno 🌙",
-        "Es hora de tu rutina de skincare de la noche.",
+        translate(lang, "notif.skincareNightTitle"),
+        translate(lang, "notif.skincareNightBody"),
         hour,
         minute
       );
@@ -162,8 +166,8 @@ export function useSyncReminders() {
       alertDate.setHours(9, 0, 0, 0);
       scheduleOneTimeReminder(
         REMINDER_IDS.periodComing,
-        "Se viene, se viene 🩸",
-        profile.period_reminder_message?.trim() || "Se aproxima desprendimiento de endometrio, ¡Prepárate!",
+        translate(lang, "notif.periodTitle"),
+        profile.period_reminder_message?.trim() || translate(lang, "notif.periodBody"),
         alertDate
       );
     } else {
