@@ -33,7 +33,7 @@ Realizado con Expo + React Native + TypeScript, NativeWind, React Navigation, Ta
 - **Tipografías**: Rethink Sans (`@expo-google-fonts/rethink-sans`, pesos 400/600/700) para toda la interfaz, y WindSong (`@expo-google-fonts/windsong`) solo para el nombre de la app y los titulares de la tarjeta compartible de "Mi Resumen" (`font-script` en `tailwind.config.js`).
 - **Datos remotos**: TanStack Query (`@tanstack/react-query`) + Zod para validación.
 - **Backend**: Supabase (Postgres + Auth + Storage + Edge Functions).
-- **Monetización**: RevenueCat (`react-native-purchases`) para suscripciones.
+- **Monetización**: RevenueCat (`react-native-purchases`) para suscripciones, AdMob (`react-native-google-mobile-ads`) para el banner de usuarios en plan gratuito.
 - **Analítica / Monitoreo**: PostHog (`posthog-react-native`) y Sentry (`@sentry/react-native`).
 - **Otros nativos/Expo**: `expo-notifications`, `expo-image-picker`, `expo-file-system`, `expo-print`, `expo-sharing`, `expo-secure-store`, `async-storage`, `react-native-calendars`.
 - **Build/Tooling**: EAS Build/Update, ESLint + Prettier, Jest + `jest-expo`.
@@ -68,11 +68,15 @@ EXPO_PUBLIC_POSTHOG_HOST=https://app.posthog.com
 EXPO_PUBLIC_REVENUECAT_API_KEY_IOS=appl_xxxxxxxxxxxxxxxxxxxxxxxx
 EXPO_PUBLIC_REVENUECAT_API_KEY_ANDROID=goog_xxxxxxxxxxxxxxxxxxxxxxxx
 EXPO_PUBLIC_FACEBOOK_APP_ID=1234567890123456
+EXPO_PUBLIC_ADMOB_ANDROID_APP_ID=ca-app-pub-xxxxxxxxxxxxxxxx~xxxxxxxxxx
+EXPO_PUBLIC_ADMOB_ANDROID_BANNER_ID=ca-app-pub-xxxxxxxxxxxxxxxx/xxxxxxxxxx
 ```
 
 Las dos primeras usan el prefijo `NEXT_PUBLIC_` (no `EXPO_PUBLIC_`) a propósito. Expo solo inlinea automáticamente al bundle las variables con prefijo `EXPO_PUBLIC_`, así que para poder usar exactamente esos nombres, `app.config.js` (que corre en Node, no en el bundle) las lee con `dotenv` y las expone en `extra`; `src/config/env.ts` las recupera en runtime con `expo-constants`. Si cambias esas variables en `.env`, tenés que reiniciar `expo start` (no basta con recargar la app) para que `app.config.js` las vuelva a leer.
 
-Todas son claves públicas (publishable key, DSN público, API keys públicas de PostHog/RevenueCat) — **nunca pongas la `service_role` key de Supabase acá**, esa solo vive en las Edge Functions, inyectada por Supabase. Sin las variables de Sentry/PostHog/RevenueCat la app sigue funcionando (quedan en no-op/deshabilitadas), lo cual es útil para levantar el proyecto rápido sin dar de alta esas cuentas.
+Todas son claves públicas (publishable key, DSN público, API keys públicas de PostHog/RevenueCat, App ID / Ad Unit ID de AdMob) — **nunca pongas la `service_role` key de Supabase acá**, esa solo vive en las Edge Functions, inyectada por Supabase. Sin las variables de Sentry/PostHog/RevenueCat/AdMob la app sigue funcionando (quedan en no-op/deshabilitadas, o en AdMob se usan los IDs de prueba de Google en desarrollo), lo cual es útil para levantar el proyecto rápido sin dar de alta esas cuentas.
+
+`EXPO_PUBLIC_ADMOB_ANDROID_APP_ID` y `EXPO_PUBLIC_ADMOB_ANDROID_BANNER_ID` son los IDs reales de la app y del banner de StayCool en la [consola de AdMob](https://apps.admob.com). Como afectan `app.config.js` (plugin nativo), después de configurarlos hace falta un build nuevo (`eas build` o `expo prebuild`), no alcanza con reiniciar `expo start`.
 
 ## Configurar Supabase
 

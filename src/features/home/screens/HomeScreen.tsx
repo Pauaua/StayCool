@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Heading } from "@/components/ui/Heading";
 import { BottomIconBar } from "@/components/ui/BottomIconBar";
+import { AppBannerAd } from "@/features/premium/components/AppBannerAd";
 import { useDashboardSummary } from "@/features/home/hooks/useDashboard";
 import { useSyncReminders } from "@/features/home/hooks/useProfile";
 import { useAuth } from "@/features/auth/hooks/useAuth";
@@ -145,6 +146,8 @@ export function HomeScreen({ navigation }: Props) {
 
         <ReminderSettings />
       </ScrollView>
+
+      <AppBannerAd />
 
       <BottomIconBar
         items={[

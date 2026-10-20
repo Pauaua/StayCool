@@ -68,6 +68,17 @@ module.exports = {
           project: "agenda-cool",
         },
       ],
+      [
+        "react-native-google-mobile-ads",
+        {
+          androidAppId: process.env.EXPO_PUBLIC_ADMOB_ANDROID_APP_ID,
+          // Todavía no existe la app iOS en AdMob: se usa el App ID de
+          // prueba oficial de Google para que el build de iOS no falle.
+          // Reemplazar por el real cuando se cree esa app en la consola.
+          iosAppId:
+            process.env.EXPO_PUBLIC_ADMOB_IOS_APP_ID ?? "ca-app-pub-3940256099942544~1458002511",
+        },
+      ],
     ],
     extra: {
       supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -78,6 +89,7 @@ module.exports = {
       revenueCatApiKeyIos: process.env.EXPO_PUBLIC_REVENUECAT_API_KEY_IOS ?? "",
       revenueCatApiKeyAndroid: process.env.EXPO_PUBLIC_REVENUECAT_API_KEY_ANDROID ?? "",
       facebookAppId: process.env.EXPO_PUBLIC_FACEBOOK_APP_ID ?? "",
+      admobAndroidBannerId: process.env.EXPO_PUBLIC_ADMOB_ANDROID_BANNER_ID ?? "",
       eas: {
         projectId: "d9f76765-219d-46aa-a30b-58b78c10e996",
       },

@@ -27,4 +27,5 @@ export const env = {
   revenueCatApiKeyIos: extra.revenueCatApiKeyIos ?? "",
   revenueCatApiKeyAndroid: extra.revenueCatApiKeyAndroid ?? "",
   facebookAppId: extra.facebookAppId ?? "",
+  admobAndroidBannerId: extra.admobAndroidBannerId ?? "",
 };

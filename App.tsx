@@ -16,6 +16,7 @@ import { RootNavigator } from "@/navigation/RootNavigator";
 import { initSentry } from "@/lib/sentry";
 import { initAnalytics } from "@/analytics/posthog";
 import { initRevenueCat } from "@/lib/revenuecat";
+import { initAdMob } from "@/lib/admob";
 import { PremiumProvider } from "@/features/premium/hooks/usePremium";
 import { ensureNotificationPermissions } from "@/notifications/notifications";
 import { SparkleOverlay } from "@/components/ui/SparkleOverlay";
@@ -41,6 +42,7 @@ export default function App() {
   useEffect(() => {
     initAnalytics();
     ensureNotificationPermissions();
+    initAdMob();
   }, []);
 
   if (!fontsLoaded) {
